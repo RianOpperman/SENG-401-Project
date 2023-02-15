@@ -39,17 +39,24 @@ The needed JS file is already included in the repo, so no need to run NPM first 
 
 ### Movie DB:
 | ID | Title | Release Date | Rating | Runtime | Genre | Directors | Writers | Actors | Language | Description |
+| -- | ----- | ------------ | ------ | ------- | ----- | --------- | ------- | ------ | -------- | ----------- |
 
 ### Series DB:
 | ID | Title | Release Date | Rating | Season | Episode | Runtime | Genre | Directors | Writers | Actors | Language | Description |
+| -- | ----- | ------------ | ------ | ------ | ------- | ------- | ----- | --------- | ------- | ------ | -------- | ----------- |
 
 ### Cast & Crew DB:
 | ID | Name | DOB | Age | Movies | Series |
+| -- | ---- | --- | --- | ------ | ------ |
 
 ### User DB:
 
 User table:
-| Username | Review ID |
+
+*The Password will be stored as encrypted test, will need to be deciphered by program*
+| Username | Email | Password | Review ID |
+| -------- | ----- | -------- | --------- |
 
 Review Table:
 | Movie | Series | Review description | Review Rating | Review ID |
+| ----- | ------ | ------------------ | ------------- | --------- |
