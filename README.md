@@ -33,3 +33,23 @@ For the sake of maintainability though please use the designed tables with the c
 
 ## Note on Surreal DB
 The needed JS file is already included in the repo, so no need to run NPM first to install everything
+
+## Surreal DB Database & Table setup
+*To note: Images will be stored on DB for the website to request*
+
+### Movie DB:
+| ID | Title | Release Date | Rating | Runtime | Genre | Directors | Writers | Actors | Language | Description |
+
+### Series DB:
+| ID | Title | Release Date | Rating | Season | Episode | Runtime | Genre | Directors | Writers | Actors | Language | Description |
+
+### Cast & Crew DB:
+| ID | Name | DOB | Age | Movies | Series |
+
+### User DB:
+
+User table:
+| Username | Review ID |
+
+Review Table:
+| Movie | Series | Review description | Review Rating | Review ID |

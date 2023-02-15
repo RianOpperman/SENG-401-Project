@@ -13,9 +13,7 @@ async function main(){
 
         let users = await db.query('SELECT * FROM users');
 
-        users.forEach()
-
-        console.log(users[0].result);
+        users.forEach(tuple => console.log(tuple));
 
         let record = await db.create('users:NordVPN', {
             email:'NordVPN@gmail.com',
@@ -23,6 +21,9 @@ async function main(){
             username:'Nord',
         });
 
+        users = await db.query('SELECT * FROM users');
+
+        users.forEach(tuple => console.log(tuple));
     }
     catch(e){
         console.error('ERROR', e)
