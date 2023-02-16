@@ -1,2 +1,12 @@
 #V2
 SELECT * FROM users;
+DELETE * FROM users;
+DELETE FROM users;
+SELECT * FROM users;
+SELECT * FROM crypto:sha256('password')
+SELECT * FROM crypto:sha256("password")
+SELECT * FROM crypto:sha256("password");
+SELECT * FROM crypto::sha256("password");
+CREATE users:bob {email:"bob@gmail.com", username:"Bob"}
+CREATE users:bob SET email = "bob@gmail.com", username = "Bob"
+SELECT * FROM users;
