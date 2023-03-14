@@ -1,7 +1,42 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <h1>Testing</h1>
-        <a href="MovieDesc/Home.html">Testing link to actual website</a>
+        <h1>Movie Search</h1>
+        <!-- FORM FOR MOVIE INPUT -->
+        <form id="movie-search" action="/movie-search">
+            <label for="movie-name">Movie Name:</label>
+            <input type="text" id="movie-name" name="movie-name"><br>
+            <label for="movie-year">Year:</label>
+            <input type="text" id="movie-year" name="movie-year"><br>
+            <button type="submit">Submit Info</button>
+        </form>
+
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const form = document.getElementById('movie-search');
+
+            form.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(form);
+                let movieInfo = {};
+                data.forEach((value, key) => {movieInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/movie-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(movieInfo)
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.log(error));
+            });
+        </script>
+
+        <h1>Actor Search</h1>
+        <h1></h1>
     </body>
 </html>

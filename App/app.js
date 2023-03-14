@@ -5,106 +5,107 @@ const path = require('path');
 const hostname = 'localhost';
 const port = 9000;
 
-function sendHTML(filename, res){
+// Sends a request file to users' browser
+function send(filename, res) {
     fs.readFile(filename, (err, data) => {
-        if (err) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end(`Error loading ${filename}`);
-        return;
-        }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-    });
-}
-
-function sendCSS(filename, res) {
-    fs.readFile(filename, (err, data) => {
-        if (err) {
+        if(err) {
             res.writeHead(500, {'Content-Type': 'text/plain'});
-            res.end(`Error loading ${filename}`)
+            res.end(`Error loading ${filename}`);
         }
-        res.writeHead(200, {'Content-Type': 'text/css'});
-        res.end(data);
-    });
-}
 
-function sendJS(filename, res) {
-    fs.readFile(filename, (err, data) => {
-        if (err) {
-            res.writeHead(500, {'Content-Type': 'text/plain'});
-            res.end(`Error loading ${filename}`)
+        let contentType = '';
+        let fileType = filename.split(".").pop();
+        switch (fileType) {
+            case 'png':
+                contentType = 'image/png';
+                break;
+            case 'jpg':
+                contentType = 'image/jpg';
+                break;
+            case 'jpeg':
+                contentType = 'image/jpeg';
+                break;
+            case 'html':
+                contentType = 'text/html';
+                break;
+            case 'js':
+                contentType = 'text/javascript';
+                break;
+            case 'css':
+                contentType = 'text/css';
+                break;
+            default:
+                contentType = 'text/plain';
+                break;
         }
-        res.writeHead(200, {'Content-Type': 'text/javascript'});
-        res.end(data);
-    });
-}
 
-function sendImage(filename, res) {
-    fs.readFile(filename, (err, data) => {
-        if (err) {
-            res.writeHead(500, {'Content-Type': 'text/plain'});
-            res.end(`Error loading ${filename}`)
-        }
-        let contentType = 'text/plain';
-        if(filename.endsWith('.png')){
-            contentType = 'image/png';
-        }
-        else if(filename.endsWith('jpg')){
-            contentType = 'image/jpg';
-        }
-        else if(filename.endsWith('.jpeg')){
-            contentType = 'image/jpeg';
-        }
         res.writeHead(200, {'Content-Type': contentType});
         res.end(data);
     });
 }
 
+// Sends movie request to movie microservice
+async function requestMovieInfo(data, res){
+    // All the sending options
+    let options = {
+        hostname: 'localhost',
+        port: 9001,
+        path: '/',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(data)
+        }
+    };
+
+    // Creates HTTP request for movie info to microservice
+    const req = http.request(options, (MovieRes) => {
+        console.log(`Movie Microservice responded with: ${res.statusCode}`);
+        MovieRes.on('data', (data) => {
+            console.log(`Movie Microservice sent: '${data}'`);
+        });
+        MovieRes.on('end', () =>{});
+    });
+    // Writes data to query
+    req.write(data);
+    // Finishes query and sends it with specified optins,
+    // inside of http.request takes over now
+    req.end();
+}
+
 const server = http.createServer((req, res) => {
-    console.log(`Request for ${req.url} received.`);
-    // let Path = path.join(__dirname, req.url);
+    if(req.method === 'POST' && req.url === "/movie-search"){
+        let data = '';
 
-    // Serve index.html for root URL
-    if (req.url === '/') {
-        let indexPath = path.join(__dirname, 'index.html');
-        sendHTML(indexPath, res);
+        // Must wait for all info to reach before we can begin using it
+        // This is due to asynchronous nature of JS
+        req.on('data', chunk => {
+            data += chunk.toString();
+        })
+
+        // once we have all data, create the JSON and query for info
+        req.on('end', () => {
+            let jsonData = JSON.parse(data);
+            console.log(jsonData);
+            requestMovieInfo(data, res);
+            res.write('Data received');
+            res.end();
+        })
+
+        // console.log(data);
     }
+    else{
+        console.log(`Request for ${req.url} received.`);
 
-    // Serve other HTML files for their respective URLs
-    else if (req.url.endsWith('.html')) {
-        let htmlPath = path.join(__dirname, req.url);
-        sendHTML(htmlPath, res);
-    }
-
-    else if (req.url.endsWith('.css')) {
-        let cssPath = path.join(__dirname, req.url);
-        sendCSS(cssPath, res);
-    }
-
-    else if (req.url.endsWith('.js')) {
-        let Path = path.join(__dirname, req.url);
-        sendJS(Path, res);
-    }
-
-    else if (req.url.endsWith('.png')) {
-        let Path = path.join(__dirname, req.url);
-        sendImage(Path, res);
-    }
-
-    else if (req.url.endsWith('.jpg')) {
-        let Path = path.join(__dirname, req.url);
-        sendImage(Path, res);
-    }
-
-    else if (req.url.endsWith('.jpeg')) {
-        let Path = path.join(__dirname, req.url);
-        sendImage(Path, res);
-    }
-
-    // Return 404 for all other requests
-    else {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
+        // Serve index.html for root URL
+        if (req.url === '/') {
+            let indexPath = path.join(__dirname, 'index.html');
+            send(indexPath, res);
+        }
+        else{
+            let Path = path.join(__dirname, req.url);
+            send(Path, res);
+        }
     }
 });
 
