@@ -1,0 +1,181 @@
+$primary: #fc6666;
+// #f59393;
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+
+
+
+
+
+h1 {
+    text-align: center;
+    // background-color: $primary;
+    // font-family: Arial, Helvetica, sans-serif;
+    //border: 3px solid;
+    
+    
+    
+}
+
+h2 {
+    text-align: left;
+    // background-color: $primary;
+    // font-family: Arial, Helvetica, sans-serif;
+    //border: 3px solid;
+    font-size: 30px;
+    
+    
+    
+}
+
+h3{
+    text-align: left;
+    // background-color: $primary;
+    // font-family: Arial, Helvetica, sans-serif;
+    //border: 3px solid;
+}
+
+.subheader{
+    font-size: 25px;
+}
+
+
+
+
+
+button{
+    background-color: $primary;
+    font-size: 15px;
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Open Sans";
+    
+    letter-spacing: 1px;
+    padding: 10px 15px;
+}
+
+button:hover{
+    background-color: #c13f3f;
+    cursor: pointer;
+}
+
+
+
+body{
+    text-align: left;
+    background: #ffffff;
+    position: relative;
+    font-family: "Open Sans";
+}
+
+img{
+    // height: 400px;
+    // width: 275px;
+    height: 300px;
+    width: 200px;
+    border-radius: 10%;
+}
+
+#filminderLogo{
+    height: 200px;
+    width: 200px;
+    border-radius: 0%;
+}
+
+table{
+    margin-left: -9px;
+    
+    width: 101.1%;
+    background: #efeaea;
+    display: flex;
+    justify-content: space-between;
+    
+    border-spacing: 100px 0;
+
+    box-shadow: 2px 1px 5px;
+}
+
+// .TopBar{
+//     // display: flex;
+//     // justify-content: space-between;
+// }
+
+/* Add a black background color to the top navigation */
+.TopBar {
+    
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: -9px;
+    margin-left: -9px;
+    margin-right: -9px;
+    position: relative;
+    top:0;
+
+  }
+
+.tableHeader{
+    margin-top: 50px;
+    background-color: $primary;
+    margin-left: -9px;
+    text-align: left;
+    width: 101.1%;
+}
+
+.pushRight{
+    float:right;
+    margin-left: auto;
+}
+
+.alignCenter{
+    align-items: center;
+}
+
+a:link{
+    color: rgb(53, 187, 236);
+    font-family: "Open Sans";
+    text-decoration: none;
+    text-align: center;
+}
+
+a:visited{
+    color: rgb(35, 171, 220);
+    font-family: "Open Sans";
+}
+
+
+/* Style the search box inside the navigation bar */
+input[type=text] {
+    float: right;
+    padding: 6px;
+    border: none;
+    height: 28.5px;
+    margin-right: 16px;
+    font-size: 18px;
+    border: 2px solid;
+  }
+  
+/* Style the submit button */
+form.searchbar button {
+
+    color: white;
+    font-size: 15px;
+    border: 2px solid black;
+    border-right: none; /* Prevent double borders */
+    cursor: pointer;
+  }
+
+  /* Style the submit button */
+
+
+td{
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 20px;
+}
+
+
+
+
