@@ -1,30 +1,31 @@
 
-//fake data
-const contentList = [
-    //row1
-    {title: "Shrek", image: "Shrek.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},{title: "Toy Story", image: "ToyStory.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},{title: "Avatar The Way Of Water", image: "Avatar2.jpg", url: "https://en.wikipedia.org/wiki/Shrek"}, {title: "Shrek", image: "Shrek.jpg", url: "https://en.wikipedia.org/wiki/Shrek"}, {title: "Shrek", image: "Shrek.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},
-    //row2
-    {title: "Shrek", image: "Shrek.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},{title: "Toy Story", image: "ToyStory.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},{title: "Avatar The Way Of Water", image: "Avatar2.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},
-    //row3
-    {title: "Shrek", image: "Shrek.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},{title: "Toy Story", image: "ToyStory.jpg", url: "https://en.wikipedia.org/wiki/Shrek"},{title: "Avatar The Way Of Water", image: "Avatar2.jpg", url: "https://en.wikipedia.org/wiki/Shrek"}
-];
-// window.onload = funCall;
-// start of new
-function funCall(){
+
+
+fetch("MovieObject.json")
+.then(function(response){
+    return response.json();
+})
+.then(function(Movies){
     
+    let table = document.getElementById("HotMovies");
     var rowString = "";
-    
-    for(var i = 0, counter = 0; i < contentList.length; i++){
+    var counter = 0;
+    for(let movie of Movies){
         counter++;
         
         if(counter == 1){
             rowString += '<tr>'
         }
         
+        var currentPage = document.location.href;
+        params = url.split('?')[1].split('&');
+        
+        var url = currentPage + '?name=' + encodeURIComponent(movie.key);
+        //document.location.href = url
         
         rowString += '<td>';
-        rowString += '<a href = ' + contentList[i].url + '>' + '<img src = ' + contentList[i].image + '>' + '</a>';
-        rowString += '<div><a href = ' + contentList[i].url + '>' + contentList[i].title + '</a></div>';
+        rowString += `<a href = ${url} > <img src =  ${movie.image} > </a>`;
+        rowString += `<div><a href = ${url}  >  ${movie.title}  </a></div>`;
         rowString += '</td>';
         
         if(counter == 5){
@@ -34,10 +35,16 @@ function funCall(){
         
     }
     
-    let table = document.getElementById("HotMovies");
+    
     
     table.innerHTML = rowString;
+})
+// window.onload = funCall;
+// start of new
+// function populateTable(){
     
-};
+    
+    
+// };
 
-funCall();
+// populateTable();
