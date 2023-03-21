@@ -10,3 +10,23 @@ SELECT * FROM crypto::sha256("password");
 CREATE users:bob {email:"bob@gmail.com", username:"Bob"}
 CREATE users:bob SET email = "bob@gmail.com", username = "Bob"
 SELECT * FROM users;
+SELECT * FROM movie;
+SELECT * FROM movie WHERE 'world' IN description;
+SELECT * FROM movie WHERE description CONTAINS 'world';
+INFO for DB;
+SELECT * FROM movie;
+SELECT * FROM movie:'tt0903747';
+SELECT * FROM movie:tt0903747;
+SELECT * FROM movie;
+DELETE FROM movie;
+SELECT * FROM movie;
+DELETE FROM movie;
+SELECT * FROM movie;
+SELCT * FROM movie;
+SELECT * FROM movie;
+DELETE FROM movie;
+SELECT * FROM movie;
+DELETE FROM movie;
+SELECT * FROM movie;
+DELETE FROM movie;
+SELECT * FROM movie;

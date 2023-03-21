@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 
 const hostname = 'localhost';
 const port = 9000;
@@ -61,10 +62,20 @@ async function requestMovieInfo(data, res){
     // Creates HTTP request for movie info to microservice
     const req = http.request(options, (MovieRes) => {
         console.log(`Movie Microservice responded with: ${res.statusCode}`);
-        MovieRes.on('data', (data) => {
-            console.log(`Movie Microservice sent: '${data}'`);
+        let data = '';
+        MovieRes.on('data', (chunk) => {
+            data += chunk;
         });
-        MovieRes.on('end', () =>{});
+
+        MovieRes.on('end', () => {
+            if(data !== 'undefined'){
+                let jsonData = JSON.parse(data);
+                console.log(`Movie Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+            }
+            else{
+                console.log("Movie does not exist");
+            }
+        });
     });
     // Writes data to query
     req.write(data);

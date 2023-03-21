@@ -1,0 +1,6 @@
+#V2
+SELECT * FROM movie;
+INFO FOR NS;
+INFO FOR DB;
+SELECT * FROM movie WHERE title = 'test';
+SELECT * FROM movie WHERE title = test;
