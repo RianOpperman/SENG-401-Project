@@ -12,6 +12,7 @@
     <meta charset = "UTF-8">
     <meta name = "FILMINDER" content = "This is the main title page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
+    <script type = "text/javascript" src = "PopulateTable.js"></script>
     
             
 </head>
@@ -24,23 +25,68 @@
         <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
 
         
-        <form class="searchbar">
+        <form id="searchbar">
             
             <input type="text" placeholder="Search.." name="search">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
 
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const form = document.getElementById('searchbar');
+
+            form.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(form);
+                let movieInfo = {};
+                data.forEach((value, key) => {movieInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/movie-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(movieInfo)
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.log(error));
+            });
+        </script>
+
         <div class = "alignCenter">
+            
             <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'MovieListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'MovieListPage.html'"> Actors</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
+            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
             
         </div>
 
         <div class = "pushRight">
-            <button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button> 
-
-            <button OnClick = "location.href = 'https://en.wikipedia.org/wiki/Shrek'"> Profile</button> 
+            
+            <script>
+                var currentUser = sessionStorage.getItem("user");
+                console.log(currentUser);
+                
+                if(currentUser == null){
+                    
+                    
+                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Guest </button>`);
+                    
+                    
+                }
+                else{
+                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                }
+                
+                
+                
+                
+            </script>
+            
         </div>
         
 
@@ -71,7 +117,7 @@
         <a class = "pushRight" href = 'MovieListPage.html'>Browse Movie List</a>
 
         <table id = "HotMovies">
-            
+            <script> populateTable("MovieObject.json", "HotMovies", "MoviePage.html", "movie")</script>
         </table>
         
         
@@ -84,30 +130,7 @@
         <a class = "pushRight" href = "https://en.wikipedia.org/wiki/Shrek">Browse Series List</a>
 
         <table id = "HotSeries">
-            <td>
-                <div>
-                    <img src = "BreakingBad.jpg" alt = "This is a picture of Breaking Bad" height = "400" width = "275">
-                    <div>
-                        <a href = "https://en.wikipedia.org/wiki/Shrek">Breaking Bad</a>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div>
-                    <img src = "Narcos.jpg" alt = "This is a picture of Narcos" height = "400" width = "275">
-                    <div>
-                        <a href = "https://en.wikipedia.org/wiki/Shrek">Narcos</a>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div>
-                    <img src = "Mandalorian.jpg" alt = "This is a picture of Mandalorian" height = "400" width = "275">
-                    <div>
-                        <a href = "https://en.wikipedia.org/wiki/Shrek">The Mandalorian</a>
-                    </div>
-                </div>
-            </td>
+            <script> populateTable("MovieObject.json", "HotSeries", "MoviePage.html", "movie")</script>
         </table>
         
         <div class = "tableHeader">
@@ -119,30 +142,7 @@
         <a class = "pushRight" href = "https://en.wikipedia.org/wiki/Shrek">Browse Actors List</a>
 
         <table id = "HotActors">
-            <td>
-                <div>
-                    <img src = "JohnnyDepp.jpg" alt = "This is a picture of Johnny Depp" height = "400" width = "275">
-                    <div>
-                        <a href = "https://en.wikipedia.org/wiki/Shrek">Johnny Depp</a>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div>
-                    <img src = "GiancarloEsposito.jpg" alt = "This is a picture of GiancarloEsposito" height = "400" width = "275">
-                    <div>
-                        <a href = "https://en.wikipedia.org/wiki/Shrek">Giancarlo Esposito</a>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div>
-                    <img src = "PedroPascal.jpg" alt = "This is a picture of Pedro Pascal" height = "400" width = "275">
-                    <div>
-                        <a href = "https://en.wikipedia.org/wiki/Shrek">Pedro Pascal</a>
-                    </div>
-                </div>
-            </td>
+            <script> populateTable("MovieObject.json", "HotActors", "MoviePage.html", "movie")</script>
         </table>
         
 
@@ -150,7 +150,8 @@
     
 
     <link rel="stylesheet" href="./style/style.css"/>
-    <script type="text/javascript" src = "PopulatingTable.js"></script>
+    
+    
     
 </body>
 

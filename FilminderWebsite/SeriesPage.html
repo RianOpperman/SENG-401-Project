@@ -10,9 +10,9 @@
 
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
-    <meta name = "FILMINDER" content = "This is the page showing a movie list for FILMINDER">
+    <meta name = "FILMINDER" content = "This is the page showing a Profile Page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
-    <script type="text/javascript" src = "PopulateTable.js"></script>
+    
             
 </head>
 
@@ -91,8 +91,6 @@
 
         
     </section>
-    
-
 
     <h1>
         
@@ -103,26 +101,34 @@
         </div>
 
     </h1>
+    
 
-    <div id = "MOVIES">
-        
 
-        <div class = "tableHeader">
-
-            <strong class = "subheader">Movies</strong>
-             
+    <div class = "moviePageGridContainer">
+        <div class="MovieTitle">
+            
         </div>
-        
-        
+        <div class="ImageAndInformation">
+            
+        </div>
+        <div class="Description">
+            
+        </div>
 
-        <table id = "MovieTable">
-            <script> populateTable("MovieObject.json", "MovieTable", "MoviePage.html", "movie")</script>
-        </table>
+        <div class = "Cast">
+            
+        </div>
+            
+        
+        <div class="Reviews">
+            
+        </div>
 
     </div>
     
-
+    
     <link rel="stylesheet" href="./style/style.css"/>
+    <script type="text/javascript" src = "PopulateMoviePage.js"></script>
     
     
 </body>
