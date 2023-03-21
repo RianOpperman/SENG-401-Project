@@ -105,6 +105,15 @@ const server = http.createServer((req, res) => {
 
         // console.log(data);
     }
+    else if(req.method === 'POST' && req.url === "/login"){
+        // Call login service
+    }
+    else if(req.method === 'POST' && req.url === "/series-search"){
+        // Call series service
+    }
+    else if(req.method === 'POST' && req.url === "/actor-search"){
+        // call actor service
+    }
     else{
         console.log(`Request for ${req.url} received.`);
 
