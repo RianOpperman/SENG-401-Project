@@ -22,23 +22,68 @@
         <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
 
         
-        <form class="searchbar">
+        <form id="searchbar">
             
             <input type="text" placeholder="Search.." name="search">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
 
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const form = document.getElementById('searchbar');
+
+            form.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(form);
+                let movieInfo = {};
+                data.forEach((value, key) => {movieInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/movie-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(movieInfo)
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.log(error));
+            });
+        </script>
+
         <div class = "alignCenter">
+            
             <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'MovieListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'MovieListPage.html'"> Actors</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
+            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
             
         </div>
 
         <div class = "pushRight">
-            <button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button> 
-
-            <button OnClick = "location.href = 'https://en.wikipedia.org/wiki/Shrek'"> Profile</button> 
+            
+            <script>
+                var currentUser = sessionStorage.getItem("user");
+                console.log(currentUser);
+                
+                if(currentUser == null){
+                    
+                    
+                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Guest </button>`);
+                    
+                    
+                }
+                else{
+                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                }
+                
+                
+                
+                
+            </script>
+            
         </div>
         
 
@@ -58,8 +103,8 @@
     </h1>
 
     
-    <form action="/action_page.php" style="text-align:center">
-        <div class="col">
+    <form class = "CredentialForm" action="/action_page.php" style="text-align:center">
+        <div>
           <h2 style="text-align:center">LOGIN</h2>
     
     
@@ -71,12 +116,13 @@
                 <input type="password" name="password" placeholder="Password" required>
             </div>
             <input type="submit" value="Login">
+            <button OnClick = "location.href = 'SignUpPage.html'" > Sign-Up</button> 
           </div>
     
         </div>
     </form>
 
-    <button OnClick = "location.href = 'https://en.wikipedia.org/wiki/Shrek'" > SIGN UP</button> 
+    
 
 
     <link rel="stylesheet" href="./style/style.css"/>

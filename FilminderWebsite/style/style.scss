@@ -68,13 +68,16 @@ body{
     background: #ffffff;
     position: relative;
     font-family: "Open Sans";
+    
 }
 
 img{
     // height: 400px;
     // width: 275px;
-    height: 300px;
-    width: 200px;
+    // height: 300px;
+    // width: 200px;
+    height: 90%;
+    max-width: 80%;
     border-radius: 10%;
 }
 
@@ -85,9 +88,9 @@ img{
 }
 
 table{
-    margin-left: -9px;
+    //margin-left: -9px;
     
-    width: 101.1%;
+    width: 100%;
     background: #efeaea;
     display: flex;
     justify-content: space-between;
@@ -108,9 +111,10 @@ table{
     overflow: hidden;
     display: flex;
     justify-content: flex-start;
-    margin-top: -9px;
-    margin-left: -9px;
-    margin-right: -9px;
+    margin: 0;
+    // margin-top: -9px;
+    // margin-left: -9px;
+    // margin-right: -9px;
     position: relative;
     top:0;
 
@@ -119,9 +123,10 @@ table{
 .tableHeader{
     margin-top: 50px;
     background-color: $primary;
-    margin-left: -9px;
+    //margin-left: -9px;
+    padding-left: 5px;
     text-align: left;
-    width: 101.1%;
+    width: 100%;
 }
 
 .pushRight{
@@ -177,5 +182,88 @@ td{
 }
 
 
+.CredentialForm input[type=button], .CredentialForm input[type=submit], .CredentialForm input[type=reset], .CredentialForm button{
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 10px 32px;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
 
 
+
+
+.moviePageGridContainer{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto auto;
+    column-gap: 10px;
+    row-gap:10px;
+    padding-left: 10px;
+    background-color: #efeaea;
+    
+}
+
+.moviePageGridContainer .MovieTitle{
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    
+}
+
+.moviePageGridContainer .ImageAndInformation{
+    // height: 600px;
+    // width: 470px;
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    
+
+}
+
+.moviePageGridContainer .ImageAndInformation img{
+    height: 500px;
+    width: 350px;
+    
+}
+
+.moviePageGridContainer .Description{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    
+}
+
+.moviePageGridContainer .Cast{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    vertical-align: top;
+    
+}
+
+.moviePageGridContainer .Reviews{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 5;
+    grid-row-end: 6;
+    
+}
+
+
+
+.review{
+    background-color: #fc6666;
+    border-radius: 10px;
+    padding-left: 10px;
+    
+
+}

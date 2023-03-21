@@ -10,10 +10,8 @@
 
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
-    <meta name = "FILMINDER" content = "This is the page showing a movie list for FILMINDER">
+    <meta name = "FILMINDER" content = "This is the main title page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
-    <script type="text/javascript" src = "PopulateTable.js"></script>
-            
 </head>
 
 
@@ -104,27 +102,34 @@
 
     </h1>
 
-    <div id = "MOVIES">
-        
-
-        <div class = "tableHeader">
-
-            <strong class = "subheader">Movies</strong>
-             
-        </div>
-        
-        
-
-        <table id = "MovieTable">
-            <script> populateTable("MovieObject.json", "MovieTable", "MoviePage.html", "movie")</script>
-        </table>
-
-    </div>
     
+    <form class = "CredentialForm" action="/action_page.php" style="text-align:center">
+        <div>
+          <h2 style="text-align:center">Sign-Up</h2>
+    
+    
+          <div>
+            <div>
+                <input type="email" name="email" placeholder="Email" required>
+                
+            </div>
+            <div>
+                <input type="username" name="username" placeholder="Username" required>
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <input type="submit" value="Login">
+            
+          </div>
+    
+        </div>
+    </form>
+
+    
+
 
     <link rel="stylesheet" href="./style/style.css"/>
-    
-    
 </body>
 
 
