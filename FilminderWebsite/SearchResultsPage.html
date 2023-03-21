@@ -10,10 +10,9 @@
 
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
-    <meta name = "FILMINDER" content = "This is the main title page for FILMINDER">
+    <meta name = "FILMINDER" content = "This is the page showing a movie list for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
-    <script type = "text/javascript" src = "PopulateTable.js"></script>
-    
+    <script type="text/javascript" src = "PopulateTable.js"></script>
             
 </head>
 
@@ -27,7 +26,7 @@
         
         <form id="searchbar">
             
-            <input type="text" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
+            <input type="text" placeholder="Search.." name="search">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
 
@@ -58,14 +57,13 @@
 
         <div class = "alignCenter">
             
-            
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
+            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
             
         </div>
 
         <div class = "pushRight">
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
             
             <script>
                 var currentUser = sessionStorage.getItem("user");
@@ -106,52 +104,25 @@
 
     </h1>
 
-    <div id = "WhatsHot">
-        <h2><strong>What's Hot</strong></h2>
+    <div id = "SEARCHRESULTS">
+        
 
         <div class = "tableHeader">
 
-            <strong class = "subheader">Hot Movies</strong>
+            <strong class = "subheader">Movies</strong>
              
         </div>
         
-        <a class = "pushRight" href = 'MovieListPage.html'>Browse Movie List</a>
+        
 
-        <table id = "HotMovies">
-            <script> populateTable("MovieObject.json", "HotMovies", "MoviePage.html", "movie")</script>
+        <table id = "SearchResultsTable">
+            <script> populateTable("MovieObject.json", "MovieTable", "MoviePage.html", "movie")</script>
         </table>
-        
-        
-        <div class = "tableHeader">
-            <strong class = "subheader">Hot Series</strong>
-                
-            
-            
-        </div>
-        <a class = "pushRight" href = "https://en.wikipedia.org/wiki/Shrek">Browse Series List</a>
-
-        <table id = "HotSeries">
-            <script> populateTable("MovieObject.json", "HotSeries", "MoviePage.html", "movie")</script>
-        </table>
-        
-        <div class = "tableHeader">
-            <strong class = "subheader">Hot Actors</strong>
-                
-            
-            
-        </div>
-        <a class = "pushRight" href = "https://en.wikipedia.org/wiki/Shrek">Browse Actors List</a>
-
-        <table id = "HotActors">
-            <script> populateTable("MovieObject.json", "HotActors", "MoviePage.html", "movie")</script>
-        </table>
-        
 
     </div>
     
 
     <link rel="stylesheet" href="./style/style.css"/>
-    
     
     
 </body>
