@@ -56,3 +56,9 @@ CREATE series:1 SET title='test', releaseDate='01-01-01', rating='10/10', season
 SELECT * FROM series;
 INFO FOR DB;
 SELECT * FROM castCrew;
+INFO FOR DB;
+SELECT * FORM movie;
+SELECT * FROM movie;
+DELET FROM movie WHERE title='The Godfather';
+DELETE FROM movie WHERE title='The Godfather';
+SELECT * FROM movie;

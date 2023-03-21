@@ -53,6 +53,24 @@ async function dbQuery(json){
     }
 }
 
+async function getImage(id){
+    let url = 'https://image.tmdb.org/t/p/original/';
+
+    let imagePath = `https://api.themoviedb.org/3/movie/${id}/images?api_key=fd466f23c2618acf3e52defb9c3869ba`;
+
+    // console.log(imagePath);
+
+    return await fetch(imagePath)
+    .then(response => response.text())
+    .then(result => {
+        let json = JSON.parse(result);
+        url += json.posters[0].file_path;
+        return url;
+        // console.log(url);
+    })
+    .catch(e => console.error(e));
+}
+
 async function dbAdd(json){
     try{
         await db.signin({
@@ -74,6 +92,7 @@ async function dbAdd(json){
             runtime: json['Runtime'],
             title: json['Title'],
             writers: json['Writer'],
+            image: json['image'],
         });
 
         return res;
@@ -104,9 +123,10 @@ const server = http.createServer((req, res) => {
                     console.log("Entry not in database");
                     fetch(prepareQuery(jsonData))
                     .then(response => response.text())
-                    .then((text) => {
+                    .then(async (text) => {
                         let data = JSON.parse(text);
-                        if(typeof data['id'] !== 'undefined'){
+                        if(typeof data['imdbID'] !== 'undefined'){
+                            data['image'] = await getImage(data['imdbID']);
                             dbAdd(data)
                             .then(ret => {
                                 console.log(ret);
@@ -116,7 +136,7 @@ const server = http.createServer((req, res) => {
                             .catch(e => console.error(e));
                         }
                         else {
-                            res.write(undefined);
+                            res.write('undefined');
                             res.end();
                         }
                     })
