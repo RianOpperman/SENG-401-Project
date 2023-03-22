@@ -12,7 +12,7 @@
     <meta charset = "UTF-8">
     <meta name = "FILMINDER" content = "This is the page showing a movie list for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
-    <script type="text/javascript" src = "PopulateTable.js"></script>
+    <script type="text/javascript" src = "PopulateSearchResults.js"></script>
             
 </head>
 
@@ -73,8 +73,8 @@
                 if(currentUser == null){
                     
                     
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button>`);
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Guest </button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
                     
                     
                 }
@@ -110,14 +110,14 @@
 
         <div class = "tableHeader">
 
-            <strong class = "subheader">Movies</strong>
+            <strong class = "subheader">Search Results</strong>
              
         </div>
         
         
 
         <table id = "SearchResultsTable">
-            <script> populateTable("MovieObject.json", "MovieTable", "MoviePage.html", "movie")</script>
+            <script> populateSearchTable("SearchResultsTable", "MoviePage.html", "movie")</script>
         </table>
 
     </div>

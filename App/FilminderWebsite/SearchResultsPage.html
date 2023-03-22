@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<html>	
+
+
+
+
+<head>
+
+    <title>FILMINDER</title>
+    <meta charset = "UTF-8">
+    <meta name = "FILMINDER" content = "This is the page showing a movie list for FILMINDER">
+    <link rel="stylesheet" href="./style/style.css"/>
+    <script type="text/javascript" src = "PopulateSearchResults.js"></script>
+            
+</head>
+
+
+<body>
+    
+    <section class = "TopBar">
+        
+        <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
+
+        
+        <form id="searchbar">
+            
+            <input type="text" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const form = document.getElementById('searchbar');
+
+            form.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(form);
+                let movieInfo = {};
+                data.forEach((value, key) => {movieInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/movie-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(movieInfo)
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.log(error));
+            });
+        </script>
+
+        <div class = "alignCenter">
+            
+            
+            
+        </div>
+
+        <div class = "pushRight">
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
+            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
+            
+            <script>
+                var currentUser = sessionStorage.getItem("user");
+                console.log(currentUser);
+                
+                if(currentUser == null){
+                    
+                    
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                    
+                    
+                }
+                else{
+                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                }
+                
+                
+                
+                
+            </script>
+            
+        </div>
+        
+
+        
+    </section>
+    
+
+
+    <h1>
+        
+        
+        <div>
+            <img id = "filminderLogo" src = "FilminderLogoTransparent.png" alt = "This is our logo" height = "250" width = "250">
+            
+        </div>
+
+    </h1>
+
+    <div id = "SEARCHRESULTS">
+        
+
+        <div class = "tableHeader">
+
+            <strong class = "subheader">Search Results</strong>
+             
+        </div>
+        
+        
+
+        <table id = "SearchResultsTable">
+            <script> populateSearchTable("SearchResultsTable", "MoviePage.html", "movie")</script>
+        </table>
+
+    </div>
+    
+
+    <link rel="stylesheet" href="./style/style.css"/>
+    
+    
+</body>
+
+
+
+</html>
+
+
+
+
+

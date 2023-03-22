@@ -88,6 +88,84 @@ async function requestMovieInfo(data, res){
     });
 }
 
+async function loginCheck(json){
+    return new Promise((resolve, reject) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/login',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for movie info to microservice
+        const req = http.request(options, (userRes) => {
+            console.log(`Movie Microservice responded with: ${userRes.statusCode}`);
+            let data = '';
+            userRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            userRes.on('end', () => {
+                if(data === 'true'){
+                    resolve(true);
+                }
+                else{
+                    reject(false);
+                }
+                console.log(`Movie Microservice sent: '${util.inspect(data, {colors: true})}'`);
+            });
+        });
+        // Writes data to query
+        req.write(json);
+        // Finishes query and sends it with specified optins,
+        // inside of http.request takes over now
+        req.end();
+    });
+}
+
+async function signupUser(json){
+    return new Promise((resolve, reject) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/signup',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for movie info to microservice
+        const req = http.request(options, (userRes) => {
+            console.log(`Movie Microservice responded with: ${userRes.statusCode}`);
+            let data = '';
+            userRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            userRes.on('end', () => {
+                if(data === 'true'){
+                    resolve(true);
+                }
+                else{
+                    reject(false)
+                };
+                console.log(`Movie Microservice sent: '${util.inspect(data, {colors: true})}'`);
+            });
+        });
+        // Writes data to query
+        req.write(json);
+        // Finishes query and sends it with specified optins,
+        // inside of http.request takes over now
+        req.end();
+    });
+}
+
 const server = http.createServer((req, res) => {
     if(req.method === 'POST' && req.url === "/movie-search"){
         let data = '';
@@ -116,6 +194,31 @@ const server = http.createServer((req, res) => {
     }
     else if(req.method === 'POST' && req.url === "/login"){
         // Call login service
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            loginCheck(data)
+            .then(result => {
+                res.write(result.toString());
+                res.end();
+            })
+            // .then(ret => console.log(ret))
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === "/signup"){
+        // Call login service
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            signupUser(data)
+            .then(result => {
+                res.write(result.toString());
+                res.end();
+            })
+            // .then(ret => console.log(ret))
+            .catch(e => console.error(e));
+        });
     }
     else if(req.method === 'POST' && req.url === "/series-search"){
         // Call series service
@@ -128,11 +231,11 @@ const server = http.createServer((req, res) => {
 
         // Serve index.html for root URL
         if (req.url === '/') {
-            let indexPath = path.join(__dirname, 'index.html');
+            let indexPath = path.join(__dirname + "/FilminderWebsite", 'Website.html');
             send(indexPath, res);
         }
         else{
-            let Path = path.join(__dirname, req.url);
+            let Path = path.join(__dirname + "/FilminderWebsite", req.url);
             send(Path, res);
         }
     }
