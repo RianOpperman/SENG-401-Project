@@ -209,7 +209,7 @@ td{
     
 }
 
-.moviePageGridContainer .MovieTitle{
+.moviePageGridContainer .Title{
     grid-column-start: 1;
     grid-column-end: 6;
     grid-row-start: 1;
@@ -259,6 +259,67 @@ td{
     
 }
 
+
+.actorPageGridContainer{
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto auto;
+    column-gap: 10px;
+    row-gap:10px;
+    padding-left: 10px;
+    background-color: #efeaea;
+    
+}
+
+.actorPageGridContainer .Title{
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    
+}
+
+.actorPageGridContainer .ImageAndInformation{
+    // height: 600px;
+    // width: 470px;
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    
+
+}
+
+.actorPageGridContainer .ImageAndInformation img{
+    height: 500px;
+    width: 350px;
+    
+}
+
+.actorPageGridContainer .Description{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    
+}
+
+.actorPageGridContainer .Movies{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    vertical-align: top;
+    
+}
+
+.actorPageGridContainer .Reviews{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 5;
+    grid-row-end: 6;
+    
+}
 
 
 .review{
