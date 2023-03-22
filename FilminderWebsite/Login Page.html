@@ -24,7 +24,7 @@
         
         <form id="searchbar">
             
-            <input type="text" placeholder="Search.." name="search">
+            <input type="text" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
 
@@ -55,13 +55,14 @@
 
         <div class = "alignCenter">
             
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
+            
             
         </div>
 
         <div class = "pushRight">
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
+            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
             
             <script>
                 var currentUser = sessionStorage.getItem("user");
@@ -79,7 +80,7 @@
                     document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                 }
                 
-                
+                sessionStorage.setItem("user", "exampleUser");
                 
                 
             </script>

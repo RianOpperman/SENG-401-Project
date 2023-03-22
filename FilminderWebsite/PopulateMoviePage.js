@@ -13,7 +13,7 @@ fetch("Movie.json")
     console.log(movie);
     console.log("hello");
     let Grid = document.getElementsByClassName("moviePageGridContainer");
-    let Title = document.getElementsByClassName("MovieTitle")[0];
+    let Title = document.getElementsByClassName("Title")[0];
     var htmlString = `<h1>${movie.title}</h1>`;
     Title.innerHTML = htmlString;
 
