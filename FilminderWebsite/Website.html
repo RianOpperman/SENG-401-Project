@@ -27,32 +27,50 @@
         
         <form id="searchbar">
             
-            <input type="text" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
+            <input type="text" id = "searchText" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
 
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
+            console.log("hello1");
             const form = document.getElementById('searchbar');
-
+            console.log(form);
             form.addEventListener('submit', (event) => {
                 // Prevents issues, can't remember what issues though
                 event.preventDefault();
 
                 let data = new FormData(form);
-                let movieInfo = {};
-                data.forEach((value, key) => {movieInfo[key] = value});
+                console.log(data);
+                let str = document.getElementById("searchText").value;
+                //let str = data.get("search");
+                console.log(str);
+                if(str.startsWith('Movie|')){
 
-                // Fetches movie info from main server
-                // Need to revamp for dynamic web pages
-                fetch('/movie-search', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(movieInfo)
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.log(error));
+                
+                    let movieInfo = {};
+                    movieInfo['movie-name'] = str.split("|")[1];
+
+                    // Fetches movie info from main server
+                    // Need to revamp for dynamic web pages
+                    fetch('/movie-search', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(movieInfo)
+                    })
+                    .then(response => response.text())
+                    //.then(text => console.log(JSON.parse(text)))
+                    .then(text => {
+                        let jsonData = JSON.parse(text);
+                        console.log(jsonData);
+                        sessionStorage.setItem("searchResults", JSON.stringify(jsonData));
+                        
+                        console.log(sessionStorage.getItem("searchResults"));
+                        document.location.href = "SearchResultsPage.html";
+                    })
+                    .catch(error => console.log(error));
+                }
+
             });
         </script>
 
@@ -74,8 +92,8 @@
                 if(currentUser == null){
                     
                     
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button>`);
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Guest </button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
                     
                     
                 }
