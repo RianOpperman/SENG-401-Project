@@ -231,11 +231,11 @@ const server = http.createServer((req, res) => {
 
         // Serve index.html for root URL
         if (req.url === '/') {
-            let indexPath = path.join(__dirname, 'index.html');
+            let indexPath = path.join(__dirname + "/FilminderWebsite", 'Website.html');
             send(indexPath, res);
         }
         else{
-            let Path = path.join(__dirname, req.url);
+            let Path = path.join(__dirname + "/FilminderWebsite", req.url);
             send(Path, res);
         }
     }
