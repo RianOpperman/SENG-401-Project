@@ -10,7 +10,7 @@
             <input type="text" id="movie-year" name="movie-year"><br>
             <button type="submit">Submit Info</button>
         </form>
-
+        
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
             const form = document.getElementById('movie-search');
@@ -30,8 +30,12 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(movieInfo)
                 })
-                .then(response => response.json())
-                .then(data => console.log(data))
+                .then(response => response.text())
+                .then(text => console.log(JSON.parse(text)))
+                // .then(text => {
+                //     let jsonData = JSON.parse(text);
+
+                // })
                 .catch(error => console.log(error));
             });
         </script>

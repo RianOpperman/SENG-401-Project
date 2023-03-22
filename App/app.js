@@ -47,41 +47,45 @@ function send(filename, res) {
 
 // Sends movie request to movie microservice
 async function requestMovieInfo(data, res){
-    // All the sending options
-    let options = {
-        hostname: 'localhost',
-        port: 9001,
-        path: '/',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(data)
-        }
-    };
-
-    // Creates HTTP request for movie info to microservice
-    const req = http.request(options, (MovieRes) => {
-        console.log(`Movie Microservice responded with: ${res.statusCode}`);
-        let data = '';
-        MovieRes.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        MovieRes.on('end', () => {
-            if(data !== 'undefined'){
-                let jsonData = JSON.parse(data);
-                console.log(`Movie Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+    return new Promise((resolve, reject) => {
+        // All the sending options
+        let options = {
+            hostname: 'localhost',
+            port: 9001,
+            path: '/',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(data)
             }
-            else{
-                console.log("Movie does not exist");
-            }
+        };
+
+        // Creates HTTP request for movie info to microservice
+        const req = http.request(options, (MovieRes) => {
+            console.log(`Movie Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            MovieRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            MovieRes.on('end', () => {
+                if(data !== 'undefined'){
+                    let jsonData = JSON.parse(data);
+                    console.log(`Movie Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                    resolve(jsonData);
+                }
+                else{
+                    console.log("Movie does not exist");
+                    reject("Movie does not exist");
+                }
+            });
         });
+        // Writes data to query
+        req.write(data);
+        // Finishes query and sends it with specified optins,
+        // inside of http.request takes over now
+        req.end();
     });
-    // Writes data to query
-    req.write(data);
-    // Finishes query and sends it with specified optins,
-    // inside of http.request takes over now
-    req.end();
 }
 
 const server = http.createServer((req, res) => {
@@ -92,15 +96,20 @@ const server = http.createServer((req, res) => {
         // This is due to asynchronous nature of JS
         req.on('data', chunk => {
             data += chunk.toString();
-        })
+        });
 
         // once we have all data, create the JSON and query for info
         req.on('end', () => {
-            let jsonData = JSON.parse(data);
-            console.log(jsonData);
-            requestMovieInfo(data, res);
-            res.write('Data received');
-            res.end();
+            // let jsonData = JSON.parse(data);
+            // console.log(jsonData);
+            requestMovieInfo(data, res)
+            .then(ret => {
+                console.log(JSON.stringify(ret));
+                res.write(JSON.stringify(ret));
+                res.end();
+                console.log("Sent data");
+            })
+            .catch(e => console.error(e));
         })
 
         // console.log(data);

@@ -62,3 +62,5 @@ SELECT * FROM movie;
 DELET FROM movie WHERE title='The Godfather';
 DELETE FROM movie WHERE title='The Godfather';
 SELECT * FROM movie;
+INFO FOR DB;
+SELECT * FROM user;
