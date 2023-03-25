@@ -21,37 +21,12 @@
         
         <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
 
+        <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
+        <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
+        <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
         
-        <form id="searchbar">
-            
-            <input type="text" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
 
-        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
-        <script>
-            const form = document.getElementById('searchbar');
 
-            form.addEventListener('submit', (event) => {
-                // Prevents issues, can't remember what issues though
-                event.preventDefault();
-
-                let data = new FormData(form);
-                let movieInfo = {};
-                data.forEach((value, key) => {movieInfo[key] = value});
-
-                // Fetches movie info from main server
-                // Need to revamp for dynamic web pages
-                fetch('/movie-search', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(movieInfo)
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.log(error));
-            });
-        </script>
 
         <div class = "alignCenter">
             
@@ -71,8 +46,8 @@
                 if(currentUser == null){
                     
                     
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button>`);
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Guest </button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
                     
                     
                 }
@@ -80,7 +55,7 @@
                     document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                 }
                 
-                sessionStorage.setItem("user", "exampleUser");
+                
                 
                 
             </script>
@@ -103,25 +78,56 @@
 
     </h1>
 
-    
-    <form class = "CredentialForm" action="/action_page.php" style="text-align:center">
-        <div>
-          <h2 style="text-align:center">LOGIN</h2>
-    
-    
-          <div>
-            <div>
-                <input type="email" name="email" placeholder="Email" required>
-            </div>
-            <div>
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-            <input type="submit" value="Login">
-            <button OnClick = "location.href = 'SignUpPage.html'" > Sign-Up</button> 
-          </div>
-    
-        </div>
+    <h2 style="text-align:center">LOGIN</h2>
+    <form id="login" action="/login">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password"><br>
+        <button type="submit">Login</button>
     </form>
+
+    <div id = "noLogin"></div>
+
+    <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+    <script>
+        const form = document.getElementById('login');
+
+        form.addEventListener('submit', (event) => {
+            console.log("Pressed");
+            // Prevents issues
+            event.preventDefault();
+
+            let data = new FormData(form);
+            console.log(data);
+            let loginInfo = {};
+            data.forEach((value, key) => {loginInfo[key] = value});
+            console.log(loginInfo);
+            // Fetches series info from main server
+            
+            fetch('/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(loginInfo)
+            })
+            .then(response => response.text(), (document.getElementById('noLogin').innerHTML ="<h2>Could not login with the given credentials, please try again</h2>"))
+            //.then(text => console.log(JSON.parse(text)))
+            .then(text => {
+                console.log("returned from login");
+                
+                let jsonData = JSON.parse(text);
+                console.log(jsonData);
+                
+                console.log("Searched");
+                sessionStorage.setItem("user", jsonData.username);
+                console.log(sessionStorage.getItem("user"));
+                document.location.href = "Website.html";
+                
+            })
+            .catch(error => console.log(error));
+        });
+    </script>
+
 
     
 

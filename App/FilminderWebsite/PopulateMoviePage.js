@@ -1,14 +1,17 @@
 
 
 
-fetch("Movie.json")
-.then(function(response){
-    return response.json();
-})
-.then(function(movie){
-    var movieID = sessionStorage.getItem("movie");
-    console.log(movieID);
-    //let movie = Movies[0];
+// fetch("Movie.json")
+// .then(function(response){
+//     return response.json();
+// })
+// .then(function(movie)
+function populateMoviePage(){
+    var movie = sessionStorage.getItem("movie");
+    movie = JSON.parse(movie);
+    // var movieID = sessionStorage.getItem("movie");
+    // console.log(movieID);
+    // let movie = Movies[0];
     
     console.log(movie);
     console.log("hello");
@@ -48,7 +51,7 @@ fetch("Movie.json")
     Reviews.innerHTML = htmlString;
 
 
-})
+}
 
-
+populateMoviePage();
 

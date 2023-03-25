@@ -165,8 +165,8 @@ td {
 }
 
 .moviePageGridContainer .ImageAndInformation img {
-  height: 500px;
-  width: 350px;
+  height: 400px;
+  max-width: 300px;
 }
 
 .moviePageGridContainer .Description {
