@@ -1,6 +1,4 @@
 const http = require('http');
-const fs = require('fs');
-const path = require('path');
 const Surreal = require('surrealdb.js');
 
 let db = new Surreal.default('http://localhost:8000/rpc');
@@ -25,6 +23,11 @@ function prepareQuery(json){
                     query += "&y=" + json['movie-year'];
                 }
                 break;
+            case 'movie-id':
+                if(!(json[key] === '')){
+                    query += "&i=" + json['movie-id'];
+                }
+                break;
         }
     }
 
@@ -42,7 +45,14 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`SELECT * FROM movie WHERE title CONTAINS '${json['movie-name']}'`);
+        let str = '';
+        if(json['movie-id'] !== ''){
+            str = `SELECT * FROM movie:${json['movie-id']}`;
+        }
+        else{
+            str = `SELECT * FROM movie WHERE title CONTAINS '${json['movie-name']}'`;
+        }
+        let res = await db.query(str);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
@@ -117,46 +127,44 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             let jsonData = JSON.parse(data);
             // Fetches info from API, once received send back JSON
+            let flag = 0;
             dbQuery(jsonData)
-            .then((result) => {
-                if(typeof result === 'undefined'){
-                    console.log("Entry not in database");
-                    fetch(prepareQuery(jsonData))
-                    .then(response => response.text())
-                    .then(async (text) => {
-                        let data = JSON.parse(text);
-                        if(typeof data['imdbID'] !== 'undefined'){
-                            data['image'] = await getImage(data['imdbID']);
-                            dbAdd(data)
-                            .then(ret => {
-                                console.log(ret);
-                                res.write(JSON.stringify(ret));
-                                res.end();
-                            })
-                            .catch(e => console.error(e));
-                        }
-                        else {
-                            res.write('undefined');
-                            res.end();
-                        }
-                    })
-                    .catch(e => console.error(e));
+            .then(result => {
+                    if(typeof result === 'undefined'){
+                        console.log(`${jsonData['movie-name']} not in database`);
+                        return fetch(prepareQuery(jsonData))
+                        .then(response => response.text());
+                    }
+                    else{
+                        flag = 1;
+                        return result;
+                    }
+            })
+            .then(async (json) => {
+                if(flag === 1){
+                    return json;
                 }
                 else{
-                    console.log(result);
-                    res.write(JSON.stringify(result));
+                    let data = JSON.parse(json);
+                    if(typeof data['imdbID'] !== 'undefined'){
+                        data['image'] = await getImage(data['imdbID']);
+                        flag = 1;
+                        console.log(`Adding ${data['Title']} to database`);
+                        return dbAdd(data);
+                    }
+                }
+            })
+            .then(ret => {
+                if(flag === 1){
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                }
+                else {
+                    res.write('undefined');
                     res.end();
                 }
             })
             .catch(e => console.error(e));
-            
-            // fetch(prepareQuery(jsonData))
-            //    .then(response => response.text())
-            //    .then(text => {
-            //         res.write(text);
-            //         res.end();
-            //    });
-            // console.log(jsonData);
         });
     }
 });

@@ -103,7 +103,7 @@ async function loginCheck(json){
 
         // Creates HTTP request for movie info to microservice
         const req = http.request(options, (userRes) => {
-            console.log(`Movie Microservice responded with: ${userRes.statusCode}`);
+            console.log(`User Microservice responded with: ${userRes.statusCode}`);
             let data = '';
             userRes.on('data', (chunk) => {
                 data += chunk;
@@ -116,7 +116,7 @@ async function loginCheck(json){
                 else{
                     reject(false);
                 }
-                console.log(`Movie Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
             });
         });
         // Writes data to query
@@ -142,7 +142,7 @@ async function signupUser(json){
 
         // Creates HTTP request for movie info to microservice
         const req = http.request(options, (userRes) => {
-            console.log(`Movie Microservice responded with: ${userRes.statusCode}`);
+            console.log(`User Microservice responded with: ${userRes.statusCode}`);
             let data = '';
             userRes.on('data', (chunk) => {
                 data += chunk;
@@ -155,7 +155,7 @@ async function signupUser(json){
                 else{
                     reject(false)
                 };
-                console.log(`Movie Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
             });
         });
         // Writes data to query
@@ -164,6 +164,74 @@ async function signupUser(json){
         // inside of http.request takes over now
         req.end();
     });
+}
+
+async function getComments(json){
+    let options = {
+        hostname: 'localhost',
+        port: 9004,
+        path: '/query',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(json)
+        }
+    };
+
+    const req = http.request(options, (res) => {
+        console.log(`Comment Microservice responded with: ${res.statusCode}`);
+        let data = '';
+        res.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        res.on('end', () => {
+            if(data !== 'undefined'){
+                let jsonData = JSON.parse(data);
+                console.log(`Comment Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+            }
+            else{
+                console.log("User has no comments");
+            }
+        });
+    });
+
+    req.write(json);
+    req.end();
+}
+
+async function addComment(json){
+    let options = {
+        hostname: 'localhost',
+        port: 9004,
+        path: '/add',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(json)
+        }
+    };
+
+    const req = http.request(options, (res) => {
+        console.log(`Movie Microservice responded with: ${res.statusCode}`);
+        let data = '';
+        res.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        res.on('end', () => {
+            if(data !== 'undefined'){
+                let jsonData = JSON.parse(data);
+                console.log(`Movie Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+            }
+            else{
+                console.log("User has no comments");
+            }
+        });
+    });
+
+    req.write(json);
+    req.end();
 }
 
 const server = http.createServer((req, res) => {
@@ -226,16 +294,42 @@ const server = http.createServer((req, res) => {
     else if(req.method === 'POST' && req.url === "/actor-search"){
         // call actor service
     }
+    else if(req.method === 'POST' && req.url === '/comment-query'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            getComments(data)
+            .then(result => {
+                res.write(result.toString());
+                res.end();
+            })
+            // .then(ret => console.log(ret))
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/comment-add'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            addComment(data)
+            .then(result => {
+                res.write(result.toString());
+                res.end();
+            })
+            // .then(ret => console.log(ret))
+            .catch(e => console.error(e));
+        });
+    }
     else{
         console.log(`Request for ${req.url} received.`);
 
         // Serve index.html for root URL
         if (req.url === '/') {
-            let indexPath = path.join(__dirname + "/FilminderWebsite", 'Website.html');
+            let indexPath = path.join(__dirname, 'index.html');
             send(indexPath, res);
         }
         else{
-            let Path = path.join(__dirname + "/FilminderWebsite", req.url);
+            let Path = path.join(__dirname, req.url);
             send(Path, res);
         }
     }
