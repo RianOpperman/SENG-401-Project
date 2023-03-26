@@ -9,13 +9,11 @@
 function populateSeriesPage(){
     var series = sessionStorage.getItem("series");
     series = JSON.parse(series);
-    // var seriesID = sessionStorage.getItem("series");
-    // console.log(seriesID);
-    // let series = series[0];
+    
     
     console.log(series);
-    console.log("hello");
-    let Grid = document.getElementsByClassName("seriesPageGridContainer");
+    
+    
     let Title = document.getElementsByClassName("Title")[0];
     var htmlString = `<h1>${series.title}</h1>`;
     Title.innerHTML = htmlString;
@@ -37,23 +35,110 @@ function populateSeriesPage(){
     htmlString += `<p>${series.description}</p>`;
     Description.innerHTML = htmlString;
 
-    let Actors = document.getElementsByClassName("Cast")[0];
+    let Cast = document.getElementsByClassName("Cast")[0];
     var htmlString = `<h2>Actors: </h2>`;
     htmlString += `<p>${series.actors}</p>`;
     htmlString += `<h2>Directors: </h2>`;
     htmlString += `<p>${series.directors}</p>`;
     htmlString += `<h2>Writers: </h2>`;
     htmlString += `<p>${series.writers}</p>`;
-    Actors.innerHTML = htmlString;
+    Cast.innerHTML = htmlString;
+
+    let currentUser = sessionStorage.getItem("user");
+
+    if(currentUser != null){
+        let ReviewForm = document.getElementsByClassName("ReviewForm")[0];
+        ReviewForm.innerHTML =
+        `<form id="addComment" action="/comment-add">
+        <label for="rating">Rating:</label>
+        <select name="rating" id="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+        <label for="comment">Comment:</label>
+        <input type="text" id="comment" name="comment"><br>
+        <button type="submit">Submit Info</button>
+        </form>`;
+
+
+        const form = document.getElementById('addComment');
+
+            form.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                console.log("Pressed");
+
+                let data = new FormData(form);
+                let commentInfo = {};
+                commentInfo['series-id'] = series.id.split('series:')[1];
+                commentInfo['user-id'] = sessionStorage.getItem("userID").split('user:')[1];
+                data.forEach((value, key) => {commentInfo[key] = value});
+                console.log(commentInfo);
+
+                
+                fetch('/comment-add', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(commentInfo)
+                })
+                .then(response => response.text())
+                //.then(text => console.log(JSON.parse(text)))
+                // document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>")
+                .then(text => {
+                    console.log("added comment");
+                    
+                    let jsonData = JSON.parse(text);
+                    // console.log(jsonData);
+                    
+                    // console.log("Searched");
+                    
+                    //reloads the page to show updated comment
+                    document.location.href = "SeriesPage.html";
+
+                })
+                .catch(error => console.log(error));
+            });
+
+
+    }
+    
+    // MAKE A FETCH CALL TO REVIEWS USING THIS SERIES ID
+
+    // THEN FOR EACH REVIEW OBJECT IN THE JSON DO BELOW CODE
 
     let Reviews = document.getElementsByClassName("Reviews")[0];
+
+    let seriesID = {'series-id': series.id.split('series:')[1]};
+
     var htmlString = `<h2>Reviews: </h2>`;
-    htmlString += `<div class = "review"> <h3>${"User1234"}: ${"6.9"}/10</h3>`;
-    htmlString += `<p>${"Amazing series"}</p></div>`;
-    Reviews.innerHTML = htmlString;
+
+    fetch('/comment-query', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(seriesID),
+    })
+    .then(response => response.text())
+    .then(text => {
+        let json = JSON.parse(text);
+        for(let comment of json){
+            htmlString += `<div class = "review"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
+            htmlString += `<p>${comment.comment}</p></div>`;
+        }
+        Reviews.innerHTML = htmlString;
+    })
+    .catch(e => console.log(e));
 
 
 }
 
-populateseriesPage();
+populateSeriesPage();
 

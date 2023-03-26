@@ -11,7 +11,7 @@ function populateMoviePage(){
     movie = JSON.parse(movie);
     
     console.log(movie);
-    let Grid = document.getElementsByClassName("moviePageGridContainer");
+    
     let Title = document.getElementsByClassName("Title")[0];
     var htmlString = `<h1>${movie.title}</h1>`;
     Title.innerHTML = htmlString;
@@ -31,14 +31,14 @@ function populateMoviePage(){
     htmlString += `<p>${movie.description}</p>`;
     Description.innerHTML = htmlString;
 
-    let Actors = document.getElementsByClassName("Cast")[0];
+    let Cast = document.getElementsByClassName("Cast")[0];
     var htmlString = `<h2>Actors: </h2>`;
     htmlString += `<p>${movie.actors}</p>`;
     htmlString += `<h2>Directors: </h2>`;
     htmlString += `<p>${movie.directors}</p>`;
     htmlString += `<h2>Writers: </h2>`;
     htmlString += `<p>${movie.writers}</p>`;
-    Actors.innerHTML = htmlString;
+    Cast.innerHTML = htmlString;
 
 
     
@@ -49,7 +49,7 @@ function populateMoviePage(){
     if(currentUser != null){
         let ReviewForm = document.getElementsByClassName("ReviewForm")[0];
         ReviewForm.innerHTML =
-        `<form id="addMovieComment" action="/comment-add">
+        `<form id="addComment" action="/comment-add">
         <label for="rating">Rating:</label>
         <select name="rating" id="rating">
             <option value="1">1</option>
@@ -69,7 +69,7 @@ function populateMoviePage(){
         </form>`;
 
 
-        const form = document.getElementById('addMovieComment');
+        const form = document.getElementById('addComment');
 
             form.addEventListener('submit', (event) => {
                 // Prevents issues, can't remember what issues though

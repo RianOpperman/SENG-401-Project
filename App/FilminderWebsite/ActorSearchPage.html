@@ -69,21 +69,21 @@
             
         </section>
 
-        <h1>Actor Search</h1>
+        <h1>Cast/Crew Search</h1>
         <!-- FORM FOR MOVIE INPUT -->
-        <form id="actor-search" action="/crew-search">
+        <form id="cast-search" action="/actor-search">
             <label for="crew-name">Cast/Crew Name:</label>
             <input type="text" id="crew-name" name="crew-name"><br>
-            <label for="crew-year">Year:</label>
-            <input type="text" id="crew-year" name="crew-year"><br>
+            <label for="crew-age">Age:</label>
+            <input type="text" id="crew-age" name="crew-age"><br>
             <button type="submit">Submit Info</button>
         </form>
         
-        <div id = "noActorFound"> </div>
+        <div id = "noCastFound"> </div>
 
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
-            const form = document.getElementById('actor-search');
+            const form = document.getElementById('cast-search');
 
             form.addEventListener('submit', (event) => {
                 console.log("Pressed");
@@ -102,7 +102,7 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(actorInfo)
                 })
-                .then(response => response.text(), (document.getElementById('noActorFound').innerHTML ="<h2>No Actor found matching this criteria</h2>"))
+                .then(response => response.text(), (document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>"))
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
@@ -112,7 +112,7 @@
                     
                     console.log("Searched");
                     sessionStorage.setItem("actor", JSON.stringify(jsonData));
-                    console.log(sessionStorage.getItem("actor"));
+                    //console.log(sessionStorage.getItem("actor"));
                     document.location.href = "ActorPage.html";
                     
                 })
