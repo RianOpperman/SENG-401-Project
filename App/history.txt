@@ -1,9 +1,5 @@
 #V2
 SELECT * FROM movie;
-DELETE FROM movie;
-SELECT * FROM movie;
-DELETE FROM movie;
-SELECT * FROM movie;
 INFO FOR DB;
 CREATE test SET name='t', age=30;
 INFO FOR DB;
@@ -99,3 +95,7 @@ SELECT * FROM movieComment;
 UPDATE movieComment SET username='The Movie Man', rating='7', name='City of God', image='https://image.tmdb.org/t/p/original//k7eYdWvhYQyRQoU2TB2A2Xu2TfD.jpg' WHERE userID='1';
 SELECT * FROM seriesComment;
 UPDATE seriesComment SET username='The Movie Man', rating='7', name='Test Series', image='undefined.jpg' WHERE userID='1';
+INFO FOR DB;
+select * from movieComment;
+DELETE FROM movieComment WHERE movieID='tt0126029';
+SELECT * FROM movieComment;

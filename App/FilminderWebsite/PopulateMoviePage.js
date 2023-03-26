@@ -78,10 +78,15 @@ function populateMoviePage(){
                 console.log("Pressed");
 
                 let data = new FormData(form);
-                let commentInfo = {};
-                commentInfo['movie-id'] = movie.id.split('movie:')[1];
-                commentInfo['user-id'] = sessionStorage.getItem("userID").split('user:')[1];
+                let commentInfo = {
+                    'movie-id': movie.id.split('movie:')[1],
+                    image: movie.image,
+                    name: movie.title,
+                    'user-id': sessionStorage.getItem('userID').split('user:')[1],
+                    username: sessionStorage.getItem('user'),
+                };
                 data.forEach((value, key) => {commentInfo[key] = value});
+
                 console.log(commentInfo);
 
                 // Fetches movie info from main server
@@ -91,21 +96,20 @@ function populateMoviePage(){
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(commentInfo)
                 })
-                .then(response => response.text())
-                //.then(text => console.log(JSON.parse(text)))
-                // document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>")
-                .then(text => {
-                    console.log("added comment");
+                .then(() => location.reload())
+                // .then(response => response.text())
+                // .then(text => {
+                //     console.log("added comment");
                     
-                    let jsonData = JSON.parse(text);
-                    // console.log(jsonData);
+                //     // let jsonData = JSON.parse(text);
+                //     // console.log(jsonData);
                     
-                    // console.log("Searched");
+                //     // console.log("Searched");
                     
-                    //reloads the page to show updated comment
-                    document.location.href = "MoviePage.html";
-
-                })
+                //     //reloads the page to show updated comment
+                //     // document.location.href = "MoviePage.html";
+                //     location.reload();
+                // })
                 .catch(error => console.log(error));
             });
 

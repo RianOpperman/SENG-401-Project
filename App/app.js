@@ -319,8 +319,8 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => data += chunk.toString());
         req.on('end', () => {
             addComment(data)
-            .then(result => {
-                res.write(result.toString());
+            .then(() => {
+                res.write('Added comment');
                 res.end();
             })
             // .then(ret => console.log(ret))

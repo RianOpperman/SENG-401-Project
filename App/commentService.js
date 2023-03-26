@@ -61,18 +61,26 @@ async function dbAdd(json){
         await db.use('test', 'test');
 
         let res = {};
-        if(json['movie-id'] !== ''){
+        if(json['movie-id'] !== '' && typeof json['movie-id'] !== 'undefined'){
             res = await db.create(`${Table.movie}`, {
-                comment:json.comment,
-                movieID:json['movie-id'],
-                userID:json['user-id'],
+                comment: json.comment,
+                image: json.image,
+                movieID: json['movie-id'],
+                name: json.name,
+                rating: json.rating,
+                userID: json['user-id'],
+                username: json.username,
             });
         }
-        else if(json['series-id'] !== ''){
+        else if(json['series-id'] !== '' && typeof json['series-id'] !== 'undefined'){
             res = await db.create(`${Table.series}`, {
-                comment:json.comment,
-                seriesID:json['series-id'],
-                userID:json['user-id'],
+                comment: json.comment,
+                image: json.image,
+                movieID: json['series-id'],
+                name: json.name,
+                rating: json.rating,
+                userID: json['user-id'],
+                username: json.username,
             });
         }
 
@@ -115,6 +123,7 @@ const server = http.createServer((req, res) => {
             // Fetches info from API, once received send back JSON
             dbAdd(jsonData)
             .then(result => {
+                console.log(result);
                 res.write(JSON.stringify(result));
                 res.end();
             })
