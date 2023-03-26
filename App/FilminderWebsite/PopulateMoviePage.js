@@ -41,7 +41,77 @@ function populateMoviePage(){
     Actors.innerHTML = htmlString;
 
 
+    
+    
 
+    let currentUser = sessionStorage.getItem("user");
+
+    if(currentUser != null){
+        let ReviewForm = document.getElementsByClassName("ReviewForm")[0];
+        ReviewForm.innerHTML =
+        `<form id="addMovieComment" action="/comment-add">
+        <label for="rating">Rating:</label>
+        <select name="rating" id="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+        <label for="comment">Comment:</label>
+        <input type="text" id="comment" name="comment"><br>
+        <button type="submit">Submit Info</button>
+        </form>`;
+
+
+        const form = document.getElementById('addMovieComment');
+
+            form.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                console.log("Pressed");
+
+                let data = new FormData(form);
+                let commentInfo = {};
+                commentInfo['movie-id'] = movie.id.split('movie:')[1];
+                commentInfo['user-id'] = sessionStorage.getItem("userID").split('user:')[1];
+                data.forEach((value, key) => {commentInfo[key] = value});
+                console.log(commentInfo);
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/comment-add', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(commentInfo)
+                })
+                .then(response => response.text())
+                //.then(text => console.log(JSON.parse(text)))
+                // document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>")
+                .then(text => {
+                    console.log("added comment");
+                    
+                    let jsonData = JSON.parse(text);
+                    // console.log(jsonData);
+                    
+                    // console.log("Searched");
+                    
+                    //reloads the page to show updated comment
+                    document.location.href = "MoviePage.html";
+
+                })
+                .catch(error => console.log(error));
+            });
+
+
+    }
+    
     // MAKE A FETCH CALL TO REVIEWS USING THIS MOVIE ID
 
     // THEN FOR EACH REVIEW OBJECT IN THE JSON DO BELOW CODE
