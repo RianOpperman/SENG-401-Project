@@ -37,7 +37,7 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`SELECT * FROM cast-crew WHERE Name CONTAINS '${json['crew-name']}'`);
+        let res = await db.query(`SELECT * FROM castCrew WHERE Name CONTAINS '${json['crew-name']}'`);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
@@ -86,7 +86,7 @@ async function dbAdd(json){
 
         await db.use('test', 'test');
 
-        let res = await db.create(`cast-crew:${json['imdb_id']}`, {
+        let res = await db.create(`castCrew:${json['imdb_id']}`, {
             Name: json["name"],
             DOB: json['birthday'],
             Age: getAge(json['birthday']),
@@ -102,64 +102,64 @@ async function dbAdd(json){
     }
 }
 
-// const server = http.createServer((req, res) => {
-//     // If data was sent via POST to the url /
-//     if(req.method === 'POST' && req.url === '/'){
-//         let data = '';
+const server = http.createServer((req, res) => {
+    // If data was sent via POST to the url /
+    if(req.method === 'POST' && req.url === '/'){
+        let data = '';
         
-//         // Must wait for all info to reach before we can begin using it
-//         // This is due to asynchronous nature of JS
-//         req.on('data', chunk => {
-//             data += chunk.toString();
-//         });
+        // Must wait for all info to reach before we can begin using it
+        // This is due to asynchronous nature of JS
+        req.on('data', chunk => {
+            data += chunk.toString();
+        });
 
-//         // once we have all data, create the JSON and query for info
-//         req.on('end', () => {
-//             let jsonData = JSON.parse(data);
-//             // Fetches info from API, once received send back JSON
-//             dbQuery(jsonData)
-//             .then((result) => {
-//                 if(typeof result === 'undefined'){
-//                     console.log("Entry not in database");
-//                     fetch(prepareQuery(jsonData))
-//                     .then(response => response.text())
-//                     .then(async (text) => {
-//                         let data = JSON.parse(text);
-//                         if(typeof data['imdbID'] !== 'undefined'){
-//                             data['image'] = await getImage(data['imdbID']);
-//                             dbAdd(data)
-//                             .then(ret => {
-//                                 console.log(ret);
-//                                 res.write(JSON.stringify(ret));
-//                                 res.end();
-//                             })
-//                             .catch(e => console.error(e));
-//                         }
-//                         else {
-//                             res.write('undefined');
-//                             res.end();
-//                         }
-//                     })
-//                     .catch(e => console.error(e));
-//                 }
-//                 else{
-//                     console.log(result);
-//                     res.write(JSON.stringify(result));
-//                     res.end();
-//                 }
-//             })
-//             .catch(e => console.error(e));
+        // once we have all data, create the JSON and query for info
+        req.on('end', () => {
+            let jsonData = JSON.parse(data);
+            // Fetches info from API, once received send back JSON
+            dbQuery(jsonData)
+            .then((result) => {
+                if(typeof result === 'undefined'){
+                    console.log("Entry not in database");
+                    fetch(prepareQuery(jsonData))
+                    .then(response => response.text())
+                    .then(async (text) => {
+                        let data = JSON.parse(text);
+                        if(typeof data['imdbID'] !== 'undefined'){
+                            data['image'] = await getImage(data['imdbID']);
+                            dbAdd(data)
+                            .then(ret => {
+                                console.log(ret);
+                                res.write(JSON.stringify(ret));
+                                res.end();
+                            })
+                            .catch(e => console.error(e));
+                        }
+                        else {
+                            res.write('undefined');
+                            res.end();
+                        }
+                    })
+                    .catch(e => console.error(e));
+                }
+                else{
+                    console.log(result);
+                    res.write(JSON.stringify(result));
+                    res.end();
+                }
+            })
+            .catch(e => console.error(e));
             
-//             // fetch(prepareQuery(jsonData))
-//             //    .then(response => response.text())
-//             //    .then(text => {
-//             //         res.write(text);
-//             //         res.end();
-//             //    });
-//             // console.log(jsonData);
-//         });
-//     }
-// });
+            // fetch(prepareQuery(jsonData))
+            //    .then(response => response.text())
+            //    .then(text => {
+            //         res.write(text);
+            //         res.end();
+            //    });
+            // console.log(jsonData);
+        });
+    }
+});
 
 server.listen(port, hostname, () => {
     console.log(`Microservice running at http://${hostname}:${port}`);
