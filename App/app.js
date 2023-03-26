@@ -101,7 +101,7 @@ async function loginCheck(json){
             }
         };
 
-        // Creates HTTP request for movie info to microservice
+        // Creates HTTP request for user info to microservice
         const req = http.request(options, (userRes) => {
             console.log(`User Microservice responded with: ${userRes.statusCode}`);
             let data = '';
@@ -110,11 +110,14 @@ async function loginCheck(json){
             });
 
             userRes.on('end', () => {
-                if(data === 'true'){
-                    resolve(true);
+                console.log(data);
+                if(data !== 'undefined'){
+                    
+                    resolve(data);
                 }
                 else{
-                    reject(false);
+                    // console.log("rejected");
+                    reject('undefined');
                 }
                 console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
             });
@@ -149,11 +152,11 @@ async function signupUser(json){
             });
 
             userRes.on('end', () => {
-                if(data === 'true'){
-                    resolve(true);
+                if(data !== 'undefined'){
+                    resolve(data);
                 }
                 else{
-                    reject(false)
+                    reject('undefined')
                 };
                 console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
             });

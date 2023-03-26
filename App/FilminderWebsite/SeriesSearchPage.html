@@ -69,7 +69,7 @@
             
         </section>
 
-        <h1>Movie Search</h1>
+        <h1>Series Search</h1>
         <!-- FORM FOR MOVIE INPUT -->
         <form id="series-search" action="/series-search">
             <label for="series-name">Series Name:</label>
@@ -78,6 +78,8 @@
             <input type="text" id="series-year" name="series-year"><br>
             <button type="submit">Submit Info</button>
         </form>
+
+        <div id = "noSeriesFound"> </div>
         
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
@@ -100,22 +102,19 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(seriesInfo)
                 })
-                .then(response => response.text())
+                .then(response => response.text(), (document.getElementById('noSeriesFound').innerHTML ="<h2>No series found matching this criteria</h2>"))
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
                     
                     let jsonData = JSON.parse(text);
                     console.log(jsonData);
-                    //if(jsonData != null){
-                        console.log("Searched");
-                        sessionStorage.setItem("series", JSON.stringify(jsonData));
-                        console.log(sessionStorage.getItem("series"));
-                        document.location.href = "SeriesPage.html";
-                    //}
-                    //else{
-                    //    document.write(`<h2>No movie found matching this criteria</h2>`);
-                    //}
+                    
+                    console.log("Searched");
+                    sessionStorage.setItem("series", JSON.stringify(jsonData));
+                    console.log(sessionStorage.getItem("series"));
+                    document.location.href = "SeriesPage.html";
+                    
                 })
                 .catch(error => {
                     console.log("No series found");

@@ -23,37 +23,12 @@
         
         <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
 
+        <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
+        <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
+        <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
         
-        <form id="searchbar">
-            
-            <input type="text" placeholder="Enter the search type|followed by the search, e.g. movie|Shrek" name="search">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
 
-        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
-        <script>
-            const form = document.getElementById('searchbar');
 
-            form.addEventListener('submit', (event) => {
-                // Prevents issues, can't remember what issues though
-                event.preventDefault();
-
-                let data = new FormData(form);
-                let movieInfo = {};
-                data.forEach((value, key) => {movieInfo[key] = value});
-
-                // Fetches movie info from main server
-                // Need to revamp for dynamic web pages
-                fetch('/movie-search', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(movieInfo)
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.log(error));
-            });
-        </script>
 
         <div class = "alignCenter">
             
@@ -73,8 +48,8 @@
                 if(currentUser == null){
                     
                     
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Login/Signup</button>`);
-                    document.write(`<button OnClick = "location.href = 'Login Page.html'"> Guest </button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
                     
                     
                 }
@@ -92,7 +67,6 @@
 
         
     </section>
-    
 
 
     <h1>

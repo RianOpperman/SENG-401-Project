@@ -87,6 +87,8 @@
         <button type="submit">Login</button>
     </form>
 
+    <button OnClick = "location.href = 'SignUpPage.html'"> Sign Up</button>
+
     <div id = "noLogin"></div>
 
     <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
@@ -99,7 +101,7 @@
             event.preventDefault();
 
             let data = new FormData(form);
-            console.log(data);
+            
             let loginInfo = {};
             data.forEach((value, key) => {loginInfo[key] = value});
             console.log(loginInfo);
@@ -115,16 +117,23 @@
             .then(text => {
                 console.log("returned from login");
                 
+                
+
                 let jsonData = JSON.parse(text);
                 console.log(jsonData);
                 
                 console.log("Searched");
                 sessionStorage.setItem("user", jsonData.username);
+                sessionStorage.setItem("userID", jsonData.id);
                 console.log(sessionStorage.getItem("user"));
                 document.location.href = "Website.html";
                 
+                
+                
             })
             .catch(error => console.log(error));
+            
+            
         });
     </script>
 
