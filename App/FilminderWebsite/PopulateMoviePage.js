@@ -44,6 +44,12 @@ function populateMoviePage(){
     htmlString += `<p>${movie.writers}</p>`;
     Actors.innerHTML = htmlString;
 
+
+
+    // MAKE A FETCH CALL TO REVIEWS USING THIS MOVIE ID
+
+    // THEN FOR EACH REVIEW OBJECT IN THE JSON DO BELOW CODE
+
     let Reviews = document.getElementsByClassName("Reviews")[0];
     var htmlString = `<h2>Reviews: </h2>`;
     htmlString += `<div class = "review"> <h3>${"User1234"}: ${"6.9"}/10</h3>`;

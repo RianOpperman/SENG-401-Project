@@ -102,8 +102,7 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(movieInfo)
                 })
-                .then(response => response.text(), (console.log("No movie found"), 
-                document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>"))
+                .then(response => response.text())
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");

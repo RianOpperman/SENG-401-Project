@@ -17,6 +17,11 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
+        let allusers = `SELECT * FROM user`;
+        let alltuples = await db.query(allusers);
+        console.log(alltuples);
+        console.log(alltuples[0]);
+        
         let str = `SELECT * FROM user WHERE email='${json['email']}' AND password=crypto::sha512('${json['password']}')`;
         // console.log(str);
 
@@ -40,16 +45,25 @@ async function dbAdd(json){
 
         await db.use('test', 'test');
 
-        let ps = await db.query(`SELECT * FROM crypto::sha512('${json['password']}')`);
-        console.log(ps[0].result[0]);
+        let str = `SELECT * FROM user WHERE email='${json['email']}'`;
+        let result = await db.query(str);
 
-        let res = await db.create(`user`, {
-            email: json['email'],
-            password: ps[0].result[0],
-            username: json['username'],
-        });
+        if(result.empty){
 
-        return res;
+            let ps = await db.query(`SELECT * FROM crypto::sha512('${json['password']}')`);
+            console.log(ps[0].result[0]);
+
+
+            let res = await db.create(`user`, {
+                email: json['email'],
+                password: ps[0].result[0],
+                username: json['username'],
+            });
+
+            return res;
+        }
+        
+        return undefined;
     }
     catch(e){
         console.error('ERROR', e);
@@ -70,23 +84,26 @@ const server = http.createServer((req, res) => {
             .then(ret => {
                 console.log(ret);
                 if(typeof ret !== 'undefined'){
-                    res.write('true');
+                    res.write(JSON.stringify(ret));
                 }
                 else {
-                    res.write('false');
+                    res.write('undefined');
                 }
                 res.end();
             });
         }
         else if(req.method === 'POST' && req.url === '/signup'){
+
+
             dbAdd(json)
             .then(ret => {
                 console.log(ret);
                 if(typeof ret !== 'undefined'){
-                    res.write('true');
+                    res.write(JSON.stringify(ret));
                 }
                 else{
-                    res.write('false');
+                    console.log("rejected");
+                    res.write('undefined');
                 }
                 res.end();
             });

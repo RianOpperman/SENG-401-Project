@@ -71,7 +71,7 @@
 
         <h1>Actor Search</h1>
         <!-- FORM FOR MOVIE INPUT -->
-        <form id="Cast-Crew-search" action="/crew-search">
+        <form id="actor-search" action="/crew-search">
             <label for="crew-name">Cast/Crew Name:</label>
             <input type="text" id="crew-name" name="crew-name"><br>
             <label for="crew-year">Year:</label>
@@ -79,9 +79,11 @@
             <button type="submit">Submit Info</button>
         </form>
         
+        <div id = "noActorFound"> </div>
+
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
-            const form = document.getElementById('Cast-Crew-search');
+            const form = document.getElementById('actor-search');
 
             form.addEventListener('submit', (event) => {
                 console.log("Pressed");
@@ -90,32 +92,29 @@
 
                 let data = new FormData(form);
                 console.log(data);
-                let seriesInfo = {};
-                data.forEach((value, key) => {seriesInfo[key] = value});
-                console.log(seriesInfo);
+                let actorInfo = {};
+                data.forEach((value, key) => {actorInfo[key] = value});
+                console.log(actorInfo);
                 // Fetches series info from main server
                 
-                fetch('/series-search', {
+                fetch('/actor-search', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(seriesInfo)
+                    body: JSON.stringify(actorInfo)
                 })
-                .then(response => response.text())
+                .then(response => response.text(), (document.getElementById('noActorFound').innerHTML ="<h2>No Actor found matching this criteria</h2>"))
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
                     
                     let jsonData = JSON.parse(text);
                     console.log(jsonData);
-                    //if(jsonData != null){
-                        console.log("Searched");
-                        sessionStorage.setItem("series", JSON.stringify(jsonData));
-                        console.log(sessionStorage.getItem("series"));
-                        document.location.href = "SeriesPage.html";
-                    //}
-                    //else{
-                    //    document.write(`<h2>No movie found matching this criteria</h2>`);
-                    //}
+                    
+                    console.log("Searched");
+                    sessionStorage.setItem("actor", JSON.stringify(jsonData));
+                    console.log(sessionStorage.getItem("actor"));
+                    document.location.href = "ActorPage.html";
+                    
                 })
                 .catch(error => console.log(error));
             });
