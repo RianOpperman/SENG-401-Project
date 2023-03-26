@@ -76,8 +76,8 @@ img{
     // width: 275px;
     // height: 300px;
     // width: 200px;
-    height: 90%;
-    max-width: 80%;
+    height: 300px;
+    max-width: 200px;
     border-radius: 10%;
 }
 
@@ -221,7 +221,7 @@ td{
     // height: 600px;
     // width: 470px;
     grid-column-start: 1;
-    grid-column-end: 1;
+    grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 4;
     
@@ -229,8 +229,8 @@ td{
 }
 
 .moviePageGridContainer .ImageAndInformation img{
-    height: 500px;
-    width: 350px;
+    height: 300px;
+    max-width: 200px;
     
 }
 
@@ -292,7 +292,7 @@ td{
 
 .actorPageGridContainer .ImageAndInformation img{
     height: 500px;
-    width: 350px;
+    width: 400px;
     
 }
 

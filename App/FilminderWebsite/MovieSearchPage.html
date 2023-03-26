@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<html>	
+
+
+
+
+<head>
+
+    <title>FILMINDER</title>
+    <meta charset = "UTF-8">
+    <meta name = "FILMINDER" content = "Movie Search Page for FILMINDER">
+    <link rel="stylesheet" href="./style/style.css"/>
+    
+    
+            
+</head>
+
+<html>
+    <body>
+
+        <section class = "TopBar">
+        
+            <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
+    
+            <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
+            <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
+            <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
+            
+    
+    
+    
+            <div class = "alignCenter">
+                
+                
+                
+            </div>
+    
+            <div class = "pushRight">
+                <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
+                <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
+                <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
+                
+                <script>
+                    var currentUser = sessionStorage.getItem("user");
+                    console.log(currentUser);
+                    
+                    if(currentUser == null){
+                        
+                        
+                        document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                        document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                        
+                        
+                    }
+                    else{
+                        document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                    }
+                    
+                    
+                    
+                    
+                </script>
+                
+            </div>
+            
+    
+            
+        </section>
+
+        <h1>Movie Search</h1>
+        <!-- FORM FOR MOVIE INPUT -->
+        <form id="movie-search" action="/movie-search">
+            <label for="movie-name">Movie Name:</label>
+            <input type="text" id="movie-name" name="movie-name"><br>
+            <label for="movie-year">Year:</label>
+            <input type="text" id="movie-year" name="movie-year"><br>
+            <button type="submit">Submit Info</button>
+        </form>
+
+        <div id = "noMovieFound"> </div>
+        
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const form = document.getElementById('movie-search');
+
+            form.addEventListener('submit', (event) => {
+                console.log("Pressed");
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(form);
+                console.log(data);
+                let movieInfo = {};
+                data.forEach((value, key) => {movieInfo[key] = value});
+                console.log(movieInfo);
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/movie-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(movieInfo)
+                })
+                .then(response => response.text(), (console.log("No movie found"), 
+                document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>"))
+                //.then(text => console.log(JSON.parse(text)))
+                .then(text => {
+                    console.log("returned from search");
+                    
+                    let jsonData = JSON.parse(text);
+                    console.log(jsonData);
+                    
+                    console.log("Searched");
+                    sessionStorage.setItem("movie", JSON.stringify(jsonData));
+                    console.log(sessionStorage.getItem("movie"));
+                    document.location.href = "MoviePage.html";
+                    
+                    
+                })
+                .catch(error => {
+                    
+                    console.log(error);
+                });
+            });
+        </script>
+
+        
+        
+    </body>
+</html>
