@@ -3,39 +3,24 @@
 
 <html>	
 
-
-
-
 <head>
-
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
     <meta name = "FILMINDER" content = "Movie Search Page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
-    
-    
-            
 </head>
 
 <html>
     <body>
 
         <section class = "TopBar">
-        
             <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
     
             <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
             <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
             <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
-            
     
-    
-    
-            <div class = "alignCenter">
-                
-                
-                
-            </div>
+            <div class = "alignCenter"></div>
     
             <div class = "pushRight">
                 <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
@@ -47,26 +32,14 @@
                     console.log(currentUser);
                     
                     if(currentUser == null){
-                        
-                        
                         document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
                         document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
-                        
-                        
                     }
                     else{
                         document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                     }
-                    
-                    
-                    
-                    
                 </script>
-                
             </div>
-            
-    
-            
         </section>
 
         <h1>Movie Search</h1>
@@ -86,15 +59,16 @@
             const form = document.getElementById('movie-search');
 
             form.addEventListener('submit', (event) => {
-                console.log("Pressed");
                 // Prevents issues, can't remember what issues though
                 event.preventDefault();
 
+                console.log("Pressed");
+
                 let data = new FormData(form);
-                console.log(data);
                 let movieInfo = {};
                 data.forEach((value, key) => {movieInfo[key] = value});
                 console.log(movieInfo);
+
                 // Fetches movie info from main server
                 // Need to revamp for dynamic web pages
                 fetch('/movie-search', {
@@ -102,30 +76,22 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(movieInfo)
                 })
-                .then(response => response.text(), (console.log("No movie found"), 
-                document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>"))
+                .then(response => response.text())
                 //.then(text => console.log(JSON.parse(text)))
+                // document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>")
                 .then(text => {
                     console.log("returned from search");
                     
                     let jsonData = JSON.parse(text);
-                    console.log(jsonData);
+                    // console.log(jsonData);
                     
-                    console.log("Searched");
+                    // console.log("Searched");
                     sessionStorage.setItem("movie", JSON.stringify(jsonData));
                     console.log(sessionStorage.getItem("movie"));
                     document.location.href = "MoviePage.html";
-                    
-                    
                 })
-                .catch(error => {
-                    
-                    console.log(error);
-                });
+                .catch(error => console.log(error));
             });
         </script>
-
-        
-        
     </body>
 </html>

@@ -9,12 +9,8 @@
 function populateMoviePage(){
     var movie = sessionStorage.getItem("movie");
     movie = JSON.parse(movie);
-    // var movieID = sessionStorage.getItem("movie");
-    // console.log(movieID);
-    // let movie = Movies[0];
     
     console.log(movie);
-    console.log("hello");
     let Grid = document.getElementsByClassName("moviePageGridContainer");
     let Title = document.getElementsByClassName("Title")[0];
     var htmlString = `<h1>${movie.title}</h1>`;
@@ -45,12 +41,26 @@ function populateMoviePage(){
     Actors.innerHTML = htmlString;
 
     let Reviews = document.getElementsByClassName("Reviews")[0];
+
+    let movieID = {'movie-id': movie.id.split('movie:')[1]};
+
     var htmlString = `<h2>Reviews: </h2>`;
-    htmlString += `<div class = "review"> <h3>${"User1234"}: ${"6.9"}/10</h3>`;
-    htmlString += `<p>${"Amazing movie"}</p></div>`;
-    Reviews.innerHTML = htmlString;
 
-
+    fetch('/comment-query', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(movieID),
+    })
+    .then(response => response.text())
+    .then(text => {
+        let json = JSON.parse(text);
+        for(let comment of json){
+            htmlString += `<div class = "review"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
+            htmlString += `<p>${comment.comment}</p></div>`;
+        }
+        Reviews.innerHTML = htmlString;
+    })
+    .catch(e => console.log(e));
 }
 
 populateMoviePage();

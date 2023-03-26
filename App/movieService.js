@@ -45,8 +45,10 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
+        // console.log(json);
+
         let str = '';
-        if(json['movie-id'] !== ''){
+        if(json['movie-id'] !== '' && typeof json['movie-id'] !== 'undefined'){
             str = `SELECT * FROM movie:${json['movie-id']}`;
         }
         else{
@@ -56,6 +58,8 @@ async function dbQuery(json){
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
+        // console.log(str);
+        // console.log(typeof json['movie-id'] !== 'undefined');
         return res[0].result[0];
     }
     catch(e){
@@ -130,15 +134,16 @@ const server = http.createServer((req, res) => {
             let flag = 0;
             dbQuery(jsonData)
             .then(result => {
-                    if(typeof result === 'undefined'){
-                        console.log(`${jsonData['movie-name']} not in database`);
-                        return fetch(prepareQuery(jsonData))
-                        .then(response => response.text());
-                    }
-                    else{
-                        flag = 1;
-                        return result;
-                    }
+                // console.log(result);
+                if(typeof result === 'undefined'){
+                    console.log(`${jsonData['movie-name']} not in database`);
+                    return fetch(prepareQuery(jsonData))
+                    .then(response => response.text());
+                }
+                else{
+                    flag = 1;
+                    return result;
+                }
             })
             .then(async (json) => {
                 if(flag === 1){

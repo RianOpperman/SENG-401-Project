@@ -25,10 +25,10 @@ async function dbQuery(json){
         let flag = 0;
 
         let str = '';
-        if(json['movie-id'] !== ''){
+        if(json['movie-id'] !== '' && typeof json['movie-id'] !== 'undefined'){
             str = `SELECT * FROM ${Table.movie} WHERE ${Table.movieField}='${json['movie-id']}'`;
         }
-        else if(json['series-id'] !== ''){
+        else if(json['series-id'] !== '' && typeof json['series-id'] !== 'undefined'){
             str = `SELECT * FROM ${Table.series} WHERE ${Table.seriesField}='${json['series-id']}'`;
         }
         else{

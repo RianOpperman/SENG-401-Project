@@ -167,37 +167,41 @@ async function signupUser(json){
 }
 
 async function getComments(json){
-    let options = {
-        hostname: 'localhost',
-        port: 9004,
-        path: '/query',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(json)
-        }
-    };
+    return new Promise((resolve, reject) =>{
+        let options = {
+            hostname: 'localhost',
+            port: 9004,
+            path: '/query',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
 
-    const req = http.request(options, (res) => {
-        console.log(`Comment Microservice responded with: ${res.statusCode}`);
-        let data = '';
-        res.on('data', (chunk) => {
-            data += chunk;
+        const req = http.request(options, (res) => {
+            console.log(`Comment Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                if(data !== 'undefined'){
+                    let jsonData = JSON.parse(data);
+                    console.log(`Comment Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                    resolve(jsonData);
+                }
+                else{
+                    console.log("No comments");
+                    reject('undefined');
+                }
+            });
         });
 
-        res.on('end', () => {
-            if(data !== 'undefined'){
-                let jsonData = JSON.parse(data);
-                console.log(`Comment Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
-            }
-            else{
-                console.log("User has no comments");
-            }
-        });
+        req.write(json);
+        req.end();
     });
-
-    req.write(json);
-    req.end();
 }
 
 async function addComment(json){
@@ -300,7 +304,7 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             getComments(data)
             .then(result => {
-                res.write(result.toString());
+                res.write(JSON.stringify(result));
                 res.end();
             })
             // .then(ret => console.log(ret))
@@ -325,11 +329,11 @@ const server = http.createServer((req, res) => {
 
         // Serve index.html for root URL
         if (req.url === '/') {
-            let indexPath = path.join(__dirname, 'index.html');
+            let indexPath = path.join(__dirname + "/FilminderWebsite/", 'Website.html');
             send(indexPath, res);
         }
         else{
-            let Path = path.join(__dirname, req.url);
+            let Path = path.join(__dirname + "/FilminderWebsite/", req.url);
             send(Path, res);
         }
     }
