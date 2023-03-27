@@ -169,6 +169,46 @@ async function signupUser(json){
     });
 }
 
+
+async function getSeries(json) {
+    return new Promise((resolve, reject) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9002,
+            path: '/series',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Series Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                if(data !== 'undefined'){
+                    let jsonData = JSON.parse(data);
+                    console.log(`Series Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                    resolve(jsonData);
+                }
+                else{
+                    console.log("No comments");
+                    reject('undefined');
+                }
+            });
+        });
+
+        req.write(json);
+        req.end();
+
+    });
+}
+
 async function getComments(json){
     return new Promise((resolve, reject) =>{
         let options = {
@@ -297,6 +337,21 @@ const server = http.createServer((req, res) => {
     }
     else if(req.method === 'POST' && req.url === "/series-search"){
         // Call series service
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+
+        req.on('end', () => {
+            getSeries(data, res)
+            .then(ret => {
+                console.log(JSON.stringify(ret));
+                res.write(JSON.stringify(ret));
+                res.end();
+                console.log("Sent data");
+            })
+            .catch(e => console.error(e));
+        });
+
+
     }
     else if(req.method === 'POST' && req.url === "/actor-search"){
         // call actor service

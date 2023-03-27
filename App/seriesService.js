@@ -136,7 +136,7 @@ async function dbAdd(json){ // Fix later, connect with database.
 
 const server = http.createServer((req, res) => {
     // If data was sent via POST to the url /
-    if(req.method === 'POST' && req.url === '/'){
+    if(req.method === 'POST' && req.url === '/series'){
         let data = '';
         
         // Must wait for all info to reach before we can begin using it
