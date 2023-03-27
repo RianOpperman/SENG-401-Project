@@ -79,11 +79,34 @@ async function getUserInfo(json){
 
         let str = `SELECT username, id FROM user:${json.id}`;
 
-        console.log(str);
+        // console.log(str);
 
         let res = await db.query(str);
 
         return res[0].result[0];
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function getUser(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let str = `SELECT username, id FROM user WHERE username='${json.username}'`;
+
+        // console.log(str);
+
+        let res = await db.query(str);
+
+        return res[0].result;
 
     }
     catch(e){
@@ -137,6 +160,15 @@ const server = http.createServer((req, res) => {
                 else{
                     res.write('undefined');
                 }
+                res.end();
+            })
+            .catch(e => console.error(e));
+        }
+        else if(req.method === 'POST' && req.url === '/user-search'){
+            getUser(json)
+            .then(ret => {
+                console.log(ret);
+                res.write(JSON.stringify(ret));
                 res.end();
             })
             .catch(e => console.error(e));

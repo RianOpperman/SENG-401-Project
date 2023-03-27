@@ -1,8 +1,4 @@
 #V2
-CREATE user:1 SET username='123', email='joe@gmail.com', password='1234';
-SELECT * FROM user;
-INFO FOR DB;
-CREATE user:1 SET username='123', email='joe@gmail.com', password='1234';
 SELECT * FROM user;
 INFO FOR DB;
 DELETE FROM user;
@@ -99,3 +95,7 @@ INFO FOR DB;
 SELECT * FROM user;
 SELECT * FROM user:'iz8yjhmmsr67hisnakwj';
 SELECT * FROM user:iz8yjhmmsr67hisnakwj;
+INFO FOR DB;
+SELECT * FROM movieComment;
+INFO FOR DB;
+SELECT * FROM movieComment;

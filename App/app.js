@@ -361,6 +361,39 @@ async function retrieveUserInfo(json){
     });
 }
 
+async function getUser(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/user-search',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for user info to microservice
+        const req = http.request(options, (userRes) => {
+            console.log(`User Microservice responded with: ${userRes.statusCode}`);
+            let data = '';
+            userRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            userRes.on('end', () => {
+                console.log(data);
+                console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                resolve(data);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
 async function getPopularMovies(pageNum){
     return new Promise((resolve) => {
         let options = {
@@ -492,6 +525,29 @@ const server = http.createServer((req, res) => {
             .catch(e => console.error(e));
         });
     }
+    else if(req.method === 'POST' && req.url === '/userPage'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            retrieveUserInfo(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/user-search'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            getUser(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+        });
+    }
     else if(req.method === 'POST' && req.url === "/series-search"){
         // Call series service
         let data = '';
@@ -560,18 +616,6 @@ const server = http.createServer((req, res) => {
                 res.end();
             })
             // .then(ret => console.log(ret))
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/userPage'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            retrieveUserInfo(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
             .catch(e => console.error(e));
         });
     }
