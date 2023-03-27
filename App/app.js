@@ -88,6 +88,48 @@ async function requestMovieInfo(data, res){
     });
 }
 
+async function requestActorInfo(data, res){
+    return new Promise((resolve, reject) => {
+        // All the sending options
+        let options = {
+            hostname: 'localhost',
+            port: 9002,
+            path: '/',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(data)
+            }
+        };
+
+        // Creates HTTP request for movie info to microservice
+        const req = http.request(options, (ActorRes) => {
+            console.log(`Actor Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            ActorRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            ActorRes.on('end', () => {
+                if(data !== 'undefined'){
+                    let jsonData = JSON.parse(data);
+                    console.log(`Actor Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                    resolve(jsonData);
+                }
+                else{
+                    console.log("Actor does not exist");
+                    reject("Actor does not exist");
+                }
+            });
+        });
+        // Writes data to query
+        req.write(data);
+        // Finishes query and sends it with specified optins,
+        // inside of http.request takes over now
+        req.end();
+    });
+}
+
 async function loginCheck(json){
     return new Promise((resolve, reject) => {
         let options = {
