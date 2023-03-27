@@ -6,7 +6,7 @@ const Surreal = require('surrealdb.js');
 let db = new Surreal.default('http://localhost:8001/rpc');
 
 const hostname = 'localhost';
-const port = 9001;
+const port = 9005;
 
 function prepareQuery(json){
     let query = "https://api.themoviedb.org/3/search/person?api_key=fd466f23c2618acf3e52defb9c3869ba&query=";

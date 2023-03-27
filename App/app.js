@@ -93,7 +93,7 @@ async function requestActorInfo(data, res){
         // All the sending options
         let options = {
             hostname: 'localhost',
-            port: 9002,
+            port: 9005,
             path: '/',
             method: 'POST',
             headers: {
@@ -435,6 +435,19 @@ const server = http.createServer((req, res) => {
     }
     else if(req.method === 'POST' && req.url === "/actor-search"){
         // call actor service
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+
+        req.on('end', () => {
+            requestActorInfo(data, res)
+            .then(ret => {
+                console.log(JSON.stringify(ret));
+                res.write(JSON.stringify(ret));
+                res.end();
+                console.log("Sent data");
+            })
+            .catch(e => console.error(e));
+        });
     }
     else if(req.method === 'POST' && req.url === '/comment-query'){
         let data = '';
