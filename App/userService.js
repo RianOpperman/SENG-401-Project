@@ -16,11 +16,6 @@ async function dbQuery(json){
         });
 
         await db.use('test', 'test');
-
-        let allusers = `SELECT * FROM user`;
-        let alltuples = await db.query(allusers);
-        console.log(alltuples);
-        console.log(alltuples[0]);
         
         let str = `SELECT * FROM user WHERE email='${json['email']}' AND password=crypto::sha512('${json['password']}')`;
         // console.log(str);
@@ -70,6 +65,29 @@ async function dbAdd(json){
     }
 }
 
+async function getUserInfo(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let str = `SELECT username, id FROM user:${json.id}`;
+
+        console.log(str);
+
+        let res = await db.query(str);
+
+        return res[0].result[0];
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
 const server = http.createServer((req, res) => {
     let data = '';
 
@@ -93,8 +111,6 @@ const server = http.createServer((req, res) => {
             });
         }
         else if(req.method === 'POST' && req.url === '/signup'){
-
-
             dbAdd(json)
             .then(ret => {
                 console.log(ret);
@@ -107,6 +123,20 @@ const server = http.createServer((req, res) => {
                 }
                 res.end();
             });
+        }
+        else if(req.method === 'POST' && req.url === '/userPage'){
+            getUserInfo(json)
+            .then(ret => {
+                console.log(ret);
+                if(typeof ret !== 'undefined'){
+                    res.write(JSON.stringify(ret));
+                }
+                else{
+                    res.write('undefined');
+                }
+                res.end();
+            })
+            .catch(e => console.error(e));
         }
     });
 });
