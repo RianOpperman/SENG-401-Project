@@ -394,6 +394,39 @@ async function getPopularMovies(pageNum){
     });
 }
 
+async function getPopularSeries(pageNum){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9002,
+            path: '/popular',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(pageNum)
+            }
+        };
+
+        // Creates HTTP request for user info to microservice
+        const req = http.request(options, (res) => {
+            console.log(`User Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                let jsonData = JSON.parse(data);
+                console.log(`User Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                resolve(JSON.parse(data));
+            });
+        });
+
+        req.write(pageNum);
+        req.end();
+    });
+}
+
 const server = http.createServer((req, res) => {
     if(req.method === 'POST' && req.url === "/movie-search"){
         let data = '';
@@ -476,6 +509,17 @@ const server = http.createServer((req, res) => {
         });
 
 
+    }
+    else if(req.method === 'POST' && req.url === '/series-popular'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            getPopularSeries(data)
+            .then(result => {
+                res.write(JSON.stringify(result));
+                res.end();
+            })
+        });
     }
     else if(req.method === 'POST' && req.url === "/actor-search"){
         // call actor service
