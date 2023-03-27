@@ -22,8 +22,6 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
-        let flag = 0;
-
         let str = '';
         if(json['movie-id'] !== '' && typeof json['movie-id'] !== 'undefined'){
             str = `SELECT * FROM ${Table.movie} WHERE ${Table.movieField}='${json['movie-id']}'`;
@@ -32,19 +30,14 @@ async function dbQuery(json){
             str = `SELECT * FROM ${Table.series} WHERE ${Table.seriesField}='${json['series-id']}'`;
         }
         else{
-            str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID=${json['user-id']}`;
-            flag = 1;
+            str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID='${json['user-id']}'`;
         }
         console.log(str);
         let res = await db.query(str);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
-        if(flag === 1){
-            return res[0].result;
-        }
-        else
-            return res[0].result;
+        return res[0].result;
     }
     catch(e){
         console.error('ERROR', e);
