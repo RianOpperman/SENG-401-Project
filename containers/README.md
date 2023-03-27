@@ -11,6 +11,7 @@ Here are a list of port numbers and their respective container/service:
 | 8001 | Cast & Crew Service |
 | 8002 | Series Service |
 | 8003 | User Service |
+| 8004 | Comment Service |
 
 The container name can be whatever you want basically,
 but for your own sake try to give it a name that makes sense.
