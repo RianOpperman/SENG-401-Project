@@ -41,9 +41,11 @@ async function dbAdd(json){
         await db.use('test', 'test');
 
         let str = `SELECT * FROM user WHERE email='${json['email']}'`;
-        let result = await db.query(str);
+        let returned = await db.query(str);
+        
 
-        if(result.empty){
+        if(returned[0].result.length == 0){
+            console.log("new account");
 
             let ps = await db.query(`SELECT * FROM crypto::sha512('${json['password']}')`);
             console.log(ps[0].result[0]);
@@ -54,10 +56,11 @@ async function dbAdd(json){
                 password: ps[0].result[0],
                 username: json['username'],
             });
+            
 
             return res;
         }
-        
+        console.log("already in use");
         return undefined;
     }
     catch(e){
