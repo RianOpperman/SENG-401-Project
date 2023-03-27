@@ -1,11 +1,19 @@
+function redirect(uID){
+    sessionStorage.setItem('profileUserID', uID);
+    fetch('/userPage', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: uID}),
+    })
+    .then(response => response.text())
+    .then(text => {
+        let json = JSON.parse(text);
+        sessionStorage.setItem('profileUser', json.username);
+        document.location.href = 'ProfilePage.html';
+    })
+}
 
 
-
-// fetch("series.json")
-// .then(function(response){
-//     return response.json();
-// })
-// .then(function(series)
 function populateSeriesPage(){
     var series = sessionStorage.getItem("series");
     series = JSON.parse(series);
@@ -78,9 +86,15 @@ function populateSeriesPage(){
                 console.log("Pressed");
 
                 let data = new FormData(form);
-                let commentInfo = {};
-                commentInfo['series-id'] = series.id.split('series:')[1];
-                commentInfo['user-id'] = sessionStorage.getItem("userID").split('user:')[1];
+                
+                let commentInfo = {
+                    'series-id': series.id.split('series:')[1],
+                    image: series.image,
+                    name: series.title,
+                    'user-id': sessionStorage.getItem('userID').split('user:')[1],
+                    username: sessionStorage.getItem('user'),
+                };
+                
                 data.forEach((value, key) => {commentInfo[key] = value});
                 console.log(commentInfo);
 
@@ -90,21 +104,20 @@ function populateSeriesPage(){
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(commentInfo)
                 })
-                .then(response => response.text())
-                //.then(text => console.log(JSON.parse(text)))
-                // document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>")
-                .then(text => {
-                    console.log("added comment");
+                .then(() => location.reload())
+                // .then(response => response.text())
+                // .then(text => {
+                //     console.log("added comment");
                     
-                    let jsonData = JSON.parse(text);
-                    // console.log(jsonData);
+                //     // let jsonData = JSON.parse(text);
+                //     // console.log(jsonData);
                     
-                    // console.log("Searched");
+                //     // console.log("Searched");
                     
-                    //reloads the page to show updated comment
-                    document.location.href = "SeriesPage.html";
-
-                })
+                //     //reloads the page to show updated comment
+                //     // document.location.href = "MoviePage.html";
+                //     location.reload();
+                // })
                 .catch(error => console.log(error));
             });
 
@@ -130,7 +143,7 @@ function populateSeriesPage(){
     .then(text => {
         let json = JSON.parse(text);
         for(let comment of json){
-            htmlString += `<div class = "review"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
+            htmlString += `<div class = "review" onclick="redirect('${comment.userID}');"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
             htmlString += `<p>${comment.comment}</p></div>`;
         }
         Reviews.innerHTML = htmlString;

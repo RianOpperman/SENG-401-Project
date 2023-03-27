@@ -14,8 +14,14 @@ function redirect(id){
 }
 
 function populateProfilePage(){
-    var userName = sessionStorage.getItem("user");
-    var userID = sessionStorage.getItem("userID");
+    var userName = sessionStorage.getItem("profileUser");
+    var userID = sessionStorage.getItem("profileUserID");
+    let search = {'user-id': userID};
+    if(userName === null || userID === null){
+        userName = sessionStorage.getItem('user');
+        userID = sessionStorage.getItem('userID');
+        search['user-id'] = userID.split('user:')[1];
+    }
     
     let profileUserName = document.getElementsByClassName("userName")[0];
     var htmlString = `<h1>${userName}</h1>`;
@@ -23,7 +29,9 @@ function populateProfilePage(){
 
     let Reviews = document.getElementsByClassName("Reviews")[0];
 
-    let search = {'user-id': userID.split('user:')[1]};
+    // console.log(`userName = ${userName}`);
+    // console.log(`userID = ${userID}`);
+
 
     var htmlString = `<h2>Reviews: </h2>`;
 
@@ -40,6 +48,9 @@ function populateProfilePage(){
             htmlString += `<p>${comment.comment}</p></div>`;
         }
         Reviews.innerHTML = htmlString;
+
+        sessionStorage.removeItem('profileUser');
+        sessionStorage.removeItem('profileUserID');
     })
     .catch(e => console.log(e));
 }

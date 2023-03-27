@@ -1,8 +1,4 @@
 #V2
-CREATE castCrew:'123' SET name='Bingnam Plastic', DOB='01-01-01', age=30, movies=['ping pong 1', 'ping pong 2'], series=['AAAAAAAAAAAA', 'AAAAAAAAA 2'];
-CREATE castCrew:123 SET name='Bingnam Plastic', DOB='01-01-01', age=30, movies=['ping pong 1', 'ping pong 2'], series=['AAAAAAAAAAAA', 'AAAAAAAAA 2'];
-SELECT * FROM castCrew;
-INFO FOR DB;
 CREATE user:1 SET username='123', email='joe@gmail.com', password='1234';
 SELECT * FROM user;
 INFO FOR DB;
@@ -99,3 +95,7 @@ SELECT * FROM movieComment WHERE userID=iz8yjhmmsr67hisnakwj;
 SELECT * FROM movieComment WHERE userID='[200iz8yjhmmsr67hisnakwj';
 SELECT * FROM movieComment WHERE userID='[200iiz8yjhmmsr67hisnakwj';
 SELECT * FROM movieComment WHERE userID='iz8yjhmmsr67hisnakwj';
+INFO FOR DB;
+SELECT * FROM user;
+SELECT * FROM user:'iz8yjhmmsr67hisnakwj';
+SELECT * FROM user:iz8yjhmmsr67hisnakwj;

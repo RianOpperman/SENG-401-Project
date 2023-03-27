@@ -1,11 +1,18 @@
+function redirect(uID){
+    sessionStorage.setItem('profileUserID', uID);
+    fetch('/userPage', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: uID}),
+    })
+    .then(response => response.text())
+    .then(text => {
+        let json = JSON.parse(text);
+        sessionStorage.setItem('profileUser', json.username);
+        document.location.href = 'ProfilePage.html';
+    })
+}
 
-
-
-// fetch("Movie.json")
-// .then(function(response){
-//     return response.json();
-// })
-// .then(function(movie)
 function populateMoviePage(){
     var movie = sessionStorage.getItem("movie");
     movie = JSON.parse(movie);
@@ -39,10 +46,6 @@ function populateMoviePage(){
     htmlString += `<h2>Writers: </h2>`;
     htmlString += `<p>${movie.writers}</p>`;
     Cast.innerHTML = htmlString;
-
-
-    
-    
 
     let currentUser = sessionStorage.getItem("user");
 
@@ -116,10 +119,6 @@ function populateMoviePage(){
 
     }
     
-    // MAKE A FETCH CALL TO REVIEWS USING THIS MOVIE ID
-
-    // THEN FOR EACH REVIEW OBJECT IN THE JSON DO BELOW CODE
-
     let Reviews = document.getElementsByClassName("Reviews")[0];
 
     let movieID = {'movie-id': movie.id.split('movie:')[1]};
@@ -135,7 +134,7 @@ function populateMoviePage(){
     .then(text => {
         let json = JSON.parse(text);
         for(let comment of json){
-            htmlString += `<div class = "review"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
+            htmlString += `<div class = "review" onclick="redirect('${comment.userID}');"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
             htmlString += `<p>${comment.comment}</p></div>`;
         }
         Reviews.innerHTML = htmlString;
