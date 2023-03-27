@@ -117,16 +117,16 @@ async function dbAdd(json){
 }
 
 const server = http.createServer((req, res) => {
+    let data = '';
+    
+    // Must wait for all info to reach before we can begin using it
+    // This is due to asynchronous nature of JS
+    req.on('data', chunk => {
+        data += chunk.toString();
+    });
+
     // If data was sent via POST to the url /
     if(req.method === 'POST' && req.url === '/'){
-        let data = '';
-        
-        // Must wait for all info to reach before we can begin using it
-        // This is due to asynchronous nature of JS
-        req.on('data', chunk => {
-            data += chunk.toString();
-        });
-
         // once we have all data, create the JSON and query for info
         req.on('end', () => {
             let jsonData = JSON.parse(data);
@@ -171,6 +171,25 @@ const server = http.createServer((req, res) => {
             })
             .catch(e => console.error(e));
         });
+    }
+    else if(req.method === 'POST' && req.url === '/popular'){
+        req.on('end', () => {
+            let jsonData = JSON.parse(data);
+            fetch(`https://api.themoviedb.org/3/movie/popular?api_key=fd466f23c2618acf3e52defb9c3869ba&language=en-US&page=${jsonData.num}`)
+            .then(response => response.text())
+            .then(text => {
+                let json = JSON.parse(text);
+                let url = 'https://image.tmdb.org/t/p/original/';
+                let ret = [];
+
+                for(element of json.results){
+                    ret.push({title: element.title, image:url + element.poster_path});
+                }
+                res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        })
     }
 });
 
