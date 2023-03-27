@@ -38,7 +38,6 @@ async function dbQuery(json){
         await db.use('test', 'test');
 
         let res = await db.query(`SELECT * FROM castCrew WHERE Name CONTAINS '${json['crew-name']}'`);
-        // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
         return res[0].result[0];
@@ -91,7 +90,7 @@ async function dbAdd(json){
             DOB: json['birthday'],
             Age: getAge(json['birthday']),
             Movies: json['movie_credits'],
-            id: json['imdb_ID'],
+            id: json['id'],
             Series: json['tv_credits'],
         });
 
@@ -117,46 +116,44 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             let jsonData = JSON.parse(data);
             // Fetches info from API, once received send back JSON
+            let flag = 0;
             dbQuery(jsonData)
-            .then((result) => {
+            .then(result => {
+                // console.log(result);
                 if(typeof result === 'undefined'){
-                    console.log("Entry not in database");
-                    fetch(prepareQuery(jsonData))
-                    .then(response => response.text())
-                    .then(async (text) => {
-                        let data = JSON.parse(text);
-                        if(typeof data['imdbID'] !== 'undefined'){
-                            data['image'] = await getImage(data['imdbID']);
-                            dbAdd(data)
-                            .then(ret => {
-                                console.log(ret);
-                                res.write(JSON.stringify(ret));
-                                res.end();
-                            })
-                            .catch(e => console.error(e));
-                        }
-                        else {
-                            res.write('undefined');
-                            res.end();
-                        }
-                    })
-                    .catch(e => console.error(e));
+                    console.log(`${jsonData['name']} not in database`);
+                    return fetch(prepareQuery(jsonData))
+                    .then(response => response.text());
                 }
                 else{
-                    console.log(result);
-                    res.write(JSON.stringify(result));
+                    flag = 1;
+                    return result;
+                }
+            })
+            .then(async (json) => {
+                if(flag === 1){
+                    return json;
+                }
+                else{
+                    let data = JSON.parse(json);
+                    if(typeof data.results[0]['id'] !== 'undefined'){
+                        flag = 1;
+                        console.log(`Adding ${data.results[0]['name']} to database`);
+                        return dbAdd(data.results[0]);
+                    }
+                }
+            })
+            .then(ret => {
+                if(flag === 1){
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                }
+                else {
+                    res.write('undefined');
                     res.end();
                 }
             })
             .catch(e => console.error(e));
-            
-            // fetch(prepareQuery(jsonData))
-            //    .then(response => response.text())
-            //    .then(text => {
-            //         res.write(text);
-            //         res.end();
-            //    });
-            // console.log(jsonData);
         });
     }
 });
