@@ -54,7 +54,7 @@ async function dbQuery(json){
 }
 
 
-async function getImage(id){ //REQUIRES SEPERATE API CALL
+async function getImage(name){ //REQUIRES SEPERATE API CALL
     // let url = 'https://image.tmdb.org/t/p/original/';
     // let imagePath = `https://api.themoviedb.org/3/movie/${id}/images?api_key=fd466f23c2618acf3e52defb9c3869ba`;
 
@@ -71,8 +71,24 @@ async function getImage(id){ //REQUIRES SEPERATE API CALL
     // .catch(e => console.error(e));
 
     // Place Holder
-    let url = "temporaryURL";
-    return url;
+    
+    // let url = "temporaryURL/";
+    // url+=id;
+    // return url;
+
+    let url = 'https://image.tmdb.org/t/p/original';
+    let idPath = `https://api.themoviedb.org/3/search/tv?api_key=fd466f23c2618acf3e52defb9c3869ba&language=en-US&query=${name}`;
+    
+    return await fetch(idPath)
+        .then(response => response.text())
+        .then(async(text)=>{
+            let data = JSON.parse(text);
+            let results = data['results'][0];
+            url+=results['poster_path'];
+            console.log(url)
+            return url;
+        })
+        .catch(e => console.error(e));
 }
 
 
@@ -105,7 +121,6 @@ async function dbAdd(json){ // Fix later, connect with database.
         await db.use('test', 'test');
 
         let res = await db.create(`series:${json['imdbID']}`, info);
-
         return res;
     }
     catch(e){
@@ -142,8 +157,8 @@ const server = http.createServer((req, res) => {
                     .then(response => response.text())
                     .then(async (text) => {
                         let data = JSON.parse(text);
-                        if(typeof data['imdbID'] !== 'undefined'){
-                            data['image'] = await getImage(data['imdbID']);
+                        if(typeof data['Title'] !== 'undefined'){
+                            data['image'] = await getImage(data['Title']);
                             dbAdd(data)
                             .then(ret => {
                                 console.log(ret);
