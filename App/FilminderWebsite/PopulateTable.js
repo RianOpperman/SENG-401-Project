@@ -1,63 +1,157 @@
+function redirect(nextPageHTML, key, title){
+    console.log("movie/series was pressed");
+    //do individual movie/series fetch here
+    if(key == "movie"){
+        let movieInfo = {
+            'movie-name': title,
+        };
 
-
-function populateTable(JSONFile, tableName, nextPageHTML, key){
-    fetch(JSONFile)
-    .then(function(response){
-        return response.json();
-    })
-    .then(function(AllElements){
+        fetch('/movie-search', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(movieInfo)
+        })
+        .then(response => response.text())
         
-        let table = document.getElementById(tableName);
-        var rowString = "";
-        var counter = 0;
-        for(let element of AllElements){
-            counter++;
+        .then(text => {
             
-            if(counter == 1){
-                rowString += '<tr>'
-            }
+            let jsonData = JSON.parse(text);
+            sessionStorage.setItem(key, JSON.stringify(jsonData));
             
-            
-            var url = nextPageHTML;
-            
-            
-            
-            
-            rowString += '<td>';
-            rowString += `<a class = ${element.id} href = ${url} > <img src =  ${element.image} > </a>`;
-            rowString += `<div><a class = ${element.id} href = ${url}  >  ${element.title}  </a></div>`;
-            rowString += '</td>';
-            
-            
-            
-            if(counter == 5){
-                rowString += '</tr>';
-                counter = 0;
-            }
-            
-        }
+            document.location.href = nextPageHTML;
+        })
+        .catch(error => console.log(error));
+    
+    }
+
+
+    else if(key == "series"){
+        let seriesInfo = {
+            'series-name': title,
+        };
+        // Fetches series info from main server
         
-        table.innerHTML = rowString;
-        for(let element of AllElements){
-            Array.from(document.getElementsByClassName(element.id)).forEach((Component) => {
-                
-                Component.addEventListener('click', function(){
+        fetch('/series-search', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(seriesInfo)
+        })
+        .then(response => response.text())
+        
+        .then(text => {
+            console.log("returned from search");
+            
+            let jsonData = JSON.parse(text);
+            sessionStorage.setItem(key, JSON.stringify(jsonData));
+            
+            document.location.href = nextPageHTML;
+            
+        })
+        .catch(error => console.log(error))
+    }
 
-                    sessionStorage.setItem(key, element.id);
-                    
-                });
-
-            });
-        }
-    })
 
 }
 
-// start of new
-// function populateTable(){
-    
-    
-    
-// };
 
-// populateTable();
+function populateTable(tableName, nextPageHTML, key, pageNumber){
+
+    //fetch list of popular movies/series
+    var json;
+    if(key == "movie"){
+        //do a popular movie search
+        
+
+        let pageInfo = {
+            'num': pageNumber
+        };
+    
+        fetch('/movie-popular', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(pageInfo),
+        })
+        .then(response => response.text())
+        .then(text => {
+            json = JSON.parse(text);
+            // now populate table with json information
+            let table = document.getElementById(tableName);
+            var rowString = "";
+            var counter = 0;
+            for(let element of json){
+                counter++;
+                
+                if(counter == 1){
+                    rowString += '<tr>'
+                }
+
+
+                rowString += '<td>';
+                rowString += `<a href = "javascript:redirect('${nextPageHTML}', '${key}', '${element.title}')"> <img src =  ${element.image} > </a>`;
+                rowString += `<div><a href = "javascript:redirect('${nextPageHTML}', '${key}', '${element.title}')">  ${element.title}  </a></div>`;
+                rowString += '</td>';
+
+                if(counter == 5){
+                    rowString += '</tr>';
+                    counter = 0;
+                }
+                
+            }
+                
+            table.innerHTML = rowString;
+            
+        })
+        .catch(e => console.log(e));
+    }
+
+    else if(key == "series"){
+        //do a popular series search
+        
+
+        let pageInfo = {
+            'num': pageNumber,
+        };
+    
+        fetch('/series-popular', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(pageInfo),
+        })
+        .then(response => response.text())
+        .then(text => {
+            json = JSON.parse(text);
+            // now populate table with json information
+            let table = document.getElementById(tableName);
+            var rowString = "";
+            var counter = 0;
+            for(let element of json){
+                counter++;
+                
+                if(counter == 1){
+                    rowString += '<tr>'
+                }
+
+
+                rowString += '<td>';
+                rowString += `<a href = "javascript:redirect('${nextPageHTML}', '${key}', '${element.title}')"> <img src =  ${element.image} > </a>`;
+                rowString += `<div><a href = "javascript:redirect('${nextPageHTML}', '${key}', '${element.title}')">  ${element.title}  </a></div>`;
+                rowString += '</td>';
+
+                if(counter == 5){
+                    rowString += '</tr>';
+                    counter = 0;
+                }
+                
+            }
+                
+            table.innerHTML = rowString;
+        })
+        .catch(e => console.log(e));
+    }
+
+    
+
+    
+    
+
+}

@@ -26,23 +26,15 @@
 
         <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
         <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
-        <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
         
 
-
-
-        <div class = "alignCenter">
-            
-            
-            
-        </div>
-
         <div class = "pushRight">
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
-            
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
             <script>
+                
                 var currentUser = sessionStorage.getItem("user");
                 console.log(currentUser);
                 
@@ -58,15 +50,10 @@
                     document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                 }
                 
-                
-                
-                
             </script>
             
         </div>
-        
 
-        
     </section>
     
 

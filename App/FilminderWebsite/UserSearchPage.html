@@ -10,7 +10,7 @@
 
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
-    <meta name = "FILMINDER" content = "Series Search Page for FILMINDER">
+    <meta name = "FILMINDER" content = "Actor Search Page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
     
     
@@ -56,21 +56,19 @@
     
         </section>
 
-        <h1>Series Search</h1>
+        <h1>Cast/Crew Search</h1>
         <!-- FORM FOR MOVIE INPUT -->
-        <form id="series-search" action="/series-search">
-            <label for="series-name">Series Name:</label>
-            <input type="text" id="series-name" name="series-name"><br>
-            <label for="series-year">Year:</label>
-            <input type="text" id="series-year" name="series-year"><br>
+        <form id="cast-search" action="/actor-search">
+            <label for="crew-name">Cast/Crew Name:</label>
+            <input type="text" id="crew-name" name="crew-name"><br>
             <button type="submit">Submit Info</button>
         </form>
-
-        <div id = "noSeriesFound"> </div>
         
+        <div id = "noCastFound"> </div>
+
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
-            const form = document.getElementById('series-search');
+            const form = document.getElementById('cast-search');
 
             form.addEventListener('submit', (event) => {
                 console.log("Pressed");
@@ -79,35 +77,31 @@
 
                 let data = new FormData(form);
                 console.log(data);
-                let seriesInfo = {};
-                data.forEach((value, key) => {seriesInfo[key] = value});
-                console.log(seriesInfo);
+                let actorInfo = {};
+                data.forEach((value, key) => {actorInfo[key] = value});
+                console.log(actorInfo);
                 // Fetches series info from main server
                 
-                fetch('/series-search', {
+                fetch('/actor-search', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(seriesInfo)
+                    body: JSON.stringify(actorInfo)
                 })
-                .then(response => response.text(), (document.getElementById('noSeriesFound').innerHTML ="<h2>No series found matching this criteria</h2>"))
+                .then(response => response.text(), (document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>"))
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
                     
                     let jsonData = JSON.parse(text);
-                    //console.log(jsonData);
+                    console.log(jsonData);
                     
-                    //console.log("Searched");
-                    sessionStorage.setItem("series", JSON.stringify(jsonData));
-                    console.log(sessionStorage.getItem("series"));
-                    document.location.href = "SeriesPage.html";
+                    console.log("Searched");
+                    sessionStorage.setItem("actor", JSON.stringify(jsonData));
+                    //console.log(sessionStorage.getItem("actor"));
+                    document.location.href = "ActorPage.html";
                     
                 })
-                .catch(error => {
-                    console.log("No series found");
-                    console.log(error);
-                });
-                
+                .catch(error => console.log(error));
             });
         </script>
 

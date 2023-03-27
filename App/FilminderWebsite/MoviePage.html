@@ -12,34 +12,39 @@
 
 <body>
     <section class = "TopBar">
+        
         <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
 
         <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
         <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
-        <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
         
-        <div class = "alignCenter">
-            
-        </div>
 
         <div class = "pushRight">
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
-            
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
             <script>
-                let currentUser = sessionStorage.getItem("user");
-                // console.log(currentUser);
+                
+                var currentUser = sessionStorage.getItem("user");
+                console.log(currentUser);
                 
                 if(currentUser == null){
+                    
+                    
                     document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
                     document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                    
+                    
                 }
                 else{
                     document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                 }
+                
             </script>
+            
         </div>
+
     </section>
 
     <h1>
