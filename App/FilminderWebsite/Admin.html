@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>FILMINDER ADMIN</title>
+        <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+
+        <script>
+            if(sessionStorage.getItem('admin') !== 'true'){
+                document.location.href = 'AdminLogin.html'
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>User Modifications</h1>
+        <h2>Adding User</h2>
+            <form id="addUser">
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email"><br>
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Password</label><br>
+                <input type="text" id="password" name="password"><br>
+                <button type="submit">Sign Up</button>
+            </form>
+            <script>
+                const addUserForm = document.getElementById('addUser');
+
+                addUserForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    let data = new FormData(addUserForm);
+
+                    let info = {};
+                    data.forEach((value, key) => {info[key] = value});
+                    // console.log(info);
+
+                    if((info.email === '' && info.username === '') || info.password === ''){
+                        if(info.email === '' && info.username === ''){
+                            alert('Either username or password must be filled in');
+                        }
+                        else{
+                            alert('Password cannot be empty');
+                        }
+                    }
+                    else if(!info.email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && info.email !== ''){
+                        alert('Email not in correct format');
+                    }
+                    else{
+                        fetch('/admin-add-user', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body:JSON.stringify(info)
+                        })
+                        .then(response => response.text())
+                        .then(text => {
+                            alert(`Added ${info.username} to database`);
+                        })
+                        .catch(e => console.error(e));
+                    }
+                });
+            </script>
+        <h2>Removing User</h2>
+            <form id="removeUser">
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email"><br>
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username"><br>
+                <button type="submit">Remove User</button>
+            </form>
+            <script>
+                const removeUserForm = document.getElementById('removeUser');
+
+                removeUserForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    let data = new FormData(removeUserForm);
+
+                    let info = {};
+                    data.forEach((value, key) => {info[key] = value});
+
+                    if(info.email === '' && info.username === ''){
+                        alert('Either email or username must be filled out');
+                    }
+                    else if(!info.email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && info.email !== ''){
+                        alert('Email not in correct format');
+                    }
+                    else{
+                        fetch('/admin-delete-user', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(info)
+                        })
+                        .then(response => response.text())
+                        .then(text => {
+                            let str = info.username;
+                            if(info.username === '')
+                                str = info.email;
+
+                            alert(`Deleted ${str} to database`);
+                        })
+                        .catch(e => console.error(e));
+                    }
+                });
+            </script>
+        <h2>Updating User Password</h2>
+            <form id="updateUser">
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email"><br>
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Password</label><br>
+                <input type="text" id="password" name="password"><br>
+                <button type="submit">Change Password</button>
+            </form>
+            <script>
+                const updateUserForm = document.getElementById('updateUser');
+
+                updateUserForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    let data = new FormData(updateUserForm);
+
+                    let info = {};
+                    data.forEach((value, key) => {info[key] = value});
+
+                    if((info.email === '' && info.username === '') || info.password === ''){
+                        if(info.email === '' && info.username === ''){
+                            alert('Either username or password must be filled in');
+                        }
+                        else{
+                            alert('Password cannot be empty');
+                        }
+                    }
+                    else if(!info.email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && info.email !== ''){
+                        alert('Email not in correct format');
+                    }
+                    else{
+                        fetch('/admin-update-password', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(info)
+                        })
+                        .then(response => response.text())
+                        .then(text => {
+                            if(text === 'accepted'){
+                                let str = info.username;
+                                if(info.username === '')
+                                    str = info.email;
+
+                                alert(`Updated ${str}'s password`);
+                            }
+                            else{
+                                alert("Could not update password");
+                            }
+                        })
+                        .catch(e => console.error(e));
+                    }
+                });
+            </script>
+
+        <div>
+            <h1>Admin Modifications</h1>
+            <div>
+
+            <h2>Adding Admin</h2>
+                <form id="addAdmin">
+                    <label for="email">Email:</label><br>
+                    <input type="text" id="email" name="email"><br>
+                    <label for="username">Username</label><br>
+                    <input type="text" id="username" name="username"><br>
+                    <label for="password">Password</label><br>
+                    <input type="text" id="password" name="password"><br>
+                    <button type="submit">Add Admin</button>
+                </form>
+                <script>
+                    const addAdmin = document.getElementById('addAdmin');
+
+                    addAdmin.addEventListener('submit', (event) => {
+                        event.preventDefault();
+
+                        let data = new FormData(addAdmin);
+
+                        let info = {};
+                        data.forEach((value, key) => {info[key] = value});
+
+                        if((info.email === '' && info.username === '') || info.password === ''){
+                            if(info.email === '' && info.username === ''){
+                                alert('Either username or password must be filled in');
+                            }
+                            else{
+                                alert('Password cannot be empty');
+                            }
+                        }
+                        else if(!info.email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && info.email !== ''){
+                            alert('Email not in correct format');
+                        }
+                        else{
+                            fetch('/admin-add-admin', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body:JSON.stringify(info)
+                            })
+                            .then(response => response.text())
+                            .then(text => {
+                                if(text !== 'undefined')
+                                    alert(`Added ${info.username} as admin to system`);
+                                else
+                                    alert(`Couldn't add individula to admin system`)
+                            })
+                            .catch(e => console.error(e));
+                        }
+                    });
+                </script>
+            </div>
+            <div>
+
+            <h2>Removing Admin</h2>
+                <form id="removeAdmin">
+                    <label for="email">Email:</label><br>
+                    <input type="text" id="email" name="email"><br>
+                    <label for="username">Username</label><br>
+                    <input type="text" id="username" name="username"><br>
+                    <button type="submit">Remove Admin</button>
+                </form>
+                <script>
+                    const removeAdminForm = document.getElementById('removeAdmin');
+
+                    removeAdminForm.addEventListener('submit', (event) => {
+                        event.preventDefault();
+
+                        let data = new FormData(removeAdminForm);
+
+                        let info = {};
+                        data.forEach((value, key) => {info[key] = value});
+
+                        if(info.email === '' && info.username === ''){
+                            alert('Either email or username must be filled out');
+                        }
+                        else if(!info.email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && info.email !== ''){
+                            alert('Email not in correct format');
+                        }
+                        else{
+                            fetch('/admin-remove-admin', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body:JSON.stringify(info)
+                            })
+                            .then(response => response.text())
+                            .then(text => {
+                                let str = info.username;
+                                if(info.username === '') str = info.email;
+
+                                if(text === 'accepted')
+                                    alert(`Removed ${str} from admin system`);
+                                else
+                                    alert(`Couldn't delete ${str} from system:\n${text}`);
+                            })
+                            .catch(e => console.error(e));
+                        }
+                    });
+                </script>
+            </div>
+            
+            <div>
+            <h2>Updating Admin Password</h2>
+                <form id="updateAdmin">
+                    <label for="email">Email:</label><br>
+                    <input type="text" id="email" name="email"><br>
+                    <label for="username">Username</label><br>
+                    <input type="text" id="username" name="username"><br>
+                    <label for="password">Password</label><br>
+                    <input type="text" id="password" name="password"><br>
+                    <button type="submit">Change Password</button>
+                </form>
+                <script>
+                    const updateAdminForm = document.getElementById('updateAdmin');
+
+                    updateAdminForm.addEventListener('submit', (event) => {
+                        event.preventDefault();
+
+                        let data = new FormData(updateAdminForm);
+
+                        let info = {};
+                        data.forEach((value, key) => {info[key] = value});
+
+                        if((info.email === '' && info.username === '') || info.password === ''){
+                            if(info.email === '' && info.username === ''){
+                                alert('Either username or password must be filled in');
+                            }
+                            else{
+                                alert('Password cannot be empty');
+                            }
+                        }
+                        else if(!info.email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) && info.email !== ''){
+                            alert('Email not in correct format');
+                        }
+                        else{
+                            fetch('/admin-update-admin-password', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body:JSON.stringify(info)
+                            })
+                            .then(response => response.text())
+                            .then(text => {
+                                let str = info.username;
+                                if(info.username === '') str = info.email;
+
+                                if(text === 'accepted')
+                                    alert(`Updated ${str}'s password`);
+                                else
+                                    alert(`Couldn't update ${str}'s password`);
+                            })
+                            .catch(e => console.error(e));
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    
+        <br>
+        
+        <!-- Should retrieve a users' comments and delete the offending comment -->
+        <div>
+        <h1>Remove Users' Comment</h1>
+            <form id="removeComment">
+                <label for="username">Username</label><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="media">Media Name:</label><br>
+                <input type="text" id="media" name="media"><br>
+                <button type="submit">View Comments</button>
+            </form>
+            <script>
+                function deleteComment(id){
+                    fetch('/admin-delete-comment', {
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({id})
+                    })
+                    .then(response => response.text())
+                    .then(text => {
+                        if(text === '[]'){
+                            alert('Deleted comment');
+                        }
+                        else
+                            alert('Failed to delete comment');
+
+                        
+                    })
+                    .catch(e => console.error(e));
+                }
+
+                const removeCommentForm = document.getElementById('removeComment');
+
+                removeCommentForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    let data = new FormData(removeCommentForm);
+
+                    let info = {};
+                    data.forEach((value, key) => {info[key] = value});
+
+                    if(info.username === ''){
+                        alert('Username cannot be empty');
+                    }
+                    else{
+                        fetch('/admin-view-comments', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body:JSON.stringify(info)
+                        })
+                        .then(response => response.text())
+                        .then(text => {
+                            let htmlString = `<h3>Comments: </h3>`;
+                            let comments = document.getElementsByClassName('comment')[0];
+                            let json = JSON.parse(text);
+                            for(let comment of json){
+                                htmlString += `<div class = "review" onclick="deleteComment('${comment.id}');">`;
+                                htmlString += `<p>${comment.comment}</p></div>`;
+                            }
+                            comments.innerHTML = htmlString;
+                        })
+                        .catch(e => console.error(e));
+                    }
+                });
+            </script>
+            <div class="comment"></div>
+        </div>
+    </body>
+</html>

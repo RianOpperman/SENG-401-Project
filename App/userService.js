@@ -114,6 +114,161 @@ async function getUser(json){
     }
 }
 
+async function deleteUser(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let substr = `username='${json.username}'`;
+        if(json.username === ''){
+            substr = `email='${json.email}'`;
+        }
+
+        let str = `DELETE FROM user WHERE ${substr}`;
+
+        let res = await db.query(str);
+
+        return res[0].result;
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function updateUserPassword(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let substr = `username='${json.username}'`;
+        if(json.username === ''){
+            substr = `email='${json.email}'`;
+        }
+
+        let str = `UPDATE user SET password=crypto::sha512('${json.password}') WHERE ${substr}`;
+        console.log(str);
+
+        let res = await db.query(str);
+
+        return res[0].result[0];
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function addAdmin(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let str = await db.query(`SELECT * FROM crypto::sha512('${json.password}')`);
+
+        // console.log(str);
+
+        let res = await db.create('admin', {
+            email: json.email,
+            username: json.username,
+            password: str[0].result[0],
+        });
+
+        return res;
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function deleteAdmin(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let substr = `username='${json.username}'`;
+        if(json.username === ''){
+            substr = `email='${json.email}'`;
+        }
+
+        let str = `DELETE FROM admin WHERE ${substr}`;
+
+        let res = await db.query(str);
+
+        return res[0].result;
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function updateAdminPassword(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let substr = `username='${json.username}'`;
+        if(json.username === ''){
+            substr = `email='${json.email}'`;
+        }
+
+        let str = `UPDATE admin SET password=crypto::sha512('${json.password}') WHERE ${substr}`;
+        console.log(str);
+
+        let res = await db.query(str);
+
+        return res[0].result[0];
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function getAdmin(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let str = `SELECT * FROM admin WHERE username='${json.username}' AND password=crypto::sha512('${json.password}')`;
+        console.log(str);
+
+        let res = await db.query(str);
+
+        return res[0].result[0];
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
 const server = http.createServer((req, res) => {
     let data = '';
 
@@ -169,6 +324,77 @@ const server = http.createServer((req, res) => {
             .then(ret => {
                 console.log(ret);
                 res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        }
+        else if(req.method === 'POST' && req.url === '/delete-user'){
+            deleteUser(json)
+            .then(ret => {
+                if(ret.length === 0){
+                    res.write('accepted');
+                }
+                else{
+                    res.write(JSON.stringify(ret));
+                }
+                res.end();
+            })
+        }
+        else if(req.method === 'POST' && req.url === '/update-password'){
+            updateUserPassword(json)
+            .then(ret => {
+                if(typeof ret !== 'undefined')
+                    res.write('accepted');
+                else 
+                    res.write('rejected');
+                res.end();
+            })
+        }
+        else if(req.method === 'POST' && req.url === '/add-admin'){
+            addAdmin(json)
+            .then(ret => {
+                console.log(ret);
+                if(typeof ret !== 'undefined'){
+                    res.write(JSON.stringify(ret));
+                }
+                else{
+                    console.log("rejected");
+                    res.write('undefined');
+                }
+                res.end();
+            });
+        }
+        else if(req.method === 'POST' && req.url === '/delete-admin'){
+            deleteAdmin(json)
+            .then(ret => {
+                if(ret.length === 0){
+                    res.write('accepted');
+                }
+                else{
+                    res.write(JSON.stringify(ret));
+                }
+                res.end();
+            })
+        }
+        else if(req.method === 'POST' && req.url === '/update-password-admin'){
+            updateAdminPassword(json)
+            .then(ret => {
+                if(typeof ret !== 'undefined')
+                    res.write('accepted');
+                else 
+                    res.write('rejected');
+                res.end();
+            })
+        }
+        else if(req.method === 'POST' && req.url === '/admin-login'){
+            getAdmin(json)
+            .then(ret => {
+                console.log(ret);
+                let status = {status: 'accepted'};
+                if(typeof ret === 'undefined'){
+                    status.status = 'rejected';
+                }
+                res.write(JSON.stringify(status));
                 res.end();
             })
             .catch(e => console.error(e));

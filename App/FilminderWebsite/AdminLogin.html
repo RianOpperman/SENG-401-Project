@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FILMINDER ADMIN LOGIN</title>
+        <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+
+        <script>
+            if(sessionStorage.getItem('admin') === 'true')
+                document.location.href = 'Admin.html';
+        </script>
+    </head>
+    <body>
+        <h1>Login</h1>
+        <form id="login">
+            <label for="username">Username</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password</label><br>
+            <input type="text" id="password" name="password"><br>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <script>
+            const loginForm = document.getElementById('login');
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                let data = new FormData(loginForm);
+
+                let info = {};
+                data.forEach((value, key) => {info[key] = value});
+
+                if(info.username === ''){
+                    alert('Username cannot be empty');
+                }
+                else if(info.password === ''){
+                    alert('Password cannot be empty');
+                }
+                else{
+                    fetch('/admin-login', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(info)
+                    })
+                    .then(response => response.text())
+                    .then(text => {
+                        let json = JSON.parse(text);
+                        if(json.status === 'accepted'){
+                            sessionStorage.setItem('admin', 'true');
+                            document.location.href = 'Admin.html';
+                        }
+                        else{
+                            alert('Incorrect username or password');
+                        }
+                    })
+                    .catch(e => console.error(e));
+                }
+            });
+        </script>
+    </body>
+</html>

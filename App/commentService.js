@@ -84,6 +84,49 @@ async function dbAdd(json){
     }
 }
 
+async function viewUserComments(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE username='${json.username}'`;
+        if(json.media !== ''){
+            str +=  ` AND name='${json.media}'`;
+        }
+        let res = await db.query(str);
+        // let res = await db.query(`SELECT * FROM movie`);
+
+        // console.log(res[0].result[0]);
+        return res[0].result;
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function deleteComment(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let res = await db.query(`DELETE FROM '${json.id}'`);
+
+        // console.log(res[0].result[0]);
+        return res[0].result;
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
 const server = http.createServer((req, res) => {
     let data = '';
     
@@ -115,6 +158,38 @@ const server = http.createServer((req, res) => {
             let jsonData = JSON.parse(data);
             // Fetches info from API, once received send back JSON
             dbAdd(jsonData)
+            .then(result => {
+                console.log(result);
+                res.write(JSON.stringify(result));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-query'){
+        // once we have all data, create the JSON and query for info
+        req.on('end', () => {
+            console.log(data);
+            let jsonData = JSON.parse(data);
+            console.log(jsonData);
+            // Fetches info from API, once received send back JSON
+            viewUserComments(jsonData)
+            .then(result => {
+                console.log(result);
+                res.write(JSON.stringify(result));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-delete'){
+        // once we have all data, create the JSON and query for info
+        req.on('end', () => {
+            console.log(data);
+            let jsonData = JSON.parse(data);
+            console.log(jsonData);
+            // Fetches info from API, once received send back JSON
+            deleteComment(jsonData)
             .then(result => {
                 console.log(result);
                 res.write(JSON.stringify(result));

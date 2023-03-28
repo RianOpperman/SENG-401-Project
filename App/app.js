@@ -211,6 +211,204 @@ async function signupUser(json){
     });
 }
 
+async function deleteUser(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/delete-user',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Series Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk.toString();
+            });
+
+            res.on('end', () => {
+                // let jsonData = JSON.parse(data);
+                console.log(`Series Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                resolve(data);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function updateUserPassword(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/update-password',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Series Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk.toString();
+            });
+
+            res.on('end', () => {
+                // let jsonData = JSON.parse(data);
+                console.log(`Series Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                resolve(data);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function addAdmin(json){
+    return new Promise((resolve, reject) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/add-admin',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for movie info to microservice
+        const req = http.request(options, (userRes) => {
+            console.log(`User Microservice responded with: ${userRes.statusCode}`);
+            let data = '';
+            userRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            userRes.on('end', () => {
+                if(data !== 'undefined'){
+                    resolve(data);
+                }
+                else{
+                    reject('undefined')
+                };
+                console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
+            });
+        });
+        // Writes data to query
+        req.write(json);
+        // Finishes query and sends it with specified optins,
+        // inside of http.request takes over now
+        req.end();
+    });
+}
+
+async function deleteAdmin(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/delete-admin',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Series Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk.toString();
+            });
+
+            res.on('end', () => {
+                // let jsonData = JSON.parse(data);
+                console.log(`Series Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                resolve(data);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function updateAdminPassword(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/update-password-admin',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Series Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk.toString();
+            });
+
+            res.on('end', () => {
+                // let jsonData = JSON.parse(data);
+                console.log(`Series Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                resolve(data);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function adminLogin(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/admin-login',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Series Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk.toString();
+            });
+
+            res.on('end', () => {
+                // let jsonData = JSON.parse(data);
+                console.log(`Series Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                resolve(data);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
 
 async function getSeries(json) {
     return new Promise((resolve, reject) => {
@@ -321,6 +519,82 @@ async function addComment(json){
 
     req.write(json);
     req.end();
+}
+
+async function viewUserComments(json){
+    return new Promise((resolve, reject) =>{
+        let options = {
+            hostname: 'localhost',
+            port: 9004,
+            path: '/admin-query',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Comment Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                if(data !== 'undefined'){
+                    let jsonData = JSON.parse(data);
+                    console.log(`Comment Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                    resolve(jsonData);
+                }
+                else{
+                    console.log("No comments");
+                    reject('undefined');
+                }
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function deleteComment(json){
+    return new Promise((resolve, reject) =>{
+        let options = {
+            hostname: 'localhost',
+            port: 9004,
+            path: '/admin-delete',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        const req = http.request(options, (res) => {
+            console.log(`Comment Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                if(data !== 'undefined'){
+                    let jsonData = JSON.parse(data);
+                    console.log(`Comment Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                    resolve(jsonData);
+                }
+                else{
+                    console.log("No comments");
+                    reject('undefined');
+                }
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
 }
 
 async function retrieveUserInfo(json){
@@ -511,7 +785,7 @@ const server = http.createServer((req, res) => {
             .catch(e => console.error(e));
         });
     }
-    else if(req.method === 'POST' && req.url === "/signup"){
+    else if(req.method === 'POST' && (req.url === "/signup" || req.url === '/admin-add-user')){
         // Call login service
         let data = '';
         req.on('data', chunk => data += chunk.toString());
@@ -619,12 +893,112 @@ const server = http.createServer((req, res) => {
             .catch(e => console.error(e));
         });
     }
+    else if(req.method === 'POST' && req.url === '/admin-delete-user'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            deleteUser(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-update-password'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            updateUserPassword(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-add-admin'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            addAdmin(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-remove-admin'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            deleteAdmin(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-update-admin-password'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            updateAdminPassword(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-view-comments'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            viewUserComments(data)
+            .then(ret => {
+                res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-delete-comment'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            deleteComment(data)
+            .then(ret => {
+                res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/admin-login'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            adminLogin(data)
+            .then(ret => {
+                res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
     else{
         console.log(`Request for ${req.url} received.`);
 
         // Serve index.html for root URL
         if (req.url === '/') {
             let indexPath = path.join(__dirname + "/FilminderWebsite/", 'Website.html');
+            send(indexPath, res);
+        }
+        else if(req.url.startsWith('/admin')){
+            let indexPath = path.join(__dirname + "/FilminderWebsite/AdminLogin.html");
             send(indexPath, res);
         }
         else{
