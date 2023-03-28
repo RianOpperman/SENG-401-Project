@@ -79,9 +79,10 @@ async function getImage(id){
     .then(response => response.text())
     .then(result => {
         let json = JSON.parse(result);
-        url += json.profiles[0].file_path;
+        url += json['profile_path'];
+        
+        console.log("actor's image is: ", url);
         return url;
-        // console.log(url);
     })
     .catch(e => console.error(e));
 }
@@ -97,26 +98,52 @@ function getAge(dateString) {
     return age;
 }
 
-function getMovieTitles(dateString) {
-    var today = new Date();
-    var birthDate = new Date(dateString);
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
+function getMovieTitles(data) {
+    let movie_title = [];
+    let movie_credits = data['movie_credits']['cast'];
+    console.log("movie credits array length is:", Object.keys(movie_credits).length);
+    let sorted_movie_title = movie_credits.sort((r1, r2) => { 
+        if(r1.popularity < r2.popularity){
+            // console.log(typeof r1.popularity);
+            return 1;
+        } 
+        if(r1.popularity > r2.popularity){
+            // console.log(typeof r1.popularity);
+            return -1;
+        } 
+        return 0;
+    
+    });
+    
+    
+        for(var i = 0; i <  Object.keys(sorted_movie_title).length && i < 10; i++){
+        // console.log(sorted_movie_title[i]['original_title']);
+        // movie_title.push(sorted_movie_title[i]['original_title']);
+        let temp = {title: sorted_movie_title[i]['original_title'], image: 'https://image.tmdb.org/t/p/original/', character: sorted_movie_title[i]['character']}
+        temp.image += sorted_movie_title[i]['poster_path'];
+        movie_title.push(temp);
+        console.log(temp);
     }
-    return age;
+    return movie_title
 }
 
-function getSeriesTitles(dateString) {
-    var today = new Date();
-    var birthDate = new Date(dateString);
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
+function getSeriesTitles(data) {
+    let series_title = [];
+    let series_credits = data['tv_credits']['cast'];
+    console.log("movie credits array length is:", Object.keys(series_credits).length);
+    let sorted_series_credits = series_credits.sort((r1, r2) => (r1.popularity < r2.popularity) ? 1 : (r1.popularity > r2.popularity) ? -1 : 0);
+    for(var i = 0; i <  Object.keys(sorted_series_credits).length && i < 10; i++){
+        // console.log(sorted_series_credits[i]['original_name']);
+        // console.log(sorted_series_credits[i]['popularity']);
+        let temp = {title: sorted_series_credits[i]['original_name'], image: 'https://image.tmdb.org/t/p/original/', character: sorted_series_credits[i]['character']}
+        temp.image += sorted_series_credits[i]['poster_path'];
+        if(!temp.character){
+            temp.character = 'self'
+        }
+        series_title.push(temp);
+        console.log(temp);
     }
-    return age;
+    return series_title
 }
 
 async function dbAdd(json){
@@ -132,9 +159,10 @@ async function dbAdd(json){
             Name: json["name"],
             DOB: json['birthday'],
             Age: getAge(json['birthday']),
-            Movies: json['movie_credits'],
+            Movies: getMovieTitles(json),
             id: json['id'],
-            Series: json['tv_credits'],
+            Series: getSeriesTitles(json),
+            image: json['image'],
         });
         console.log("DB add's result is:", res);
         return res;
@@ -185,6 +213,8 @@ const server = http.createServer((req, res) => {
                     let data = JSON.parse(json);
                     console.log(data);
                     if(typeof data['id'] !== 'undefined'){
+                        console.log("I am here with image prep id is ", data['id']);
+                        data['image'] = await getImage(data['id']); 
                         flag = 1;
                         console.log(`Adding ${data['name']} to database`);
                         let temp = dbAdd(data);
