@@ -3,6 +3,12 @@
   background-position: 50% 68.3%;
 }
 
+img {
+  height: 630px;
+  max-width: 500px;
+  border-radius: 0%;
+}
+
 .u-section-1 .u-sheet-1 {
   min-height: 467px;
 }
