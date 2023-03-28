@@ -20,31 +20,99 @@ function populateMoviePage(){
     console.log(movie);
     
     let Title = document.getElementsByClassName("Title")[0];
-    var htmlString = `<h1>${movie.title}</h1>`;
+var htmlString = `<style>
+    .u-section-1 {
+        background-image: linear-gradient(0deg, rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("${movie.image}");
+        background-position: 50% 68.3%;
+}
+</style>
+<section class="u-align-center u-clearfix u-image u-shading u-section-1" src="" data-image-width="950" data-image-height="633" id="sec-bfd7">
+    <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+      <h1 class="u-custom-font u-font-oswald u-text u-text-default u-text-1">${movie.title}</h1>
+    </div>
+</section>
+<section class="u-clearfix u-grey-5 u-section-2" id="sec-3c43">
+    <div class="u-clearfix u-sheet u-sheet-1">
+      <div class="u-clearfix u-expanded-width u-gutter-10 u-layout-wrap u-layout-wrap-1">
+        <div class="u-layout" style="">
+          <div class="u-layout-row" style="">
+            <div class="u-container-style u-layout-cell u-left-cell u-size-30 u-size-xs-60 u-layout-cell-1" src="">
+              <div class="u-container-layout u-container-layout-1">
+                <h2 class="u-align-center u-text u-text-1">Plot</h2>
+                <p class="u-align-center u-text u-text-2"> ${movie.description}</p>
+              </div>
+            </div>
+            <div class="u-align-center u-container-style u-image u-layout-cell u-right-cell u-size-30 u-size-xs-60 u-image-1" src="" data-image-width="950" data-image-height="633">
+              <div class="u-container-layout u-valign-middle u-container-layout-2 u-size-30 u-size-xs-60" src="" data-image-width="950" data-image-height="633"><img src = "${movie.image}" width="500" height="633"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+  
+    
+    <section class="u-align-center u-clearfix u-section-4" id="sec-7301">
+      <div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xl u-sheet-1">
+        <div class="u-expanded-width u-tabs u-tabs-1">
+          <ul class="u-border-1 u-border-grey-25 u-tab-list u-unstyled" role="tablist">
+            <li class="u-tab-item" role="presentation">
+              <a class="active u-active-white u-border-2 u-border-active-grey-15 u-border-hover-grey-15 u-border-no-bottom u-button-style u-tab-link u-text-active-palette-2-base u-text-hover-black u-tab-link-1" id="link-tab-9a29" href="#tab-9a29" role="tab" aria-controls="tab-9a29" aria-selected="true">Movie Details</a>
+            </li>
+            <li class="u-tab-item" role="presentation">
+              <a class="u-active-white u-border-2 u-border-active-grey-15 u-border-hover-grey-15 u-border-no-bottom u-button-style u-tab-link u-text-active-palette-2-base u-text-hover-black u-tab-link-2" id="link-tab-0da5" href="#tab-0da5" role="tab" aria-controls="tab-0da5" aria-selected="false">Actors</a>
+            </li>
+            <li class="u-tab-item" role="presentation">
+              <a class="u-active-white u-border-2 u-border-active-grey-15 u-border-hover-grey-15 u-border-no-bottom u-button-style u-tab-link u-text-active-palette-2-base u-text-hover-black u-tab-link-3" id="link-tab-14b7" href="#tab-14b7" role="tab" aria-controls="tab-14b7" aria-selected="false">Directors</a>
+            </li>
+            <li class="u-tab-item" role="presentation">
+              <a class="u-active-white u-border-2 u-border-active-grey-15 u-border-hover-grey-15 u-border-no-bottom u-button-style u-tab-link u-text-active-palette-2-base u-text-hover-black u-tab-link-4" id="link-tab-2917" href="#tab-2917" role="tab" aria-controls="tab-2917" aria-selected="false">Writers</a>
+            </li>
+          </ul>
+          <div class="u-tab-content">
+            <div class="u-container-style u-tab-active u-tab-pane u-white u-tab-pane-1" id="tab-9a29" role="tabpanel" aria-labelledby="link-tab-9a29">
+              <div class="u-container-layout u-container-layout-1">
+                <h4 class="u-text u-text-default u-text-1">Be The First To Review This Product!</h4>
+                <p class="u-text u-text-default u-text-2">Genre: ${movie.genre}\n Release Date: ${movie.releaseDate} \n Movie Runtime: ${movie.runtime} \n Movie Language${movie.language}</p>
+              </div>
+            </div>
+            <div class="u-container-style u-tab-pane u-white u-tab-pane-2" id="tab-0da5" role="tabpanel" aria-labelledby="link-tab-0da5">
+              <div class="u-container-layout u-container-layout-2">
+                <h4 class="u-text u-text-3"></h4>
+                <p class="u-text u-text-4">${movie.actors}</p>
+              </div>
+            </div>
+            <div class="u-align-left u-container-style u-tab-pane u-white u-tab-pane-3" id="tab-14b7" role="tabpanel" aria-labelledby="link-tab-14b7">
+              <div class="u-container-layout u-valign-top u-container-layout-3">
+                <p class="u-text u-text-default u-text-5"><br>
+                  <br>${movie.directors} 
+                </p>
+              </div>
+            </div>
+            <div class="u-container-style u-tab-pane u-white u-tab-pane-4" id="tab-2917" role="tabpanel" aria-labelledby="link-tab-2917">
+              <div class="u-container-layout u-container-layout-4">
+                <h4 class="u-text u-text-default u-text-6">${movie.writers}</h4>
+                <p class="${movie.writers}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`
+  ;
     Title.innerHTML = htmlString;
 
     let ImageAndInformation = document.getElementsByClassName("ImageAndInformation")[0];
-    var htmlString = `<img src = "${movie.image}" height = "600" width = "475">`;
-    htmlString += `<h2>Average Rating: ${movie.rating}/10</h2>`;
-    htmlString += `<h2>Genre(s): ${movie.genre}</h2>`;
-    htmlString += `<h2>Release Date: ${movie.releaseDate}</h2>`;
-    htmlString += `<h2>Runtime: ${movie.runtime}</h2>`;
-    htmlString += `<h2>Language(s): ${movie.language}</h2>`;
+    var htmlString = ``;
     ImageAndInformation.innerHTML = htmlString;
 
     let Description = document.getElementsByClassName("Description")[0];
 
-    var htmlString = `<h2>Description: </h2>`;
-    htmlString += `<p>${movie.description}</p>`;
+    var htmlString = ``;
     Description.innerHTML = htmlString;
 
     let Cast = document.getElementsByClassName("Cast")[0];
-    var htmlString = `<h2>Actors: </h2>`;
-    htmlString += `<p>${movie.actors}</p>`;
-    htmlString += `<h2>Directors: </h2>`;
-    htmlString += `<p>${movie.directors}</p>`;
-    htmlString += `<h2>Writers: </h2>`;
-    htmlString += `<p>${movie.writers}</p>`;
+    var htmlString = ``;
     Cast.innerHTML = htmlString;
 
     let currentUser = sessionStorage.getItem("user");
