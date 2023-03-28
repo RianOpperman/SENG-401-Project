@@ -8,6 +8,13 @@
     <meta charset = "UTF-8">
     <meta name = "FILMINDER" content = "This is the page showing a Profile Page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
+    <script>
+        window.addEventListener("unload",function(){
+            console.log("removed");
+            sessionStorage.removeItem('profileUser');
+            sessionStorage.removeItem('profileUserID');
+        });
+    </script>
 </head>
 
 <body>
@@ -22,25 +29,54 @@
         
 
         <div class = "pushRight">
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
+            
             <script>
-                
-                var currentUser = sessionStorage.getItem("user");
-                console.log(currentUser);
-                
-                if(currentUser == null){
-                    
-                    
-                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
-                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
-                    
-                    
+                function fillProfileButtons(){
+                    let currentUser = sessionStorage.getItem("user");
+                    console.log(currentUser);
+                    if(currentUser == null){
+                        
+                        let htmlString = '';
+                        htmlString += `<button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>`;
+                        htmlString += `<button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>`;
+                        htmlString += `<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`;
+                        htmlString += `<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`;
+                        document.getElementsByClassName("pushRight")[0].innerHTML = htmlString;
+                        
+                        
+                    }
+                    else{
+                        let htmlString = '';
+                        htmlString += `<button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>`;
+                        htmlString += `<button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>`;
+                        htmlString += `<button OnClick = "signout()"> Signout</button>`;
+                        htmlString += `<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`;
+                        document.getElementsByClassName("pushRight")[0].innerHTML = htmlString;
+                    }
                 }
-                else{
-                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+
+                
+
+                function signout(){
+                    let displayUsername = document.getElementById("displayUsername").textContent;
+                    console.log(displayUsername);
+                    let loggedInUsername = sessionStorage.getItem("user");
+                    if(loggedInUsername === displayUsername){
+
+                        sessionStorage.removeItem("user");
+                        sessionStorage.removeItem("userID");
+                        location.href = "Website.html";
+                    }
+                    else{
+                        sessionStorage.removeItem("user");
+                        sessionStorage.removeItem("userID");
+                        fillProfileButtons();
+                    }
                 }
                 
+                
+                
+                fillProfileButtons();
             </script>
             
         </div>
