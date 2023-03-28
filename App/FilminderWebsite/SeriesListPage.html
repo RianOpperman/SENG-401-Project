@@ -38,6 +38,12 @@
                 
                 var currentUser = sessionStorage.getItem("user");
                 console.log(currentUser);
+
+                function signout(){
+                    sessionStorage.removeItem("user");
+                    sessionStorage.removeItem("userID");
+                    location.reload();
+                }
                 
                 if(currentUser == null){
                     
@@ -48,6 +54,7 @@
                     
                 }
                 else{
+                    document.write(`<button OnClick = "signout()"> Signout</button>`);
                     document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                 }
                 
