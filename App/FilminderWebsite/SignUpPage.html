@@ -23,25 +23,23 @@
 
         <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
         <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
-        <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
         
 
-
-
-        <div class = "alignCenter">
-            
-            
-            
-        </div>
-
         <div class = "pushRight">
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
-            
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
             <script>
+                
                 var currentUser = sessionStorage.getItem("user");
                 console.log(currentUser);
+
+                function signout(){
+                    sessionStorage.removeItem("user");
+                    sessionStorage.removeItem("userID");
+                    location.reload();
+                }
                 
                 if(currentUser == null){
                     
@@ -52,18 +50,14 @@
                     
                 }
                 else{
+                    document.write(`<button OnClick = "signout()"> Signout</button>`);
                     document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                 }
-                
-                
-                
                 
             </script>
             
         </div>
-        
 
-        
     </section>
     
 
@@ -79,15 +73,43 @@
     </h1>
 
     
-    <form id="signup" action="/signup">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br>
-        <label for="password">Password:</label>
-        <input type="text" id="password" name="password" required><br>
-        <button type="submit">Submit Info</button>
-    </form>
+    <link rel="stylesheet" href="nicepage.css" media="screen">
+    <link rel="stylesheet" href="Page-1.css" media="screen">
+    <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+    <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+    <meta name="referrer" content="origin">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+
+    <section class="u-clearfix u-section-1" id="sec-5798">
+        <div class="u-clearfix u-sheet u-sheet-1">
+          <div class="u-form u-form-1">
+            <form id="signup" action="/signup" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="text" name="form" style="padding: 10px;">
+              <div class="u-form-group u-form-group-1">
+                <label for="username" class="u-custom-font u-font-oswald u-label">Username</label>
+                <input type="text" placeholder="" id="username" name="username" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+              </div>
+              <div class="u-form-group u-form-name">
+                <label for="email" class="u-custom-font u-font-oswald u-label">Email</label>
+                <input type="text" id="email" name="email" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
+              </div>
+              <div class="u-form-group u-form-group-3">
+                <label for="password" class="u-custom-font u-font-oswald u-label">Password</label>
+                <input type="text" placeholder="" id="password" name="password" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+              </div>
+              <div class="u-align-left u-form-group u-form-submit">
+                <a href="#" class="u-border-2 u-border-black u-btn u-btn-submit u-button-style u-hover-black u-none u-text-black u-text-hover-white u-btn-1">sign up</a>
+                <input type="submit" value="submit" class="u-form-control-hidden">
+              </div>
+              <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
+              <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>
+              <input type="hidden" value="" name="recaptchaResponse">
+              <input type="hidden" name="formServices" value="99fea645e75b2555cbd07c20c68d5006">
+            </form>
+          </div>
+        </div>
+      </section>
 
     <div id = "signUpResponse"></div>
     
@@ -110,7 +132,7 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userInfo)
             })
-            .then(response => response.text(), (document.getElementById('signUpResponse').innerHTML ="<h2>Could not create an account with the given credentials, please try again</h2>"))
+            .then(response => response.text(), (document.getElementById('signUpResponse').innerHTML ="<h2>This email or username is already associated with an account, please try again</h2>"))
             .then(text => {
                 console.log(JSON.parse(text))
                 let jsonData = JSON.parse(text);

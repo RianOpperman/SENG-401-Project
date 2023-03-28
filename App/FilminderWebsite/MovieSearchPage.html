@@ -7,50 +7,110 @@
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
     <meta name = "FILMINDER" content = "Movie Search Page for FILMINDER">
-    <link rel="stylesheet" href="./style/style.css"/>
+        <link rel="stylesheet" href="./style/style.css"/>
+    <link rel="stylesheet" href="nicepage.css" media="screen">
+        <link rel="stylesheet" href="Page-2.css" media="screen">
+        <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+        <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+        <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+        <meta name="referrer" content="origin">
+        <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+        <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
 </head>
 
 <html>
     <body>
 
         <section class = "TopBar">
+        
             <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
     
             <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
             <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
-            <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
-    
-            <div class = "alignCenter"></div>
+            <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+            <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
+            
     
             <div class = "pushRight">
-                <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-                <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-                <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
-                
+                <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+                <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
                 <script>
+                    
                     var currentUser = sessionStorage.getItem("user");
                     console.log(currentUser);
+    
+                    function signout(){
+                        sessionStorage.removeItem("user");
+                        sessionStorage.removeItem("userID");
+                        location.reload();
+                    }
                     
                     if(currentUser == null){
+                        
+                        
                         document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
                         document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                        
+                        
                     }
                     else{
+                        document.write(`<button OnClick = "signout()"> Signout</button>`);
                         document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
                     }
+                    
                 </script>
+                
             </div>
+    
         </section>
 
+        
+        <link rel="stylesheet" href="nicepage.css" media="screen">
+        <link rel="stylesheet" href="Page-2.css" media="screen">
+        <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+        <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+        <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+        <meta name="referrer" content="origin">
+        <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+        <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+        
         <h1>Movie Search</h1>
         <!-- FORM FOR MOVIE INPUT -->
-        <form id="movie-search" action="/movie-search">
-            <label for="movie-name">Movie Name:</label>
-            <input type="text" id="movie-name" name="movie-name"><br>
-            <label for="movie-year">Year:</label>
-            <input type="text" id="movie-year" name="movie-year"><br>
-            <button type="submit">Submit Info</button>
-        </form>
+        <section class="u-clearfix u-container-align-center u-video u-section-1" id="carousel_aad0">
+            <div class="u-background-video u-expanded" style="">
+              <div class="embed-responsive embed-responsive-1">
+                <iframe style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;" class="embed-responsive-item" src="https://www.youtube.com/embed/YdhtIY3iwqo?playlist=YdhtIY3iwqo&amp;loop=1&amp;mute=1&amp;showinfo=0&amp;controls=0&amp;start=0&amp;autoplay=1" data-autoplay="1" frameborder="0" allowfullscreen=""></iframe>
+              </div>
+            </div>
+            <div class="u-clearfix u-sheet u-sheet-1">
+              <div class="u-clearfix u-layout-wrap u-layout-wrap-1">
+                <div class="u-layout">
+                  <div class="u-layout-row">
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
+                      <div class="u-container-layout u-container-layout-1"></div>
+                    </div>
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-2">
+                      <div class="u-container-layout u-valign-middle u-container-layout-2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="u-align-center u-form u-radius-25 u-white u-form-1">
+                  <form id="movie-search" action="/movie-search" style="padding: 10px;">
+                    <div class="u-form-group u-form-name u-label-top">
+                      <label for="movie-name" class="u-label">Movie Name</label>
+                      <input type="text" placeholder="Enter the Movie Name" id="movie-name" name="movie-name" class="u-border-none u-custom-font u-font-oswald u-input u-input-rectangle" required="">
+                    </div>
+                    <div class="u-form-email u-form-group u-label-top">
+                      <label for="movie-year" class="u-label">Movie Year</label>
+                      <input type="text" id="movie-year" name="movie-year" class="u-border-none u-custom-font u-font-oswald u-input u-input-rectangle" placeholder="Enter Movie Year (Optional)">
+                    </div>
+                    <div class="u-align-left u-form-group u-form-submit u-label-top">
+                        <button type="submit">Submit Info</button>
+                    </div>
+                  </form>
+                </div>
+              </section>
 
         <div id = "noMovieFound"> </div>
         

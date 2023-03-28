@@ -12,34 +12,46 @@
 
 <body>
     <section class = "TopBar">
+        
         <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
 
         <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
         <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
-        <button OnClick = "location.href = 'ActorsSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
         
-        <div class = "alignCenter">
+
+        <div class = "pushRight">
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
+            <script>
+                
+                var currentUser = sessionStorage.getItem("user");
+                console.log(currentUser);
+
+                function signout(){
+                    sessionStorage.removeItem("user");
+                    sessionStorage.removeItem("userID");
+                    location.reload();
+                }
+                
+                if(currentUser == null){
+                    
+                    
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                    
+                    
+                }
+                else{
+                    document.write(`<button OnClick = "signout()"> Signout</button>`);
+                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                }
+                
+            </script>
             
         </div>
 
-        <div class = "pushRight">
-            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button> 
-            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button> 
-            <button OnClick = "location.href = 'ActorsListPage.html'"> Actors</button>
-            
-            <script>
-                let currentUser = sessionStorage.getItem("user");
-                // console.log(currentUser);
-                
-                if(currentUser == null){
-                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
-                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
-                }
-                else{
-                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
-                }
-            </script>
-        </div>
     </section>
 
     <h1>
@@ -47,6 +59,14 @@
             <img id = "filminderLogo" src = "FilminderLogoTransparent.png" alt = "This is our logo" height = "250" width = "250">
         </div>
     </h1>
+    
+    <link rel="stylesheet" href="nicepage.css" media="screen">
+    <link rel="stylesheet" href="Home.css" media="screen">
+    <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+    <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700|Playfair+Display:400,400i,500,500i,600,600i,700,700i,800,800i,900,900i">
 
     <div class = "moviePageGridContainer">
         <div class="Title"></div>
@@ -57,7 +77,6 @@
         <div class="Reviews"></div>
     </div>
     
-    <link rel="stylesheet" href="./style/style.css"/>
     <script type="text/javascript" src = "PopulateMoviePage.js"></script>
 </body>
 

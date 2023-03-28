@@ -8,24 +8,45 @@ let db = new Surreal.default('http://localhost:8001/rpc');
 const hostname = 'localhost';
 const port = 9005;
 
-function prepareQuery(json){
+async function prepareQuery(json){
     let query = "https://api.themoviedb.org/3/search/person?api_key=fd466f23c2618acf3e52defb9c3869ba&query=";
     keys = ['crew-name'];
+    let nameArray = json['crew-name'].split(" ");
 
     // For each key in the array, if it isn't empty add it to the query
     for(key of keys){
         switch(key){
             case 'crew-name':
                 if(!(json[key] === '')){
-                    query += `${json['crew-name']}`;
+                    // console.log("query here is " , query);
+                    for(var i = 0; i < nameArray.length; i++){
+                        if(i > 0)
+                            query += '+';
+                        query += nameArray[i];
+                        
+                    }
                 }
                 break;
             }
     }
-
-    // At the end log the query
+    let id;
     console.log(query);
-    return query;
+    return await fetch(query)
+    .then(response => response.text())
+    .then(result => {
+        // console.log(result);
+        let json = JSON.parse(result);
+        // console.log(json);
+        id = json.results[0].id;
+       console.log("printing id from here:", id);
+       // At the end log the query
+        let detailsquery = `https://api.themoviedb.org/3/person/${id}?api_key=fd466f23c2618acf3e52defb9c3869ba&append_to_response=images,movie_credits,tv_credits`;
+        console.log(detailsquery);
+        return detailsquery;
+    })
+    .catch(e => console.error(e));
+
+    
 }
 
 async function dbQuery(json){
@@ -76,6 +97,28 @@ function getAge(dateString) {
     return age;
 }
 
+function getMovieTitles(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+function getSeriesTitles(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
 async function dbAdd(json){
     try{
         await db.signin({
@@ -85,7 +128,7 @@ async function dbAdd(json){
 
         await db.use('test', 'test');
 
-        let res = await db.create(`castCrew:${json['imdb_id']}`, {
+        let res = await db.create(`${json['id']}`, {
             Name: json["name"],
             DOB: json['birthday'],
             Age: getAge(json['birthday']),
@@ -93,7 +136,7 @@ async function dbAdd(json){
             id: json['id'],
             Series: json['tv_credits'],
         });
-
+        console.log("DB add's result is:", res);
         return res;
     }
     catch(e){
@@ -103,6 +146,7 @@ async function dbAdd(json){
 
 const server = http.createServer((req, res) => {
     // If data was sent via POST to the url /
+    console.log("got here 1");
     if(req.method === 'POST' && req.url === '/'){
         let data = '';
         
@@ -111,19 +155,22 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => {
             data += chunk.toString();
         });
-
+        console.log("got here 2 and data is", data);
         // once we have all data, create the JSON and query for info
         req.on('end', () => {
+            console.log("got here 3 and");
             let jsonData = JSON.parse(data);
             // Fetches info from API, once received send back JSON
             let flag = 0;
             dbQuery(jsonData)
-            .then(result => {
-                // console.log(result);
+            .then(async result => {
+                console.log("got here 4 and result is", result);
                 if(typeof result === 'undefined'){
                     console.log(`${jsonData['name']} not in database`);
-                    return fetch(prepareQuery(jsonData))
+                    let temp = await prepareQuery(jsonData);
+                    return fetch(temp)
                     .then(response => response.text());
+                    
                 }
                 else{
                     flag = 1;
@@ -136,10 +183,13 @@ const server = http.createServer((req, res) => {
                 }
                 else{
                     let data = JSON.parse(json);
-                    if(typeof data.results[0]['id'] !== 'undefined'){
+                    console.log(data);
+                    if(typeof data['id'] !== 'undefined'){
                         flag = 1;
-                        console.log(`Adding ${data.results[0]['name']} to database`);
-                        return dbAdd(data.results[0]);
+                        console.log(`Adding ${data['name']} to database`);
+                        let temp = dbAdd(data);
+                        console.log(temp);
+                        return temp;
                     }
                 }
             })

@@ -24,7 +24,7 @@ function populateProfilePage(){
     }
     
     let profileUserName = document.getElementsByClassName("userName")[0];
-    var htmlString = `<h1>${userName}</h1>`;
+    var htmlString = `<h1 id = "displayUsername">${userName}</h1>`;
     profileUserName.innerHTML = htmlString;
 
     let Reviews = document.getElementsByClassName("Reviews")[0];
@@ -49,8 +49,7 @@ function populateProfilePage(){
         }
         Reviews.innerHTML = htmlString;
 
-        sessionStorage.removeItem('profileUser');
-        sessionStorage.removeItem('profileUserID');
+        
     })
     .catch(e => console.log(e));
 }

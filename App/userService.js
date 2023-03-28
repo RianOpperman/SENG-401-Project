@@ -40,11 +40,14 @@ async function dbAdd(json){
 
         await db.use('test', 'test');
 
-        let str = `SELECT * FROM user WHERE email='${json['email']}'`;
-        let returned = await db.query(str);
+        let emailStr = `SELECT * FROM user WHERE email='${json['email']}'`;
+        let usersEmailReturned = await db.query(emailStr);
         
+        let usernameStr = `SELECT * FROM user WHERE username='${json['username']}'`;
+        let usersUsernameReturned = await db.query(usernameStr);
 
-        if(returned[0].result.length == 0){
+        if((usersEmailReturned[0].result.length == 0) && (usersUsernameReturned[0].result.length == 0)){
+            // if there are no users with this this username or email then we can create a new account with these credentials
             console.log("new account");
 
             let ps = await db.query(`SELECT * FROM crypto::sha512('${json['password']}')`);
