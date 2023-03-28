@@ -76,25 +76,22 @@ var htmlString = `<style>
                 <p class="u-text u-text-default u-text-2">Genre: ${movie.genre}</p>
                 <p class="u-text u-text-default u-text-2">Release Date: ${movie.releaseDate}</p>
                 <p class="u-text u-text-default u-text-2">Movie Runtime: ${movie.runtime}</p>
-                <p class="u-text u-text-default u-text-2">Movie Language${movie.language}</p>
+                <p class="u-text u-text-default u-text-2">Movie Language: ${movie.language}</p>
               </div>
             </div>
             <div class="u-container-style u-tab-pane u-white u-tab-pane-2" id="tab-0da5" role="tabpanel" aria-labelledby="link-tab-0da5">
               <div class="u-container-layout u-container-layout-2">
-                <h4 class="u-text u-text-3"></h4>
                 <p class="u-text u-text-4">${movie.actors}</p>
               </div>
             </div>
             <div class="u-align-left u-container-style u-tab-pane u-white u-tab-pane-3" id="tab-14b7" role="tabpanel" aria-labelledby="link-tab-14b7">
               <div class="u-container-layout u-valign-top u-container-layout-3">
-                <p class="u-text u-text-default u-text-5"><br>
-                  <br>${movie.directors} 
+                <p class="u-text u-text-default u-text-5">${movie.directors}
                 </p>
               </div>
             </div>
             <div class="u-container-style u-tab-pane u-white u-tab-pane-4" id="tab-2917" role="tabpanel" aria-labelledby="link-tab-2917">
               <div class="u-container-layout u-container-layout-4">
-                <h4 class="u-text u-text-default u-text-6">${movie.writers}</h4>
                 <p class="${movie.writers}</p>
               </div>
             </div>
