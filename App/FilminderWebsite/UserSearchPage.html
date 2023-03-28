@@ -10,7 +10,7 @@
 
     <title>FILMINDER</title>
     <meta charset = "UTF-8">
-    <meta name = "FILMINDER" content = "Actor Search Page for FILMINDER">
+    <meta name = "FILMINDER" content = "User Search Page for FILMINDER">
     <link rel="stylesheet" href="./style/style.css"/>
     
     
@@ -56,19 +56,19 @@
     
         </section>
 
-        <h1>Cast/Crew Search</h1>
-        <!-- FORM FOR MOVIE INPUT -->
-        <form id="cast-search" action="/actor-search">
-            <label for="crew-name">Cast/Crew Name:</label>
-            <input type="text" id="crew-name" name="crew-name"><br>
+        <h1>User Search</h1>
+        <!-- FORM FOR USER INPUT -->
+        <form id="user-search" action="/actor-search">
+            <label for="username">UserName:</label>
+            <input type="text" id="username" name="username"><br>
             <button type="submit">Submit Info</button>
         </form>
         
-        <div id = "noCastFound"> </div>
+        <div id = "noUserFound"> </div>
 
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
-            const form = document.getElementById('cast-search');
+            const form = document.getElementById('user-search');
 
             form.addEventListener('submit', (event) => {
                 console.log("Pressed");
@@ -77,29 +77,33 @@
 
                 let data = new FormData(form);
                 console.log(data);
-                let actorInfo = {};
-                data.forEach((value, key) => {actorInfo[key] = value});
-                console.log(actorInfo);
+                let userInfo = {};
+                data.forEach((value, key) => {userInfo[key] = value});
+                console.log(userInfo);
                 // Fetches series info from main server
                 
-                fetch('/actor-search', {
+                fetch('/user-search', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(actorInfo)
+                    body: JSON.stringify(userInfo)
                 })
-                .then(response => response.text(), (document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>"))
+                .then(response => response.text())
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
                     
                     let jsonData = JSON.parse(text);
                     console.log(jsonData);
-                    
-                    console.log("Searched");
-                    sessionStorage.setItem("actor", JSON.stringify(jsonData));
-                    //console.log(sessionStorage.getItem("actor"));
-                    document.location.href = "ActorPage.html";
-                    
+                    if(jsonData.length != 0){
+                        console.log("Searched");
+                        let user = jsonData[0];
+                        sessionStorage.setItem('profileUser', user.username);
+                        sessionStorage.setItem('profileUserID', user.id);
+                        document.location.href = 'ProfilePage.html';
+                    }
+                    else{
+                        document.getElementById('noUserFound').innerHTML ="<h2>No User found matching that username</h2>";
+                    }
                 })
                 .catch(error => console.log(error));
             });

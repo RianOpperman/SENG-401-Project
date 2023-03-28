@@ -70,7 +70,7 @@
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br>
+        <input type="email" id="email" name="email" required><br>
         <label for="password">Password:</label>
         <input type="text" id="password" name="password" required><br>
         <button type="submit">Submit Info</button>
@@ -97,7 +97,7 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userInfo)
             })
-            .then(response => response.text(), (document.getElementById('signUpResponse').innerHTML ="<h2>Could not create an account with the given credentials, please try again</h2>"))
+            .then(response => response.text(), (document.getElementById('signUpResponse').innerHTML ="<h2>This email or username is already associated with an account, please try again</h2>"))
             .then(text => {
                 console.log(JSON.parse(text))
                 let jsonData = JSON.parse(text);
