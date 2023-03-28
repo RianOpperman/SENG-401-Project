@@ -72,8 +72,11 @@ var htmlString = `<style>
           <div class="u-tab-content">
             <div class="u-container-style u-tab-active u-tab-pane u-white u-tab-pane-1" id="tab-9a29" role="tabpanel" aria-labelledby="link-tab-9a29">
               <div class="u-container-layout u-container-layout-1">
-                <h4 class="u-text u-text-default u-text-1">Be The First To Review This Product!</h4>
-                <p class="u-text u-text-default u-text-2">Genre: ${movie.genre}\n Release Date: ${movie.releaseDate} \n Movie Runtime: ${movie.runtime} \n Movie Language${movie.language}</p>
+                <h4 class="u-text u-text-default u-text-1"></h4>
+                <p class="u-text u-text-default u-text-2">Genre: ${movie.genre}</p>
+                <p class="u-text u-text-default u-text-2">Release Date: ${movie.releaseDate}</p>
+                <p class="u-text u-text-default u-text-2">Movie Runtime: ${movie.runtime}</p>
+                <p class="u-text u-text-default u-text-2">Movie Language${movie.language}</p>
               </div>
             </div>
             <div class="u-container-style u-tab-pane u-white u-tab-pane-2" id="tab-0da5" role="tabpanel" aria-labelledby="link-tab-0da5">
