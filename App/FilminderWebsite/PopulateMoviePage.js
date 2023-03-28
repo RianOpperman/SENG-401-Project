@@ -92,7 +92,7 @@ var htmlString = `<style>
             </div>
             <div class="u-container-style u-tab-pane u-white u-tab-pane-4" id="tab-2917" role="tabpanel" aria-labelledby="link-tab-2917">
               <div class="u-container-layout u-container-layout-4">
-                <p class="${movie.writers}</p>
+                <<p class="u-text u-text-default u-text-5">${movie.writers}</p>
               </div>
             </div>
           </div>
