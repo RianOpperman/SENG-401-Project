@@ -44,7 +44,7 @@ function populateProfilePage(){
     .then(text => {
         let json = JSON.parse(text);
         for(let comment of json){
-            htmlString += `<div class = "review" onclick="redirect('${comment.movieID}');"> <h3>${comment.name}: ${comment.rating}/10</h3>`;
+            htmlString += `<div class = "review" onclick="redirect('${comment.movieID}');"> <img src = "${comment.image}" height = "200" width = "150"> <h3>${comment.name}: ${comment.rating}/10</h3>`;
             htmlString += `<p>${comment.comment}</p></div>`;
         }
         Reviews.innerHTML = htmlString;

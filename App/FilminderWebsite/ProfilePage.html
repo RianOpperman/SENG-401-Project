@@ -30,54 +30,7 @@
 
         <div class = "pushRight">
             
-            <script>
-                function fillProfileButtons(){
-                    let currentUser = sessionStorage.getItem("user");
-                    console.log(currentUser);
-                    if(currentUser == null){
-                        
-                        let htmlString = '';
-                        htmlString += `<button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>`;
-                        htmlString += `<button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>`;
-                        htmlString += `<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`;
-                        htmlString += `<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`;
-                        document.getElementsByClassName("pushRight")[0].innerHTML = htmlString;
-                        
-                        
-                    }
-                    else{
-                        let htmlString = '';
-                        htmlString += `<button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>`;
-                        htmlString += `<button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>`;
-                        htmlString += `<button OnClick = "signout()"> Signout</button>`;
-                        htmlString += `<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`;
-                        document.getElementsByClassName("pushRight")[0].innerHTML = htmlString;
-                    }
-                }
-
-                
-
-                function signout(){
-                    let displayUsername = document.getElementById("displayUsername").textContent;
-                    console.log(displayUsername);
-                    let loggedInUsername = sessionStorage.getItem("user");
-                    if(loggedInUsername === displayUsername){
-
-                        sessionStorage.removeItem("user");
-                        sessionStorage.removeItem("userID");
-                        location.href = "Website.html";
-                    }
-                    else{
-                        sessionStorage.removeItem("user");
-                        sessionStorage.removeItem("userID");
-                        fillProfileButtons();
-                    }
-                }
-                
-                
-                
-                fillProfileButtons();
-            </script>
+            
             
         </div>
 
@@ -91,8 +44,85 @@
 
     <div class = "profilePageGridContainer">
         <div class="userName"></div>
+        <div id = "followButton"></div>
         <div class="Reviews"></div>
     </div>
+
+    <script>
+        function follow(){
+            let userToFollow = sessionStorage.getItem("profileUser");
+            let currentUser = sessionStorage.getItem("user");
+
+        }
+
+        function unfollow(){
+            let userToUnfollow = sessionStorage.getItem("profileUser");
+            let currentUser = sessionStorage.getItem("user");
+
+
+        }
+
+
+        function fillProfileButtons(){
+            let currentUser = sessionStorage.getItem("user");
+            console.log(currentUser);
+            if(currentUser == null){
+                
+                let htmlString = '';
+                htmlString += `<button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>`;
+                htmlString += `<button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>`;
+                htmlString += `<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`;
+                htmlString += `<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`;
+                document.getElementsByClassName("pushRight")[0].innerHTML = htmlString;
+                
+                
+            }
+            else{
+                let htmlString = '';
+                htmlString += `<button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>`;
+                htmlString += `<button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>`;
+                htmlString += `<button OnClick = "signout()"> Signout</button>`;
+                htmlString += `<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`;
+                document.getElementsByClassName("pushRight")[0].innerHTML = htmlString;
+
+                
+                let currentProfile = sessionStorage.getItem("profileUser");
+                if(currentProfile != null && currentProfile != currentUser){
+                    //This means we are viewing someone elses profile
+
+                    //do an already followingCheck here
+                    //if true put a follow button
+                    document.getElementById("followButton").innerHTML = `<button OnClick = "follow()"> Follow</button>`;
+
+                    //if false put an unfollow button
+                    
+                }
+            }
+        }
+
+        
+
+        function signout(){
+            let displayUsername = document.getElementById("displayUsername").textContent;
+            console.log(displayUsername);
+            let loggedInUsername = sessionStorage.getItem("user");
+            if(loggedInUsername === displayUsername){
+
+                sessionStorage.removeItem("user");
+                sessionStorage.removeItem("userID");
+                location.href = "Website.html";
+            }
+            else{
+                sessionStorage.removeItem("user");
+                sessionStorage.removeItem("userID");
+                fillProfileButtons();
+            }
+        }
+        
+        
+        
+        fillProfileButtons();
+    </script>
 
     <link rel="stylesheet" href="./style/style.css"/>
     <script type="text/javascript" src = "PopulateProfilePage.js"></script>
