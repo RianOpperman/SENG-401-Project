@@ -2,9 +2,15 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
+const nodemailer =require('nodemailer');
 
 const hostname = 'localhost';
 const port = 9000;
+const transporter = nodemailer.createTransport({
+    host: 'localhost',
+    port: 2500,
+    secure: false,
+});
 
 // Sends a request file to users' browser
 function send(filename, res) {
@@ -734,6 +740,125 @@ async function getPopularSeries(pageNum){
     });
 }
 
+async function follow(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/follow',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for user info to microservice
+        const req = http.request(options, (res) => {
+            console.log(`User Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                let jsonData = JSON.parse(data);
+                console.log(`User Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                resolve(JSON.parse(data));
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function unfollow(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/unfollow',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for user info to microservice
+        const req = http.request(options, (res) => {
+            console.log(`User Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                let jsonData = JSON.parse(data);
+                console.log(`User Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                resolve(JSON.parse(data));
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
+async function notify(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/notify',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for user info to microservice
+        const req = http.request(options, (res) => {
+            console.log(`User Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                let review = JSON.parse(json);
+                let jsonData = JSON.parse(data);
+                console.log(`User Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+
+                let message = {
+                    from: 'filminder@filminder.com',
+                    to: '',
+                    subject: `${review.username} just posted a new review!`,
+                    text: `${review.name}, Rating: ${review.rating}/10\nReview: ${review.comment}`,
+                }
+
+                for(email of jsonData){
+                    message.to = email.email;
+                    console.log(message);
+                    transporter.sendMail(message, (error, info) => {
+                        if(error)
+                            console.log(`Error sending email: ${error}`);
+                        else
+                            console.log(`Email sent, code = ${info.response}`);
+                    });
+                }
+
+                resolve(jsonData);
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
 const server = http.createServer((req, res) => {
     if(req.method === 'POST' && req.url === "/movie-search"){
         let data = '';
@@ -746,8 +871,6 @@ const server = http.createServer((req, res) => {
 
         // once we have all data, create the JSON and query for info
         req.on('end', () => {
-            // let jsonData = JSON.parse(data);
-            // console.log(jsonData);
             requestMovieInfo(data, res)
             .then(ret => {
                 console.log(JSON.stringify(ret));
@@ -757,8 +880,6 @@ const server = http.createServer((req, res) => {
             })
             .catch(e => console.error(e));
         })
-
-        // console.log(data);
     }
     else if(req.method === 'POST' && req.url === '/movie-popular'){
         let data = '';
@@ -984,6 +1105,44 @@ const server = http.createServer((req, res) => {
             adminLogin(data)
             .then(ret => {
                 res.write(ret);
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/follow'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            follow(data)
+            .then(ret => {
+                res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/unfollow'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            unfollow(data)
+            .then(ret => {
+                res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/notify'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            notify(data)
+            .then(ret => {
+                if(typeof ret !== 'undefined')
+                    res.write('accepted');
+                else res.write('rejected');
                 res.end();
             })
             .catch(e => console.error(e));
