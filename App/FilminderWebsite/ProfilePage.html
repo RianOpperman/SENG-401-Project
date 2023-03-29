@@ -49,6 +49,20 @@
     </div>
 
     <script>
+        function follow(){
+            let userToFollow = sessionStorage.getItem("profileUser");
+            let currentUser = sessionStorage.getItem("user");
+
+        }
+
+        function unfollow(){
+            let userToUnfollow = sessionStorage.getItem("profileUser");
+            let currentUser = sessionStorage.getItem("user");
+
+
+        }
+
+
         function fillProfileButtons(){
             let currentUser = sessionStorage.getItem("user");
             console.log(currentUser);
@@ -73,7 +87,7 @@
 
                 
                 let currentProfile = sessionStorage.getItem("profileUser");
-                if(currentProfile != null){
+                if(currentProfile != null && currentProfile != currentUser){
                     //This means we are viewing someone elses profile
 
                     //do an already followingCheck here
