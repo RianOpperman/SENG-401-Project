@@ -15,7 +15,7 @@ let db = new Surreal.default('http://localhost:8000/rpc');
 
 
 describe('Movie: PrepareQueryTest', () => {
-	it('PrepareQueryTestWithName', async () => {
+	it('M1: PrepareQueryTestWithName', async () => {
 		let input = {
 			'movie-name': 'The Avengers',
 		};
@@ -23,7 +23,7 @@ describe('Movie: PrepareQueryTest', () => {
         expect(movieService.prepareQuery(input)).to.equal(expected);
 	});
 
-	it('PrepareQueryTestWithNameAndYear', async () => {
+	it('M2: PrepareQueryTestWithNameAndYear', async () => {
 		let input = {
 			'movie-name': 'The Avengers',
 			'movie-year': '2012'
@@ -48,7 +48,7 @@ describe('Movie: PrepareQueryTest', () => {
 
 describe('Movie: getImageTest', () => {
 
-	it('getImageWithValidMoiveId', async () => {
+	it('M3: getImageWithValidMoiveId', async () => {
 		const expected = 'https://image.tmdb.org/t/p/original//pEoqbqtLc4CcwDUDqxmEDSWpWTZ.jpg';
 		let result = await movieService.getImage("tt0133093")
 		//let result = await movieService.getImage("Invalid")
@@ -56,7 +56,7 @@ describe('Movie: getImageTest', () => {
         expect(result).to.equal(expected);
 	});
 
-	it('getImageWithInvalidMoiveId', async () => {
+	it('M4: getImageWithInvalidMoiveId', async () => {
 		let result = undefined;
 		result = await movieService.getImage("Invalid")
 		
@@ -66,7 +66,7 @@ describe('Movie: getImageTest', () => {
 		expect(result).to.be.undefined;
 	});
 
-	it('getImageValidReturn', async () => {
+	it('M5: getImageValidReturn', async () => {
 		const name = 'tt0133093';
 		expect(await movieService.getImage(name)).to.be.a('string');
 	})
@@ -75,7 +75,7 @@ describe('Movie: getImageTest', () => {
 
 describe('Movie: dbQueryTest', () => {
 
-	it('dbQueryReturnValid', () => {
+	it('M6: dbQueryReturnValid', () => {
 		let json = {
 			'movie-name': 'The Matrix',
 			'movie-year': 1999
@@ -85,7 +85,7 @@ describe('Movie: dbQueryTest', () => {
 		});
 	});
 
-	it('dbQueryReturnInvalid', () => {
+	it('M7: dbQueryReturnInvalid', () => {
 
 		let str = '';
 		str = "DELETE * FROM movie WHERE title CONTAINS 'Radhe']}"
@@ -109,7 +109,7 @@ describe('Movie: dbAddTest', () => {
 	str = "DELETE * FROM movie WHERE title CONTAINS 'Jaws'}"
 	db.query(str)
 
-	it('DatabaseAddData', () => {
+	it('M8: DatabaseAddData', () => {
 		let json = {
 			'imdbID': 'tt0073195',
 			'Actors': 'Roy Scheider, Robert Shaw, Richard Dreyfuss, Lorraine Gary',
@@ -131,7 +131,7 @@ describe('Movie: dbAddTest', () => {
 
 	db.query(str)
 
-	it('DatabaseAddDataIdMatch', () => {
+	it('M9: DatabaseAddDataIdMatch', () => {
         let json = {
             'imdbID': 'tt0073195',
             'Actors': 'Roy Scheider, Robert Shaw, Richard Dreyfuss, Lorraine Gary',

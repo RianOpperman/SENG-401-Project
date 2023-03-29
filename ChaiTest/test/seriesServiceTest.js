@@ -15,7 +15,7 @@ let db = new Surreal.default('http://localhost:8002/rpc');
 
 
 describe('Series: PrepareQueryTest', () => {
-	it('PrepareQueryTestWithNameSeries', async () => {
+	it('S1: PrepareQueryTestWithNameSeries', async () => {
 		let input = {
 			'series-name': 'Game of Thrones',
 		};
@@ -27,7 +27,7 @@ describe('Series: PrepareQueryTest', () => {
 		expect(result).to.equal(expected);
 	});
 
-	it('PrepareQueryTestWithNameAndYearSeries', async () => {
+	it('S2: PrepareQueryTestWithNameAndYearSeries', async () => {
 		let input = {
 			'series-name': 'Game of Thrones',
             'series-year': '2011'
@@ -42,12 +42,12 @@ describe('Series: PrepareQueryTest', () => {
 
 describe('Series: getImageTest', () => {
 
-	it('getImageValidReturn', async () => {
+	it('S3: getImageValidReturn', async () => {
 		const name = 'Game of Thrones';
 		expect(await seriesService.getImage(name)).to.be.a('string');
 	})
 
-	it('getImageWithValidSeriesName', async () => {
+	it('S4: getImageWithValidSeriesName', async () => {
 		const expected = 'https://image.tmdb.org/t/p/original/7WUHnWGx5OO145IRxPDUkQSh4C7.jpg';
 		let result = await seriesService.getImage("Game of Thrones")
 		//let result = await seriesService.getImage("Invalid")
@@ -55,7 +55,7 @@ describe('Series: getImageTest', () => {
         expect(result).to.equal(expected);
 	});
 
-	it('getImageWithInvalidSeriesName', async () => {
+	it('S5: getImageWithInvalidSeriesName', async () => {
 		let result = undefined;
 		result = await seriesService.getImage("Invalid")
 		
@@ -70,7 +70,7 @@ describe('Series: getImageTest', () => {
 
 describe('Series: dbQueryTest', () => {
 
-	it('dbQueryReturnValid', () => {
+	it('S6: dbQueryReturnValid', () => {
 		let json = {
 			'series-name': 'Game of Thrones'
 		};
@@ -79,7 +79,7 @@ describe('Series: dbQueryTest', () => {
 		});
 	});
 
-	it('dbQueryReturnInvalid', () => {
+	it('S7: dbQueryReturnInvalid', () => {
 
 		let str = '';
 		str = "DELETE * FROM movie WHERE title CONTAINS 'Game of Thrones']}"
@@ -102,7 +102,7 @@ describe('Series: dbAddTest', () => {
 	str = "DELETE * FROM movie WHERE title CONTAINS 'Game of Thrones'}"
 	db.query(str)
 
-	it('DatabaseAddData', () => {
+	it('S8: DatabaseAddData', () => {
 		let json = {
 			actors: 'Peter Dinklage, Lena Headey, Emilia Clarke',
             description: 'Nine noble families fight for control over the mythical lands of Westeros, while an ancient enemy returns after being dormant for thousands of years.',
@@ -126,7 +126,7 @@ describe('Series: dbAddTest', () => {
 
 	db.query(str)
 
-	it('DatabaseAddDataIdMatch', () => {
+	it('S9: DatabaseAddDataIdMatch', () => {
         let json = {
             'imdbID': 'tt0073195',
             'Actors': 'Roy Scheider, Robert Shaw, Richard Dreyfuss, Lorraine Gary',
