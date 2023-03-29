@@ -60,7 +60,7 @@ async function dbQuery(json){
 
         let res = await db.query(`SELECT * FROM castCrew WHERE Name CONTAINS '${json['crew-name']}'`);
 
-        // console.log(res[0].result[0]);
+        //console.log(res[0].result[0]);
         return res[0].result[0];
     }
     catch(e){
@@ -211,3 +211,7 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
     console.log(`Microservice running at http://${hostname}:${port}`);
 });
+
+
+
+module.exports = { prepareQuery , getImage , dbQuery, dbAdd};
