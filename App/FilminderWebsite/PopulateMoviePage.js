@@ -167,20 +167,17 @@ var htmlString = `<style>
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(commentInfo)
                 })
-                .then(() => location.reload())
-                // .then(response => response.text())
-                // .then(text => {
-                //     console.log("added comment");
-                    
-                //     // let jsonData = JSON.parse(text);
-                //     // console.log(jsonData);
-                    
-                //     // console.log("Searched");
-                    
-                //     //reloads the page to show updated comment
-                //     // document.location.href = "MoviePage.html";
-                //     location.reload();
-                // })
+                .then(() => {
+                  return fetch('/notify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(commentInfo)
+                  })
+                })
+                .then(response => response.text())
+                .then(() => {
+                  location.reload();
+                })
                 .catch(error => console.log(error));
             });
 

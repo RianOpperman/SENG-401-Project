@@ -772,6 +772,39 @@ async function follow(json){
     });
 }
 
+async function followCheck(json){
+    return new Promise((resolve) => {
+        let options = {
+            hostname: 'localhost',
+            port: 9003,
+            path: '/follow-check',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(json)
+            }
+        };
+
+        // Creates HTTP request for user info to microservice
+        const req = http.request(options, (res) => {
+            console.log(`User Microservice responded with: ${res.statusCode}`);
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            res.on('end', () => {
+                let jsonData = JSON.parse(data);
+                console.log(`User Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                resolve(JSON.parse(data));
+            });
+        });
+
+        req.write(json);
+        req.end();
+    });
+}
+
 async function unfollow(json){
     return new Promise((resolve) => {
         let options = {
@@ -835,7 +868,7 @@ async function notify(json){
                     from: 'filminder@filminder.com',
                     to: '',
                     subject: `${review.username} just posted a new review!`,
-                    text: `${review.name}, Rating: ${review.rating}/10\nReview: ${review.comment}`,
+                    text: `${review.name}\nRating: ${review.rating}/10\nReview: ${review.comment}`,
                 }
 
                 for(email of jsonData){
@@ -1115,6 +1148,18 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => data += chunk.toString());
         req.on('end', () => {
             follow(data)
+            .then(ret => {
+                res.write(JSON.stringify(ret));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        });
+    }
+    else if(req.method === 'POST' && req.url === '/follow-check'){
+        let data = '';
+        req.on('data', chunk => data += chunk.toString());
+        req.on('end', () => {
+            followCheck(data)
             .then(ret => {
                 res.write(JSON.stringify(ret));
                 res.end();
