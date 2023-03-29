@@ -105,8 +105,8 @@
               </div>
               <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
               <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>
-              <input type="hidden" value="" name="recaptchaResponse">
-              <input type="hidden" name="formServices" value="99fea645e75b2555cbd07c20c68d5006">
+              <!-- <input type="hidden" value="" name="recaptchaResponse">
+              <input type="hidden" name="formServices" value="99fea645e75b2555cbd07c20c68d5006"> -->
             </form>
           </div>
         </div>
@@ -133,9 +133,9 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userInfo)
             })
-            .then(response => response.text(), setTimeout(function(){ document.getElementById('signUpResponse').innerHTML ="<h2>This email or username is already associated with an account, please try again</h2>"}, 400))
+            .then(response => response.text())
             .then(text => {
-                console.log(JSON.parse(text))
+              if(text !== 'undefined'){
                 let jsonData = JSON.parse(text);
                 console.log(jsonData);
                 
@@ -144,14 +144,12 @@
                 sessionStorage.setItem("userID", jsonData.id);
                 console.log(sessionStorage.getItem("user"));
                 document.location.href = "Website.html";
-                
-                //document.getElementById('signUpResponse').innerHTML ="<h2>Successfully created account</h2>"
+              }
+              else{
+                let str = "<h2>This email or username is already associated with an account, please try again</h2>";
+                document.getElementById('signUpResponse').innerHTML = str;
+              }
             })
-
-            // .then(text => {
-            //     let jsonData = JSON.parse(text);
-
-            // })
             .catch(error => console.log(error));
         });
     </script>

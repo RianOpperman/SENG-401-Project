@@ -100,18 +100,27 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(seriesInfo)
                 })
-                .then(response => response.text(), setTimeout(function(){ document.getElementById('noSeriesFound').innerHTML ="<h2>No series found matching this criteria</h2>" }, 400))
-                //.then(text => console.log(JSON.parse(text)))
+                .then(response => {
+                    console.log(response);
+                    return response.text();
+                })
                 .then(text => {
                     console.log("returned from search");
-                    
-                    let jsonData = JSON.parse(text);
-                    //console.log(jsonData);
-                    
-                    //console.log("Searched");
-                    sessionStorage.setItem("series", JSON.stringify(jsonData));
-                    console.log(sessionStorage.getItem("series"));
-                    document.location.href = "SeriesPage.html";
+                    console.log(text);
+                    console.log(text === "undefined");
+
+                    // if(text !== 'undefined'){
+                    //     let jsonData = JSON.parse(text);
+                        
+                    //     sessionStorage.setItem("series", JSON.stringify(jsonData));
+                    //     console.log(sessionStorage.getItem("series"));
+                    //     document.location.href = "SeriesPage.html";
+                    // }
+                    // else{
+                    //     console.log('Entry does not exist');
+                    //     let str = "<h2>No series found matching this criteria</h2>";
+                    //     document.getElementById('noSeriesFound').innerHTML = str;
+                    // }
                     
                 })
                 .catch(error => {

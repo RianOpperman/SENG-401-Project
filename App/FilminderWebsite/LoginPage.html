@@ -129,32 +129,34 @@
             console.log(loginInfo);
             // Fetches series info from main server
             
-            fetch('/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(loginInfo)
-            })
-            .then(response => response.text())
-            //.then(text => console.log(JSON.parse(text)))
-            .then(text => {
-                console.log("returned from login");
+            if(typeof loginInfo.password !== 'undefined'){
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(loginInfo)
+                })
+                .then(response => response.text())
+                //.then(text => console.log(JSON.parse(text)))
+                .then(text => {
+                    console.log("returned from login");
 
-                if(text !== 'undefined'){
-                    let jsonData = JSON.parse(text);
-                    console.log(jsonData);
-                    
-                    console.log("Searched");
-                    sessionStorage.setItem("user", jsonData.username);
-                    sessionStorage.setItem("userID", jsonData.id);
-                    console.log(sessionStorage.getItem("user"));
-                    document.location.href = "Website.html";
-                }
-                else{
-                    let str = "<h2>Could not login with the given credentials, please try again</h2>";
-                    document.getElementById('noLogin').innerHTML = str;
-                }
-            })
-            .catch(error => console.log(error));
+                    if(text !== 'undefined'){
+                        let jsonData = JSON.parse(text);
+                        console.log(jsonData);
+                        
+                        console.log("Searched");
+                        sessionStorage.setItem("user", jsonData.username);
+                        sessionStorage.setItem("userID", jsonData.id);
+                        console.log(sessionStorage.getItem("user"));
+                        document.location.href = "Website.html";
+                    }
+                    else{
+                        let str = "<h2>Could not login with the given credentials, please try again</h2>";
+                        document.getElementById('noLogin').innerHTML = str;
+                    }
+                })
+                .catch(error => console.log(error));
+            }
         });
     </script>
 

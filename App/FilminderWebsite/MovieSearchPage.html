@@ -137,18 +137,25 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(movieInfo)
                 })
-                .then(response => response.text(), setTimeout(function(){ document.getElementById('noMovieFound').innerHTML ="<h2>No movie found matching this criteria</h2>" }, 400))
+                .then(response => response.text())
                 
                 .then(text => {
                     console.log("returned from search");
-                    
-                    let jsonData = JSON.parse(text);
-                    // console.log(jsonData);
-                    
-                    // console.log("Searched");
-                    sessionStorage.setItem("movie", JSON.stringify(jsonData));
-                    console.log(sessionStorage.getItem("movie"));
-                    document.location.href = "MoviePage.html";
+
+                    if(text !== 'undefined'){
+                      let jsonData = JSON.parse(text);
+                      // console.log(jsonData);
+                      
+                      // console.log("Searched");
+                      sessionStorage.setItem("movie", JSON.stringify(jsonData));
+                      console.log(sessionStorage.getItem("movie"));
+                      document.location.href = "MoviePage.html";
+                    }
+                    else{
+                      // window.alert('No movie found matching criteria');
+                      let str = "<h2>No movie found matching this criteria</h2>";
+                      document.getElementById('noMovieFound').innerHTML = str;
+                    }
                 })
                 .catch(error => console.log(error));
             });

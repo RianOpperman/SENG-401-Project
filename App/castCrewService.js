@@ -1,12 +1,15 @@
-const http = require('http');
+const http = require('https');
 const fs = require('fs');
-const path = require('path');
 const Surreal = require('surrealdb.js');
 
 let db = new Surreal.default('http://localhost:8001/rpc');
 
 const hostname = 'localhost';
 const port = 9005;
+const options = {
+    key: fs.readFileSync('ssl/crew.key'),
+    cert: fs.readFileSync('ssl/crew.cert')
+};
 
 async function prepareQuery(json){
     let query = "https://api.themoviedb.org/3/search/person?api_key=fd466f23c2618acf3e52defb9c3869ba&query=";
@@ -184,7 +187,7 @@ async function dbAdd(json){
     }
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(options, (req, res) => {
     // If data was sent via POST to the url /
     console.log("got here 1");
     if(req.method === 'POST' && req.url === '/'){

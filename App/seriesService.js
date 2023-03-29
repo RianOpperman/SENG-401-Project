@@ -1,12 +1,15 @@
-const http = require('http');
+const http = require('https');
 const fs = require('fs');
-const path = require('path');
 const Surreal = require('surrealdb.js');
 
 let db = new Surreal.default('http://localhost:8002/rpc');
 
 const hostname = 'localhost';
 const port = 9002;
+const options = {
+    key: fs.readFileSync('ssl/series.key'),
+    cert: fs.readFileSync('ssl/series.cert')
+};
 
 function prepareQuery(json){
     let query = "http://www.omdbapi.com/?apikey=1cb42be6&Type=series";
@@ -134,7 +137,7 @@ async function dbAdd(json){ // Fix later, connect with database.
 }
 
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(options, (req, res) => {
     let data = '';
     
     // Must wait for all info to reach before we can begin using it
@@ -148,40 +151,42 @@ const server = http.createServer((req, res) => {
         // once we have all data, create the JSON and query for info
         req.on('end', () => {
             let jsonData = JSON.parse(data);
-            // Fetches info from API, once received send back JSON
+            let flag = 0;
             dbQuery(jsonData)
             .then((result) => {
                 if(typeof result === 'undefined'){
                     console.log("Entry not in database");
-                    fetch(prepareQuery(jsonData))
-                    .then(response => response.text())
-                    .then(async (text) => {
-                        let data = JSON.parse(text);
-                        if(typeof data['Title'] !== 'undefined'){
-                            data['image'] = await getImage(data['Title']);
-                            dbAdd(data)
-                            .then(ret => {
-                                console.log(ret);
-                                res.write(JSON.stringify(ret));
-                                res.end();
-                            })
-                            .catch(e => console.error(e));
-                        }
-                        else {
-                            res.write('undefined');
-                            res.end();
-                        }
-                    })
-                    .catch(e => console.error(e));
+                    return fetch(prepareQuery(jsonData))
+                    .then(response => response.text());
                 }
                 else{
-                    console.log(result);
-                    res.write(JSON.stringify(result));
-                    res.end();
+                    flag = 1;
+                    return result;
                 }
             })
+            .then(async (text) => {
+                if(flag ===  1){
+                    return json;
+                }
+                else{
+                    let data = JSON.parse(text);
+                    if(typeof data['Title'] !== 'undefined'){
+                        data['image'] = await getImage(data['Title']);
+                        flag = 1;
+                        return dbAdd(data);
+                    }
+                }
+            })
+            .then(ret => {
+                if(flag === 1){
+                    res.write(JSON.stringify(ret));
+                }
+                else{
+                    res.write('undefined');
+                }
+                res.end();
+            })
             .catch(e => console.error(e));
-            
         });
     }
     else if(req.method === 'POST' && req.url === '/popular'){

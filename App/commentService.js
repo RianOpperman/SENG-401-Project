@@ -1,10 +1,15 @@
-const http = require('http');
+const http = require('https');
+const fs = require('fs');
 const Surreal = require('surrealdb.js');
 
 let db = new Surreal.default('http://localhost:8004/rpc');
 
 const hostname = 'localhost';
 const port = 9004;
+const options = {
+    key: fs.readFileSync('ssl/comment.key'),
+    cert: fs.readFileSync('ssl/comment.cert')
+};
 
 const Table = {
     movie:'movieComment',
@@ -127,7 +132,7 @@ async function deleteComment(json){
     }
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(options, (req, res) => {
     let data = '';
     
     // Must wait for all info to reach before we can begin using it

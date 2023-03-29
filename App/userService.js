@@ -1,13 +1,15 @@
-const http = require('http');
+const http = require('https');
 const fs = require('fs');
-const path = require('path');
 const Surreal = require('surrealdb.js');
-const { captureRejectionSymbol } = require('events');
 
 let db = new Surreal.default('http://localhost:8003/rpc');
 
 const hostname = 'localhost';
 const port = 9003;
+const options = {
+    key: fs.readFileSync('ssl/user.key'),
+    cert: fs.readFileSync('ssl/user.cert')
+};
 
 async function dbQuery(json){
     try{
@@ -18,13 +20,14 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
         
-        let str = `SELECT * FROM user WHERE email='${json['email']}' AND password=crypto::sha512('${json['password']}')`;
+        let str = `SELECT * FROM user WHERE email='${json['email']}' AND password='${json['password']}'`;
         // console.log(str);
 
         let res = await db.query(str);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
+        // console.log(res);
         return res[0].result[0];
     }
     catch(e){
@@ -51,13 +54,9 @@ async function dbAdd(json){
             // if there are no users with this this username or email then we can create a new account with these credentials
             console.log("new account");
 
-            let ps = await db.query(`SELECT * FROM crypto::sha512('${json['password']}')`);
-            console.log(ps[0].result[0]);
-
-
             let res = await db.create(`user`, {
                 email: json['email'],
-                password: ps[0].result[0],
+                password: json.password,
                 username: json['username'],
             });
             
@@ -158,7 +157,7 @@ async function updateUserPassword(json){
             substr = `email='${json.email}'`;
         }
 
-        let str = `UPDATE user SET password=crypto::sha512('${json.password}') WHERE ${substr}`;
+        let str = `UPDATE user SET password='${json.password}' WHERE ${substr}`;
         console.log(str);
 
         let res = await db.query(str);
@@ -180,14 +179,10 @@ async function addAdmin(json){
 
         await db.use('test', 'test');
 
-        let str = await db.query(`SELECT * FROM crypto::sha512('${json.password}')`);
-
-        // console.log(str);
-
         let res = await db.create('admin', {
             email: json.email,
             username: json.username,
-            password: str[0].result[0],
+            password: json.password,
         });
 
         return res;
@@ -238,7 +233,7 @@ async function updateAdminPassword(json){
             substr = `email='${json.email}'`;
         }
 
-        let str = `UPDATE admin SET password=crypto::sha512('${json.password}') WHERE ${substr}`;
+        let str = `UPDATE admin SET password='${json.password}' WHERE ${substr}`;
         console.log(str);
 
         let res = await db.query(str);
@@ -260,7 +255,7 @@ async function getAdmin(json){
 
         await db.use('test', 'test');
 
-        let str = `SELECT * FROM admin WHERE username='${json.username}' AND password=crypto::sha512('${json.password}')`;
+        let str = `SELECT * FROM admin WHERE username='${json.username}' AND password='${json.password}'`;
         console.log(str);
 
         let res = await db.query(str);
@@ -353,7 +348,7 @@ async function notify(json){
     }
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(options, (req, res) => {
     let data = '';
 
     req.on('data', chunk => data += chunk.toString());
@@ -380,7 +375,7 @@ const server = http.createServer((req, res) => {
                     res.write(JSON.stringify(ret));
                 }
                 else {
-                    res.write('undefined');
+                    res.write(JSON.stringify({status: 'rejected'}));
                 }
                 res.end();
             });

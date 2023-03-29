@@ -1,16 +1,23 @@
-const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const nodemailer =require('nodemailer');
+const crypto = require('crypto');
 
 const hostname = 'localhost';
 const port = 9000;
+const SSLOptions = {
+    key: fs.readFileSync('ssl/app.key'),
+    cert: fs.readFileSync('ssl/app.cert')
+};
 const transporter = nodemailer.createTransport({
     host: 'localhost',
     port: 2500,
     secure: false,
 });
+
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 // Sends a request file to users' browser
 function send(filename, res) {
@@ -51,23 +58,30 @@ function send(filename, res) {
     });
 }
 
+function getOptions(port, path, data){
+    return {
+        hostname: 'localhost',
+        port: port,
+        path: path,
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(data)
+        },
+        ca: [fs.readFileSync('ssl/movie.cert')]
+        // key: SSLOptions.key,
+        // cert: SSLOptions.cert
+    }
+}
+
 // Sends movie request to movie microservice
 async function requestMovieInfo(data, res){
-    return new Promise((resolve, reject) => {
-        // All the sending options
-        let options = {
-            hostname: 'localhost',
-            port: 9001,
-            path: '/',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(data)
-            }
-        };
+    return new Promise((resolve) => {
+        let options = getOptions(9001, '/', data);
+        // options.agent = new https.Agent(options);
 
         // Creates HTTP request for movie info to microservice
-        const req = http.request(options, (MovieRes) => {
+        const req = https.request(options, (MovieRes) => {
             console.log(`Movie Microservice responded with: ${res.statusCode}`);
             let data = '';
             MovieRes.on('data', (chunk) => {
@@ -82,7 +96,7 @@ async function requestMovieInfo(data, res){
                 }
                 else{
                     console.log("Movie does not exist");
-                    reject("Movie does not exist");
+                    resolve("Movie does not exist");
                 }
             });
         });
@@ -96,20 +110,10 @@ async function requestMovieInfo(data, res){
 
 async function requestActorInfo(data, res){
     return new Promise((resolve, reject) => {
-        // All the sending options
-        let options = {
-            hostname: 'localhost',
-            port: 9005,
-            path: '/',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(data)
-            }
-        };
+        let options = getOptions(9005, '/', data);
 
         // Creates HTTP request for movie info to microservice
-        const req = http.request(options, (ActorRes) => {
+        const req = https.request(options, (ActorRes) => {
             console.log(`Actor Microservice responded with: ${res.statusCode}`);
             let data = '';
             ActorRes.on('data', (chunk) => {
@@ -138,98 +142,90 @@ async function requestActorInfo(data, res){
 
 async function loginCheck(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/login',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        try{
+            json = JSON.parse(json);
+            json.password = crypto.createHash('sha512')
+                            .update(json.password)
+                            .digest('hex');
+            json = JSON.stringify(json);
+            let options = getOptions(9003, '/login', json);
 
-        // Creates HTTP request for user info to microservice
-        const req = http.request(options, (userRes) => {
-            console.log(`User Microservice responded with: ${userRes.statusCode}`);
-            let data = '';
-            userRes.on('data', (chunk) => {
-                data += chunk;
-            });
+            // Creates HTTP request for user info to microservice
+            const req = https.request(options, (userRes) => {
+                console.log(`User Microservice responded with: ${userRes.statusCode}`);
+                let data = '';
+                userRes.on('data', (chunk) => {
+                    data += chunk;
+                });
 
-            userRes.on('end', () => {
-                console.log(data);
-                if(data !== 'undefined'){
-                    resolve(data);
-                }
-                else{
-                    // console.log("rejected");
-                    resolve('undefined');
-                }
-                console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                userRes.on('end', () => {
+                    let jsonData = JSON.parse(data);
+                    if(typeof jsonData.status === 'undefined'){
+                        resolve(data);
+                    }
+                    else{
+                        resolve(jsonData);
+                    }
+                    console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                });
             });
-        });
-        // Writes data to query
-        req.write(json);
-        // Finishes query and sends it with specified optins,
-        // inside of http.request takes over now
-        req.end();
+            // Writes data to query
+            req.write(json);
+            // Finishes query and sends it with specified optins,
+            // inside of http.request takes over now
+            req.end();
+        }
+        catch(e){
+            resolve({status: 'rejected'});
+        }
     });
 }
 
 async function signupUser(json){
-    return new Promise((resolve, reject) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/signup',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+    return new Promise((resolve) => {
+        try{
+            json = JSON.parse(json);
+            json.password = crypto.createHash('sha512')
+                            .update(json.password)
+                            .digest('hex');
+            json = JSON.stringify(json);
+            let options = getOptions(9003, '/signup', json);
 
-        // Creates HTTP request for movie info to microservice
-        const req = http.request(options, (userRes) => {
-            console.log(`User Microservice responded with: ${userRes.statusCode}`);
-            let data = '';
-            userRes.on('data', (chunk) => {
-                data += chunk;
-            });
+            // Creates HTTP request for movie info to microservice
+            const req = https.request(options, (userRes) => {
+                console.log(`User Microservice responded with: ${userRes.statusCode}`);
+                let data = '';
+                userRes.on('data', (chunk) => {
+                    data += chunk;
+                });
 
-            userRes.on('end', () => {
-                if(data !== 'undefined'){
-                    resolve(data);
-                }
-                else{
-                    reject('undefined')
-                };
-                console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                userRes.on('end', () => {
+                    if(data !== 'undefined'){
+                        resolve(data);
+                    }
+                    else{
+                        resolve('undefined')
+                    };
+                    console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
+                });
             });
-        });
-        // Writes data to query
-        req.write(json);
-        // Finishes query and sends it with specified optins,
-        // inside of http.request takes over now
-        req.end();
+            // Writes data to query
+            req.write(json);
+            // Finishes query and sends it with specified optins,
+            // inside of http.request takes over now
+            req.end();
+        }
+        catch(e){
+            resolve('undefined');
+        }
     });
 }
 
 async function deleteUser(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/delete-user',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/delete-user', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Series Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -250,18 +246,14 @@ async function deleteUser(json){
 
 async function updateUserPassword(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/update-password',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        json = JSON.parse(json);
+        json.password = crypto.createHash('sha512')
+                        .update(json.password)
+                        .digest('hex');
+        json = JSON.stringify(json);
+        let options = getOptions(9003, '/update-password', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Series Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -282,19 +274,15 @@ async function updateUserPassword(json){
 
 async function addAdmin(json){
     return new Promise((resolve, reject) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/add-admin',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        json = JSON.parse(json);
+        json.password = crypto.createHash('sha512')
+                        .update(json.password)
+                        .digest('hex');
+        json = JSON.stringify(json);
+        let options = getOptions(9003, '/add-admin', json);
 
         // Creates HTTP request for movie info to microservice
-        const req = http.request(options, (userRes) => {
+        const req = https.request(options, (userRes) => {
             console.log(`User Microservice responded with: ${userRes.statusCode}`);
             let data = '';
             userRes.on('data', (chunk) => {
@@ -321,18 +309,9 @@ async function addAdmin(json){
 
 async function deleteAdmin(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/delete-admin',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/delete-admin', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Series Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -353,18 +332,14 @@ async function deleteAdmin(json){
 
 async function updateAdminPassword(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/update-password-admin',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        json = JSON.parse(json);
+        json.password = crypto.createHash('sha512')
+                        .update(json.password)
+                        .digest('hex');
+        json = JSON.stringify(json);
+        let options = getOptions(9003, '/update-password-admin', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Series Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -385,18 +360,14 @@ async function updateAdminPassword(json){
 
 async function adminLogin(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/admin-login',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        json = JSON.parse(json);
+        json.password = crypto.createHash('sha512')
+                        .update(json.password)
+                        .digest('hex');
+        json = JSON.stringify(json);
+        let options = getOptions(9003, '/admin-login', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Series Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -416,19 +387,10 @@ async function adminLogin(json){
 }
 
 async function getSeries(json) {
-    return new Promise((resolve, reject) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9002,
-            path: '/series',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+    return new Promise((resolve) => {
+        let options = getOptions(9002, '/series', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Series Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -443,7 +405,7 @@ async function getSeries(json) {
                 }
                 else{
                     console.log("No comments");
-                    reject('undefined');
+                    resolve('undefined');
                 }
             });
         });
@@ -456,18 +418,9 @@ async function getSeries(json) {
 
 async function getComments(json){
     return new Promise((resolve, reject) =>{
-        let options = {
-            hostname: 'localhost',
-            port: 9004,
-            path: '/query',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9004, '/query', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Comment Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -493,18 +446,9 @@ async function getComments(json){
 }
 
 async function addComment(json){
-    let options = {
-        hostname: 'localhost',
-        port: 9004,
-        path: '/add',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(json)
-        }
-    };
+    let options = getOptions(9004, '/add', json);
 
-    const req = http.request(options, (res) => {
+    const req = https.request(options, (res) => {
         console.log(`Movie Microservice responded with: ${res.statusCode}`);
         let data = '';
         res.on('data', (chunk) => {
@@ -528,18 +472,9 @@ async function addComment(json){
 
 async function viewUserComments(json){
     return new Promise((resolve, reject) =>{
-        let options = {
-            hostname: 'localhost',
-            port: 9004,
-            path: '/admin-query',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9004, '/admin-query', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Comment Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -566,18 +501,9 @@ async function viewUserComments(json){
 
 async function deleteComment(json){
     return new Promise((resolve, reject) =>{
-        let options = {
-            hostname: 'localhost',
-            port: 9004,
-            path: '/admin-delete',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9004, '/admin-delete', json);
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`Comment Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -604,19 +530,10 @@ async function deleteComment(json){
 
 async function retrieveUserInfo(json){
     return new Promise((resolve, reject) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/userPage',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/userPage', json);
 
-        // Creates HTTP request for user info to microservice
-        const req = http.request(options, (userRes) => {
+        // Creates https request for user info to microservice
+        const req = https.request(options, (userRes) => {
             console.log(`User Microservice responded with: ${userRes.statusCode}`);
             let data = '';
             userRes.on('data', (chunk) => {
@@ -642,19 +559,10 @@ async function retrieveUserInfo(json){
 
 async function getUser(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/user-search',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/user-search', json);
 
-        // Creates HTTP request for user info to microservice
-        const req = http.request(options, (userRes) => {
+        // Creates https request for user info to microservice
+        const req = https.request(options, (userRes) => {
             console.log(`User Microservice responded with: ${userRes.statusCode}`);
             let data = '';
             userRes.on('data', (chunk) => {
@@ -675,19 +583,10 @@ async function getUser(json){
 
 async function getPopularMovies(pageNum){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9001,
-            path: '/popular',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(pageNum)
-            }
-        };
+        let options = getOptions(9001, '/popular', json);
 
         // Creates HTTP request for user info to microservice
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`User Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -708,19 +607,10 @@ async function getPopularMovies(pageNum){
 
 async function getPopularSeries(pageNum){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9002,
-            path: '/popular',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(pageNum)
-            }
-        };
+        let options = getOptions(9002, '/popular', json);
 
         // Creates HTTP request for user info to microservice
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`User Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -741,19 +631,10 @@ async function getPopularSeries(pageNum){
 
 async function follow(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/follow',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/follow', json);
 
         // Creates HTTP request for user info to microservice
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`User Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -774,19 +655,10 @@ async function follow(json){
 
 async function followCheck(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/follow-check',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/follow-check', json);
 
         // Creates HTTP request for user info to microservice
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`User Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -807,19 +679,10 @@ async function followCheck(json){
 
 async function unfollow(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/unfollow',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/unfollow', json);
 
         // Creates HTTP request for user info to microservice
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`User Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -840,19 +703,10 @@ async function unfollow(json){
 
 async function notify(json){
     return new Promise((resolve) => {
-        let options = {
-            hostname: 'localhost',
-            port: 9003,
-            path: '/notify',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(json)
-            }
-        };
+        let options = getOptions(9003, '/notify', json);
 
         // Creates HTTP request for user info to microservice
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
             console.log(`User Microservice responded with: ${res.statusCode}`);
             let data = '';
             res.on('data', (chunk) => {
@@ -891,8 +745,9 @@ async function notify(json){
     });
 }
 
-const server = http.createServer((req, res) => {
+const server = https.createServer(SSLOptions, (req, res) => {
     if(req.method === 'POST' && req.url === "/movie-search"){
+        console.log('Requesting movie info');
         let data = '';
 
         // Must wait for all info to reach before we can begin using it
@@ -1213,5 +1068,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(`Server running at https://${hostname}:${port}/`);
 });
