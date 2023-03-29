@@ -11,7 +11,7 @@ function redirect(nextPageHTML, key, title){
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(movieInfo)
         })
-        .then(response => response.text())
+        .then(response => response.text(), setTimeout(function(){ window.alert("Sorry IMDb does not have this title")}, 1000))
         
         .then(text => {
             
@@ -36,7 +36,7 @@ function redirect(nextPageHTML, key, title){
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(seriesInfo)
         })
-        .then(response => response.text())
+        .then(response => response.text(), setTimeout(function(){ window.alert("Sorry IMDb does not have this title")}, 1000))
         
         .then(text => {
             console.log("returned from search");
@@ -79,6 +79,11 @@ function populateTable(tableName, nextPageHTML, key, pageNumber){
             var rowString = "";
             var counter = 0;
             for(let element of json){
+                
+                if(element.image.endsWith("null")){
+                    continue;
+                }
+
                 counter++;
                 
                 if(counter == 1){
@@ -125,6 +130,10 @@ function populateTable(tableName, nextPageHTML, key, pageNumber){
             var rowString = "";
             var counter = 0;
             for(let element of json){
+                if(element.image.endsWith("null")){
+                    continue;
+                }
+
                 counter++;
                 
                 if(counter == 1){

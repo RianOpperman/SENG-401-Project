@@ -31,7 +31,7 @@ function populateProfilePage(){
           <div class="u-layout-row" style="">
             <div class="u-align-center u-container-style u-grey-15 u-layout-cell u-right-cell u-size-60 u-size-xs-60 u-layout-cell-1" src="">
               <div class="u-container-layout u-valign-middle u-container-layout-1">
-                <h2 class="u-align-center u-text u-text-default u-text-1">${userName}
+                <h2 id = "displayUsername" class="u-align-center u-text u-text-default u-text-1">${userName}
                 </h2>
               </div>
             </div>

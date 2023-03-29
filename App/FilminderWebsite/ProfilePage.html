@@ -274,10 +274,9 @@
         
 
         function signout(){
-            let displayUsername = document.getElementById("displayUsername").textContent;
-            console.log(displayUsername);
-            let loggedInUsername = sessionStorage.getItem("user");
-            if(loggedInUsername === displayUsername){
+            let displayUsername = document.getElementById("displayUsername").textContent.trim();
+            let loggedInUsername = sessionStorage.getItem("user").trim();
+            if(loggedInUsername.localeCompare(displayUsername) === 0){
 
                 sessionStorage.removeItem("user");
                 sessionStorage.removeItem("userID");

@@ -32,7 +32,7 @@ function prepareQuery(json){
     }
 
     // At the end log the query
-    console.log(query);
+    //console.log(query);
     return query;
 }
 
@@ -79,8 +79,8 @@ async function getImage(id){
     .then(result => {
         let json = JSON.parse(result);
         url += json.posters[0].file_path;
+        //console.log(url);
         return url;
-        // console.log(url);
     })
     .catch(e => console.error(e));
 }
@@ -196,3 +196,9 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
     console.log(`Microservice running at http://${hostname}:${port}`);
 });
+
+
+
+
+
+module.exports = { prepareQuery , getImage , dbQuery, dbAdd};
