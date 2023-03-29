@@ -146,6 +146,17 @@ function getSeriesTitles(data) {
     return series_title
 }
 
+function formatDate(d)
+ {
+  date = new Date(d)
+  var dd = date.getDate(); 
+  var mm = date.getMonth()+1;
+  var yyyy = date.getFullYear(); 
+  if(dd<10){dd='0'+dd} 
+  if(mm<10){mm='0'+mm};
+  return (mm+'/'+dd+'/'+yyyy)
+}
+
 async function dbAdd(json){
     try{
         await db.signin({
@@ -157,12 +168,13 @@ async function dbAdd(json){
 
         let res = await db.create(`${json['id']}`, {
             Name: json["name"],
-            DOB: json['birthday'],
+            DOB: formatDate(json['birthday']),
             Age: getAge(json['birthday']),
             Movies: getMovieTitles(json),
             id: json['id'],
             Series: getSeriesTitles(json),
             image: json['image'],
+            biography: json['biography']
         });
         console.log("DB add's result is:", res);
         return res;
