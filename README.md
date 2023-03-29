@@ -1,14 +1,30 @@
 # SENG 401 Project
-## FROG
-```
-  __   ___.--'_`.     .'_`--.___   __
- ( _`.'. -   'o` )   ( 'o`   - .`.'_ )
- _\.'_'      _.-'     `-._      `_`./_
-( \`. )    //\`         '/\\    ( .'/ )
- \_`-'`---'\\__,       ,__//`---'`-'_/
-  \`        `-\         /-'        '/
-   `                               '  
-```
+
+If there is any issue please contact us.
+
+## Pre-requisites
+You need to have Node JS version 18+, preferably version 19.7.
+To do so follow the instructions on this link for `nvm` (https://github.com/nvm-sh/nvm#installing-and-updating).
+Once that is installed, in the `App` folder of our repo run `npm install --save surrealdb.js` and `npm install --save nodemailer`.
+
+You should be good to move on to instructions then.
+
+*NOTE:* it may also be beneficial to install SurrealDB itself on your machine for its CLI, as you can query the database with it. To do so use this link (https://surrealdb.com/docs/start/installation)
+
+## Instructions
+To begin you need to start all the docker containers for the database, there are no containers for the microservices.
+To do this follow the guide in `containers/README.md`.
+
+Afterwards you need to start each microserive, they each have `service` in their name and are in the direct `App` folder.
+Do this by running `node (microservice name)`.
+
+Once all the microservices are running, start the main app using `node app.js`.
+
+Connect to `https://localhost:9000` on your machine and accept the self-signed certificate.
+
+Use the app from there.
+
+*NOTE:* you will also need to run a docker email server for notifications, do this by running `docker run -it -p 2500:2500 -p 8080:8080 -p 8085:8085 --name mail-server marcopas/docker-mailslurper`. You can access the mail server on `localhost:8080`, and once there hit refresh to see new emails.
 
 ## To run Surreal DB server
 ```bash
@@ -26,37 +42,42 @@ This code connects to the already running Surreal DB server as root with the pas
 using namespace test and the test database. It also has the pretty print functionality turned on
 so when you get a JSON returned it doesn't look all garbo
 
-For reference on SurrealQL go to the Surreal DB site and look at the docs there, its very similar to SQL,
-only major difference being that you don't need to create a table before inserting stuff to it. Looks so far to be
-like an on-the-fly DB which should be interesting.
-For the sake of maintainability though please use the designed tables with the column names and so forth.
-
-## Note on Surreal DB
-The needed JS file is already included in the repo, so no need to run NPM first to install everything
-
 ## Surreal DB Database & Table setup
-*To note: Images will be stored on DB for the website to request*
 
 ### Movie DB:
-| ID | Title | Release Date | Rating | Runtime | Genre | Directors | Writers | Actors | Language | Description |
-| -- | ----- | ------------ | ------ | ------- | ----- | --------- | ------- | ------ | -------- | ----------- |
+| ID | Title | Release Date | Rating | Runtime | Genre | Directors | Writers | Actors | Language | Description | Image |
+| -- | ----- | ------------ | ------ | ------- | ----- | --------- | ------- | ------ | -------- | ----------- | ----- |
 
 ### Series DB:
-| ID | Title | Release Date | Rating | Season | Episode | Runtime | Genre | Directors | Writers | Actors | Language | Description |
-| -- | ----- | ------------ | ------ | ------ | ------- | ------- | ----- | --------- | ------- | ------ | -------- | ----------- |
+| ID | Title | Release Date | Rating | Season | Episode | Runtime | Genre | Directors | Writers | Actors | Language | Description | Image |
+| -- | ----- | ------------ | ------ | ------ | ------- | ------- | ----- | --------- | ------- | ------ | -------- | ----------- | ----- |
 
 ### Cast & Crew DB:
-| ID | Name | DOB | Age | Movies | Series |
-| -- | ---- | --- | --- | ------ | ------ |
+| ID | Name | DOB | Age | Movies | Series | Image |
+| -- | ---- | --- | --- | ------ | ------ | ----- |
 
 ### User DB:
 
 User table:
 
-*The Password will be stored as encrypted test, will need to be deciphered by program*
-| Username | Email | Password | Review ID |
-| -------- | ----- | -------- | --------- |
+| Username | Email | Password |
+| -------- | ----- | -------- |
 
-Review Table:
-| Movie | Series | Review description | Review Rating | Review ID |
-| ----- | ------ | ------------------ | ------------- | --------- |
+Current Users:\
+**Username:** The Movie Man\
+**Email:** movieman@gmail.com\
+**Password:** movie
+
+**Username:** Bob\
+**Email:** bobby@gmail.com\
+**Password:** bob
+
+### Comment DB:
+
+Movie Comment Table:
+| Movie ID | Comment | Review Rating | Review ID | Image| Name | User ID | Username |
+| ----- | ------------------ | ------------- | --------- | --- | --- | --- | ------ |
+
+Series Comment Table:
+| Series ID | Comment | Review Rating | Review ID | Image| Name | User ID | Username |
+| ----- | ------------------ | ------------- | --------- | --- | --- | --- | ------ |
