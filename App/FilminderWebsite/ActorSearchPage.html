@@ -68,10 +68,11 @@
         <form id="cast-search" action="/actor-search">
             <label for="crew-name">Cast/Crew Name:</label>
             <input type="text" id="crew-name" name="crew-name"><br>
+            <div id = "noCastFound"> </div>
             <button type="submit">Submit Info</button>
         </form>
         
-        <div id = "noCastFound"> </div>
+        
 
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
@@ -94,7 +95,7 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(actorInfo)
                 })
-                .then(response => response.text(), (document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>"))
+                .then(response => response.text(), setTimeout(function(){ document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>" }, 400))
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");

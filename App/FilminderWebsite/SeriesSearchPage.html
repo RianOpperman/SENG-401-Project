@@ -70,13 +70,17 @@
             <input type="text" id="series-name" name="series-name"><br>
             <label for="series-year">Year:</label>
             <input type="text" id="series-year" name="series-year"><br>
+            <div id = "noSeriesFound"> </div>
             <button type="submit">Submit Info</button>
         </form>
 
-        <div id = "noSeriesFound"> </div>
+        
         
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
+
+            
+
             const form = document.getElementById('series-search');
 
             form.addEventListener('submit', (event) => {
@@ -96,7 +100,7 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(seriesInfo)
                 })
-                .then(response => response.text(), (document.getElementById('noSeriesFound').innerHTML ="<h2>No series found matching this criteria</h2>"))
+                .then(response => response.text(), setTimeout(function(){ document.getElementById('noSeriesFound').innerHTML ="<h2>No series found matching this criteria</h2>" }, 400))
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
