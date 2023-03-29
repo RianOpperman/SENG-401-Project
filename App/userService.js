@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const Surreal = require('surrealdb.js');
+const { captureRejectionSymbol } = require('events');
 
 let db = new Surreal.default('http://localhost:8003/rpc');
 
@@ -272,12 +273,83 @@ async function getAdmin(json){
     }
 }
 
+async function follow(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let res = await db.create('follow', {
+            reviewer: json.reviewer,
+            follower: json.follower,
+        });
+
+        return res;
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function unfollow(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let res = await db.query(`DELETE FROM follow WHERE follower='${json.follower}' AND reviewer='${json.reviewer}'`);
+
+        return res;
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
+async function notify(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let str = `SELECT email FROM (SELECT *, (SELECT * FROM follow) as follower FROM user SPLIT follower) WHERE username = follower.follower AND follower.reviewer='${json.username}'`;
+
+        let res = await db.query(str);
+
+        return res[0].result;
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
 const server = http.createServer((req, res) => {
     let data = '';
 
     req.on('data', chunk => data += chunk.toString());
     req.on('end', () => {
-        let json = JSON.parse(data);
+        console.log(data);
+        let json ={};
+        try{
+            json = JSON.parse(data);
+        }
+        catch(e){
+            json = {};
+            res.write('undefined');
+            res.end();
+            return;
+        }
         console.log(json);
 
         // If data was sent via POST to the url /
@@ -398,6 +470,41 @@ const server = http.createServer((req, res) => {
                     status.status = 'rejected';
                 }
                 res.write(JSON.stringify(status));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        }
+        else if(req.method === 'POST' && req.url === '/follow'){
+            follow(json)
+            .then(ret => {
+                console.log(ret);
+                let status = {status: 'accepted'};
+                if(typeof ret === 'undefined'){
+                    status.status = 'rejected';
+                }
+                res.write(JSON.stringify(status));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        }
+        else if(req.method === 'POST' && req.url === '/unfollow'){
+            unfollow(json)
+            .then(ret => {
+                console.log(ret);
+                let status = {status: 'accepted'};
+                if(typeof ret === 'undefined'){
+                    status.status = 'rejected';
+                }
+                res.write(JSON.stringify(status));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        }
+        else if(req.method === 'POST' && req.url === '/notify'){
+            notify(json)
+            .then(ret => {
+                console.log(ret);
+                res.write(JSON.stringify(ret));
                 res.end();
             })
             .catch(e => console.error(e));

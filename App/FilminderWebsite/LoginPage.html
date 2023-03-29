@@ -73,13 +73,41 @@
     </h1>
 
     <h2 style="text-align:center">LOGIN</h2>
-    <form id="login" action="/login">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email"><br>
-        <label for="password">Password:</label>
-        <input type="text" id="password" name="password"><br>
-        <button type="submit">Login</button>
-    </form>
+    <link rel="stylesheet" href="nicepage.css" media="screen">
+    <link rel="stylesheet" href="Page-1.css" media="screen">
+    <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+    <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+    <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+    <meta name="referrer" content="origin">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+
+    <section class="u-clearfix u-section-1" id="sec-5798">
+        <div class="u-clearfix u-sheet u-sheet-1">
+          <div class="u-form u-form-1">
+            <form id="login" action="/login" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="text" name="form" style="padding: 10px;">
+              <div class="u-form-group u-form-group-1">
+                <label for="email" class="u-custom-font u-font-oswald u-label">Email</label>
+                <input type="text" placeholder="" id="email" name="email" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+              </div>
+              <div class="u-form-group u-form-group-3">
+                <label for="password" class="u-custom-font u-font-oswald u-label">Password</label>
+                <input type="text" placeholder="" id="password" name="password" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+              </div>
+              <div class="u-align-left u-form-group u-form-submit">
+                <a href="#" class="u-border-2 u-border-black u-btn u-btn-submit u-button-style u-hover-black u-none u-text-black u-text-hover-white u-btn-1">Log In</a>
+                <input type="submit" value="submit" class="u-form-control-hidden">
+              </div>
+              
+              <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
+              <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>
+              <input type="hidden" value="" name="recaptchaResponse">
+              <input type="hidden" name="formServices" value="99fea645e75b2555cbd07c20c68d5006">
+            </form>
+            <button OnClick = "location.href = 'SignUpPage.html'"> Sign Up</button>
+          </div>
+        </div>
+      </section>
 
     <button OnClick = "location.href = 'SignUpPage.html'"> Sign Up</button>
 
@@ -106,43 +134,31 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(loginInfo)
             })
-            .then(response => response.text(), (document.getElementById('noLogin').innerHTML ="<h2>Could not login with the given credentials, please try again</h2>"))
+            .then(response => response.text())
             //.then(text => console.log(JSON.parse(text)))
             .then(text => {
                 console.log("returned from login");
-                
-                
 
-                let jsonData = JSON.parse(text);
-                console.log(jsonData);
-                
-                console.log("Searched");
-                sessionStorage.setItem("user", jsonData.username);
-                sessionStorage.setItem("userID", jsonData.id);
-                console.log(sessionStorage.getItem("user"));
-                document.location.href = "Website.html";
-                
-                
-                
+                if(text !== 'undefined'){
+                    let jsonData = JSON.parse(text);
+                    console.log(jsonData);
+                    
+                    console.log("Searched");
+                    sessionStorage.setItem("user", jsonData.username);
+                    sessionStorage.setItem("userID", jsonData.id);
+                    console.log(sessionStorage.getItem("user"));
+                    document.location.href = "Website.html";
+                }
+                else{
+                    let str = "<h2>Could not login with the given credentials, please try again</h2>";
+                    document.getElementById('noLogin').innerHTML = str;
+                }
             })
             .catch(error => console.log(error));
-            
-            
         });
     </script>
-
-
-    
-
 
     <link rel="stylesheet" href="./style/style.css"/>
 </body>
 
-
-
 </html>
-
-
-
-
-

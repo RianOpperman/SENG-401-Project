@@ -1,15 +1,25 @@
-let json = {
-    'movie-id':'',
-    'series-id': '',
-    'comment':'I LOVE JAVASCRIPT',
-    'user-id':'1',
-}
+const nodemailer = require("nodemailer");
 
-fetch('http://localhost:9004/query', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(json),
-})
-.then(response => response.text())
-.then(text => console.log(JSON.parse(text)))
-.catch(error => console.log(error));
+// Create a transporter using SMTP
+const transporter = nodemailer.createTransport({
+  host: "localhost",
+  port: 2500,
+  secure: false, // set to true if using SSL/TLS
+});
+
+// Define the email message
+const message = {
+  from: "filminder@filminder.com",
+  to: "joe@local.com",
+  subject: "Test email",
+  text: "This is a test email sent using Node.js and Nodemailer",
+};
+
+// Send the email
+transporter.sendMail(message, (error, info) => {
+  if (error) {
+    console.log("Error sending email:", error);
+  } else {
+    console.log("Email sent:", info.response);
+  }
+});

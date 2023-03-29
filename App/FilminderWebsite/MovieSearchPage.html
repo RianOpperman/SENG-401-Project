@@ -105,6 +105,7 @@
                       <label for="movie-year" class="u-label">Movie Year</label>
                       <input type="text" id="movie-year" name="movie-year" class="u-border-none u-custom-font u-font-oswald u-input u-input-rectangle" placeholder="Enter Movie Year (Optional)">
                     </div>
+                    <div id = "noMovieFound"> </div>
                     <div class="u-align-left u-form-group u-form-submit u-label-top">
                         <button type="submit">Submit Info</button>
                     </div>
@@ -112,7 +113,7 @@
                 </div>
               </section>
 
-        <div id = "noMovieFound"> </div>
+        
         
         <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
         <script>
@@ -136,9 +137,8 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(movieInfo)
                 })
-                .then(response => response.text())
-                //.then(text => console.log(JSON.parse(text)))
-                // document.getElementById('noMovieFound').innerHTML ="<h2>No Movie Found matching this Criteria</h2>")
+                .then(response => response.text(), setTimeout(function(){ document.getElementById('noMovieFound').innerHTML ="<h2>No movie found matching this criteria</h2>" }, 400))
+                
                 .then(text => {
                     console.log("returned from search");
                     

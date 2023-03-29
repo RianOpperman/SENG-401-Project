@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "nodemailer": "^6.9.1",
     "surrealdb.js": "^0.5.0"
   }
 }
