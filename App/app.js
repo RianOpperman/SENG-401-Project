@@ -109,7 +109,7 @@ async function requestMovieInfo(data, res){
 }
 
 async function requestActorInfo(data, res){
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let options = getOptions(9005, '/', data);
 
         // Creates HTTP request for movie info to microservice
@@ -128,7 +128,7 @@ async function requestActorInfo(data, res){
                 }
                 else{
                     console.log("Actor does not exist");
-                    reject("Actor does not exist");
+                    resolve("undefined");
                 }
             });
         });
@@ -159,12 +159,11 @@ async function loginCheck(json){
                 });
 
                 userRes.on('end', () => {
-                    let jsonData = JSON.parse(data);
-                    if(typeof jsonData.status === 'undefined'){
+                    if(data !== 'undefined'){
                         resolve(data);
                     }
                     else{
-                        resolve(jsonData);
+                        resolve('undefined');
                     }
                     console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
                 });
@@ -204,7 +203,7 @@ async function signupUser(json){
                         resolve(data);
                     }
                     else{
-                        resolve('undefined')
+                        resolve('undefined');
                     };
                     console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
                 });
@@ -449,7 +448,7 @@ async function addComment(json){
     let options = getOptions(9004, '/add', json);
 
     const req = https.request(options, (res) => {
-        console.log(`Movie Microservice responded with: ${res.statusCode}`);
+        console.log(`Comment Microservice responded with: ${res.statusCode}`);
         let data = '';
         res.on('data', (chunk) => {
             data += chunk;
@@ -458,7 +457,7 @@ async function addComment(json){
         res.on('end', () => {
             if(data !== 'undefined'){
                 let jsonData = JSON.parse(data);
-                console.log(`Movie Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
+                console.log(`Comment Microservice sent: '${util.inspect(jsonData, {colors: true})}'`);
             }
             else{
                 console.log("User has no comments");
@@ -583,7 +582,7 @@ async function getUser(json){
 
 async function getPopularMovies(pageNum){
     return new Promise((resolve) => {
-        let options = getOptions(9001, '/popular', json);
+        let options = getOptions(9001, '/popular', pageNum);
 
         // Creates HTTP request for user info to microservice
         const req = https.request(options, (res) => {
@@ -607,7 +606,7 @@ async function getPopularMovies(pageNum){
 
 async function getPopularSeries(pageNum){
     return new Promise((resolve) => {
-        let options = getOptions(9002, '/popular', json);
+        let options = getOptions(9002, '/popular', pageNum);
 
         // Creates HTTP request for user info to microservice
         const req = https.request(options, (res) => {
@@ -839,8 +838,13 @@ const server = https.createServer(SSLOptions, (req, res) => {
         req.on('end', () => {
             getSeries(data, res)
             .then(ret => {
-                console.log(JSON.stringify(ret));
-                res.write(JSON.stringify(ret));
+                console.log(ret);
+                if(ret === 'undefined'){
+                    res.write('undefined');
+                }
+                else{
+                    res.write(JSON.stringify(ret));
+                }
                 res.end();
                 console.log("Sent data");
             })
@@ -869,7 +873,10 @@ const server = https.createServer(SSLOptions, (req, res) => {
             requestActorInfo(data, res)
             .then(ret => {
                 console.log(JSON.stringify(ret));
-                res.write(JSON.stringify(ret));
+                if(ret !== 'undefined')
+                    res.write(JSON.stringify(ret));
+                else
+                    res.write(ret);
                 res.end();
                 console.log("Sent data");
             })

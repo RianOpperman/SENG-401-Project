@@ -166,7 +166,7 @@ const server = http.createServer(options, (req, res) => {
             })
             .then(async (text) => {
                 if(flag ===  1){
-                    return json;
+                    return text;
                 }
                 else{
                     let data = JSON.parse(text);

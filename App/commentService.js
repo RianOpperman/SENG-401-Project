@@ -74,7 +74,7 @@ async function dbAdd(json){
             res = await db.create(`${Table.series}`, {
                 comment: json.comment,
                 image: json.image,
-                movieID: json['series-id'],
+                seriesID: json['series-id'],
                 name: json.name,
                 rating: json.rating,
                 userID: json['user-id'],

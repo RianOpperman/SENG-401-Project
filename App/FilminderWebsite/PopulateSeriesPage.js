@@ -105,6 +105,8 @@ function populateSeriesPage(){
                     body: JSON.stringify(commentInfo)
                 })
                 .then(() => location.reload())
+                .catch(error => console.log(error));
+
                 // .then(response => response.text())
                 // .then(text => {
                 //     console.log("added comment");
@@ -118,7 +120,6 @@ function populateSeriesPage(){
                 //     // document.location.href = "MoviePage.html";
                 //     location.reload();
                 // })
-                .catch(error => console.log(error));
             });
 
 

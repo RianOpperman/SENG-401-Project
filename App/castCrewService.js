@@ -30,26 +30,28 @@ async function prepareQuery(json){
                     }
                 }
                 break;
-            }
+        }
     }
     let id;
     console.log(query);
     return await fetch(query)
     .then(response => response.text())
     .then(result => {
-        // console.log(result);
         let json = JSON.parse(result);
-        // console.log(json);
-        id = json.results[0].id;
-       console.log("printing id from here:", id);
-       // At the end log the query
-        let detailsquery = `https://api.themoviedb.org/3/person/${id}?api_key=fd466f23c2618acf3e52defb9c3869ba&append_to_response=images,movie_credits,tv_credits`;
-        console.log(detailsquery);
-        return detailsquery;
+        if(json.results.length > 0){
+            // console.log(json);
+            id = json.results[0].id;
+            console.log("printing id from here:", id);
+            // At the end log the query
+            let detailsquery = `https://api.themoviedb.org/3/person/${id}?api_key=fd466f23c2618acf3e52defb9c3869ba&append_to_response=images,movie_credits,tv_credits`;
+            console.log(detailsquery);
+            return detailsquery;
+        }
+        else{
+            return 'undefined';
+        }
     })
     .catch(e => console.error(e));
-
-    
 }
 
 async function dbQuery(json){
@@ -189,7 +191,6 @@ async function dbAdd(json){
 
 const server = http.createServer(options, (req, res) => {
     // If data was sent via POST to the url /
-    console.log("got here 1");
     if(req.method === 'POST' && req.url === '/'){
         let data = '';
         
@@ -198,22 +199,23 @@ const server = http.createServer(options, (req, res) => {
         req.on('data', chunk => {
             data += chunk.toString();
         });
-        console.log("got here 2 and data is", data);
         // once we have all data, create the JSON and query for info
         req.on('end', () => {
-            console.log("got here 3 and");
             let jsonData = JSON.parse(data);
             // Fetches info from API, once received send back JSON
             let flag = 0;
             dbQuery(jsonData)
             .then(async result => {
-                console.log("got here 4 and result is", result);
                 if(typeof result === 'undefined'){
                     console.log(`${jsonData['name']} not in database`);
                     let temp = await prepareQuery(jsonData);
-                    return fetch(temp)
-                    .then(response => response.text());
-                    
+                    if(temp !== 'undefined'){
+                        return fetch(temp)
+                        .then(response => response.text());
+                    }
+                    else{
+                        return temp;
+                    }
                 }
                 else{
                     flag = 1;
@@ -225,17 +227,20 @@ const server = http.createServer(options, (req, res) => {
                     return json;
                 }
                 else{
-                    let data = JSON.parse(json);
-                    console.log(data);
-                    if(typeof data['id'] !== 'undefined'){
-                        console.log("I am here with image prep id is ", data['id']);
-                        data['image'] = await getImage(data['id']); 
-                        flag = 1;
-                        console.log(`Adding ${data['name']} to database`);
-                        let temp = dbAdd(data);
-                        console.log(temp);
-                        return temp;
+                    if(json !== 'undefined'){
+                        let data = JSON.parse(json);
+                        console.log(data);
+                        if(typeof data['id'] !== 'undefined'){
+                            console.log("I am here with image prep id is ", data['id']);
+                            data['image'] = await getImage(data['id']); 
+                            flag = 1;
+                            console.log(`Adding ${data['name']} to database`);
+                            let temp = dbAdd(data);
+                            console.log(temp);
+                            return temp;
+                        }
                     }
+                    else return json;
                 }
             })
             .then(ret => {

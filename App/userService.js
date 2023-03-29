@@ -375,7 +375,7 @@ const server = http.createServer(options, (req, res) => {
                     res.write(JSON.stringify(ret));
                 }
                 else {
-                    res.write(JSON.stringify({status: 'rejected'}));
+                    res.write('undefined');
                 }
                 res.end();
             });

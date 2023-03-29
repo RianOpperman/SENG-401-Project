@@ -95,19 +95,23 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(actorInfo)
                 })
-                .then(response => response.text(), setTimeout(function(){ document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>" }, 400))
+                .then(response => response.text())
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
-                    
-                    let jsonData = JSON.parse(text);
-                    console.log(jsonData);
-                    
-                    console.log("Searched");
-                    sessionStorage.setItem("actor", JSON.stringify(jsonData));
-                    //console.log(sessionStorage.getItem("actor"));
-                    document.location.href = "ActorPage.html";
-                    
+                    if(text !== 'undefined'){
+                        let jsonData = JSON.parse(text);
+                        console.log(jsonData);
+                        
+                        console.log("Searched");
+                        sessionStorage.setItem("actor", JSON.stringify(jsonData));
+                        //console.log(sessionStorage.getItem("actor"));
+                        document.location.href = "ActorPage.html";
+                    }
+                    else{
+                        let str = "<h2>No Cast or Crew found matching this criteria</h2>";
+                        document.getElementById('noCastFound').innerHTML = str;
+                    }
                 })
                 .catch(error => console.log(error));
             });
