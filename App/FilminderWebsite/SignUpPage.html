@@ -98,6 +98,7 @@
                 <label for="password" class="u-custom-font u-font-oswald u-label">Password</label>
                 <input type="text" placeholder="" id="password" name="password" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
               </div>
+              <div id = "signUpResponse"></div>
               <div class="u-align-left u-form-group u-form-submit">
                 <a href="#" class="u-border-2 u-border-black u-btn u-btn-submit u-button-style u-hover-black u-none u-text-black u-text-hover-white u-btn-1">sign up</a>
                 <input type="submit" value="submit" class="u-form-control-hidden">
@@ -111,7 +112,7 @@
         </div>
       </section>
 
-    <div id = "signUpResponse"></div>
+    
     
     <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
     <script>
@@ -132,7 +133,7 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userInfo)
             })
-            .then(response => response.text(), (document.getElementById('signUpResponse').innerHTML ="<h2>This email or username is already associated with an account, please try again</h2>"))
+            .then(response => response.text(), setTimeout(function(){ document.getElementById('signUpResponse').innerHTML ="<h2>This email or username is already associated with an account, please try again</h2>"}, 400))
             .then(text => {
                 console.log(JSON.parse(text))
                 let jsonData = JSON.parse(text);
