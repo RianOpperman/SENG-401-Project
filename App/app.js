@@ -868,7 +868,7 @@ async function notify(json){
                     from: 'filminder@filminder.com',
                     to: '',
                     subject: `${review.username} just posted a new review!`,
-                    text: `${review.name}, Rating: ${review.rating}/10\nReview: ${review.comment}`,
+                    text: `${review.name}\nRating: ${review.rating}/10\nReview: ${review.comment}`,
                 }
 
                 for(email of jsonData){
