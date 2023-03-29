@@ -295,6 +295,25 @@ async function follow(json){
     }
 }
 
+async function followCheck(json){
+    try{
+        await db.signin({
+            user:'root',
+            pass:'root'
+        });
+
+        await db.use('test', 'test');
+
+        let res = await db.query(`SELECT * FROM follow WHERE reviewer='${json.reviewer}' AND follower='${json.follower}'`);
+
+        return res[0].result[0];
+
+    }
+    catch(e){
+        console.error('ERROR', e);
+    }
+}
+
 async function unfollow(json){
     try{
         await db.signin({
@@ -476,6 +495,19 @@ const server = http.createServer((req, res) => {
         }
         else if(req.method === 'POST' && req.url === '/follow'){
             follow(json)
+            .then(ret => {
+                console.log(ret);
+                let status = {status: 'accepted'};
+                if(typeof ret === 'undefined'){
+                    status.status = 'rejected';
+                }
+                res.write(JSON.stringify(status));
+                res.end();
+            })
+            .catch(e => console.error(e));
+        }
+        else if(req.method === 'POST' && req.url === '/follow-check'){
+            followCheck(json)
             .then(ret => {
                 console.log(ret);
                 let status = {status: 'accepted'};

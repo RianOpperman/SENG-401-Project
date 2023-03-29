@@ -163,13 +163,56 @@
             let userToFollow = sessionStorage.getItem("profileUser");
             let currentUser = sessionStorage.getItem("user");
 
+            let json = {
+                reviewer: userToFollow,
+                follower: currentUser,
+            };
+
+            fetch('/follow', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(json)
+            })
+            .then(response => response.text())
+            .then(text => {
+                let ret = JSON.parse(text);
+                console.log(text);
+                if(ret.status === 'accepted'){
+                    document.getElementById("followButton").innerHTML = `<button OnClick = "unfollow()"> Unfollow</button>`;
+                }
+                else{
+                    alert(`Could not follow ${userToFollow}`);
+                }
+            })
+            .catch(e => cosole.error(e));
         }
 
         function unfollow(){
             let userToUnfollow = sessionStorage.getItem("profileUser");
             let currentUser = sessionStorage.getItem("user");
 
+            let json = {
+                reviewer: userToUnfollow,
+                follower: currentUser,
+            };
 
+            fetch('/unfollow', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(json)
+            })
+            .then(response => response.text())
+            .then(text => {
+                let ret = JSON.parse(text);
+                console.log(text);
+                if(ret.status === 'accepted'){
+                    document.getElementById("followButton").innerHTML = `<button OnClick = "follow()"> Follow</button>`;
+                }
+                else{
+                    alert(`Could not follow ${userToFollow}`);
+                }
+            })
+            .catch(e => cosole.error(e));
         }
 
 
@@ -202,7 +245,25 @@
 
                     //do an already followingCheck here
                     //if true put a follow button
-                    document.getElementById("followButton").innerHTML = `<button OnClick = "follow()"> Follow</button>`;
+                    let json = {
+                        reviewer: currentProfile,
+                        follower: currentUser,
+                    };
+
+                    fetch('/follow-check', {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(json)
+                    })
+                    .then(response => response.text())
+                    .then(text => {
+						let jsonData = JSON.parse(text);
+
+						if(jsonData.status === 'accepted')
+							document.getElementById("followButton").innerHTML = `<button OnClick = "unfollow()"> Unfollow</button>`;
+						else
+							document.getElementById("followButton").innerHTML = `<button OnClick = "follow()"> Follow</button>`;
+                    })
 
                     //if false put an unfollow button
                     
