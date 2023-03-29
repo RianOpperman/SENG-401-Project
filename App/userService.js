@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const Surreal = require('surrealdb.js');
+const { captureRejectionSymbol } = require('events');
 
 let db = new Surreal.default('http://localhost:8003/rpc');
 
@@ -338,7 +339,17 @@ const server = http.createServer((req, res) => {
 
     req.on('data', chunk => data += chunk.toString());
     req.on('end', () => {
-        let json = JSON.parse(data);
+        console.log(data);
+        let json ={};
+        try{
+            json = JSON.parse(data);
+        }
+        catch(e){
+            json = {};
+            res.write('undefined');
+            res.end();
+            return;
+        }
         console.log(json);
 
         // If data was sent via POST to the url /

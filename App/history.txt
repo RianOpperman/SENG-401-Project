@@ -1,6 +1,4 @@
 #V2
-INFO FOR DB;
-SELEC * FROM movieComment;
 SELECT * FROM movieComment;
 UPDATE movieComment SET username='The Movie Man', rating='7', name='City of God', image='https://image.tmdb.org/t/p/original//k7eYdWvhYQyRQoU2TB2A2Xu2TfD.jpg' WHERE userID='1';
 SELECT * FROM seriesComment;
@@ -99,3 +97,5 @@ SELECT user.email FROM user, follow WHERE reviewer='1234' AND reviewer=username;
 SELECT email FROM (SELECT *, (SELECT * FROM follow) as follower FROM user SPLIT follower) WHERE username = follower.follower;
 SELECT email FROM (SELECT *, (SELECT * FROM follow) as follower FROM user SPLIT follower) WHERE username = follower.follower AND reviewer = '1234';
 SELECT email FROM (SELECT *, (SELECT * FROM follow) as follower FROM user SPLIT follower) WHERE username = follower.follower AND follower.reviewer='1234';
+SELECT * FROM user;
+SELECT * FROM user WHERE password=crypto::sha512('bob');

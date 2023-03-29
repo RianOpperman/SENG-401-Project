@@ -137,7 +137,7 @@ async function requestActorInfo(data, res){
 }
 
 async function loginCheck(json){
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let options = {
             hostname: 'localhost',
             port: 9003,
@@ -160,12 +160,11 @@ async function loginCheck(json){
             userRes.on('end', () => {
                 console.log(data);
                 if(data !== 'undefined'){
-                    
                     resolve(data);
                 }
                 else{
                     // console.log("rejected");
-                    reject('undefined');
+                    resolve('undefined');
                 }
                 console.log(`User Microservice sent: '${util.inspect(data, {colors: true})}'`);
             });
@@ -897,6 +896,7 @@ const server = http.createServer((req, res) => {
         let data = '';
         req.on('data', chunk => data += chunk.toString());
         req.on('end', () => {
+            console.log(`LOGIN DETAILS: ${data}`);
             loginCheck(data)
             .then(result => {
                 res.write(result.toString());
