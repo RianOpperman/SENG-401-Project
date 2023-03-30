@@ -48,7 +48,7 @@ describe('Movie: PrepareQueryTest', () => {
 
 describe('Movie: getImageTest', () => {
 
-	it('M3: getImageWithValidMoiveId', async () => {
+	it('M5: getImageWithValidMoiveId', async () => {
 		const expected = 'https://image.tmdb.org/t/p/original//pEoqbqtLc4CcwDUDqxmEDSWpWTZ.jpg';
 		let result = await movieService.getImage("tt0133093")
 		//let result = await movieService.getImage("Invalid")
@@ -66,7 +66,7 @@ describe('Movie: getImageTest', () => {
 		expect(result).to.be.undefined;
 	});
 
-	it('M5: getImageValidReturn', async () => {
+	it('M3: getImageValidReturn', async () => {
 		const name = 'tt0133093';
 		expect(await movieService.getImage(name)).to.be.a('string');
 	})

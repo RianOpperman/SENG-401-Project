@@ -266,4 +266,4 @@ server.listen(port, hostname, () => {
 
 
 
-module.exports = { prepareQuery , getImage , dbQuery, dbAdd};
+module.exports = { prepareQuery , getImage , dbQuery, dbAdd, getMovieTitles, getSeriesTitles};
