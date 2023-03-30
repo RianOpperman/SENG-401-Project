@@ -104,7 +104,17 @@ function populateSeriesPage(){
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(commentInfo)
                 })
-                .then(() => location.reload())
+                .then(() => {
+                  return fetch('/notify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(commentInfo)
+                  })
+                })
+                .then(response => response.text())
+                .then(() => {
+                  location.reload();
+                })
                 .catch(error => console.log(error));
 
                 // .then(response => response.text())
