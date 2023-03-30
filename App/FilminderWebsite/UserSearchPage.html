@@ -106,7 +106,7 @@
                         console.log("Searched");
                         let user = jsonData[0];
                         sessionStorage.setItem('profileUser', user.username);
-                        sessionStorage.setItem('profileUserID', user.id);
+                        sessionStorage.setItem('profileUserID', (user.id.split('user:')[1]));
                         document.location.href = 'ProfilePage.html';
                     }
                     else{
