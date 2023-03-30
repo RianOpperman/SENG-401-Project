@@ -16,11 +16,14 @@ function redirect(id){
 function populateProfilePage(){
     var userName = sessionStorage.getItem("profileUser");
     var userID = sessionStorage.getItem("profileUserID");
-    let search = {'user-id': userID};
+    let search = {};
     if(userName === null || userID === null){
         userName = sessionStorage.getItem('user');
         userID = sessionStorage.getItem('userID');
         search['user-id'] = userID.split('user:')[1];
+    }
+    else{
+      search['user-id'] = userID.split('user:')[1];
     }
     
     let profileUserName = document.getElementsByClassName("userName")[0];
