@@ -65,12 +65,50 @@
 
         <h1>User Search</h1>
         <!-- FORM FOR USER INPUT -->
-        <form id="user-search" action="/actor-search">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username"><br>
-            <div id = "noUserFound"> </div>
-            <button type="submit">Submit Info</button>
-        </form>
+
+        <link rel="stylesheet" href="nicepage.css" media="screen">
+        <link rel="stylesheet" href="Page-2.css" media="screen">
+        <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+        <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+        <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+        <meta name="referrer" content="origin">
+        <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+        <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+        
+        <!-- FORM FOR MOVIE INPUT -->
+        <section class="u-clearfix u-container-align-center u-video u-section-1" id="carousel_aad0">
+            <div class="u-background-video u-expanded" style="">
+              <div class="embed-responsive embed-responsive-1">
+                
+              </div>
+            </div>
+            <div class="u-clearfix u-sheet u-sheet-1">
+              <div class="u-clearfix u-layout-wrap u-layout-wrap-1">
+                <div class="u-layout">
+                  <div class="u-layout-row">
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
+                      <div class="u-container-layout u-container-layout-1"></div>
+                    </div>
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-2">
+                      <div class="u-container-layout u-valign-middle u-container-layout-2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="u-align-center u-form u-radius-25 u-white u-form-1">
+                  <form id="user-search" action="/actor-search" style="padding: 10px;">
+                    <div class="u-form-group u-form-name u-label-top">
+                      <label for="movie-name" class="u-label">Userame</label>
+                      <input type="text" placeholder="Enter the User Name" id="Username" name="Username" class="u-border-none u-custom-font u-font-oswald u-input u-input-rectangle" required="">
+                    </div>
+                    <div id = "noMovieFound"> </div>
+                    <div class="u-align-left u-form-group u-form-submit u-label-top">
+                        <button type="submit">Submit Info</button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+
         
         
 
@@ -106,7 +144,7 @@
                         console.log("Searched");
                         let user = jsonData[0];
                         sessionStorage.setItem('profileUser', user.username);
-                        sessionStorage.setItem('profileUserID', user.id);
+                        sessionStorage.setItem('profileUserID', (user.id.split('user:')[1]));
                         document.location.href = 'ProfilePage.html';
                     }
                     else{
