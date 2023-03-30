@@ -95,8 +95,7 @@ async function requestMovieInfo(data, res){
                     resolve(jsonData);
                 }
                 else{
-                    console.log("Movie does not exist");
-                    resolve("Movie does not exist");
+                    resolve("undefined");
                 }
             });
         });
@@ -1098,8 +1097,10 @@ const server = https.createServer(SSLOptions, (req, res) => {
                 console.log('Requesting movie info');
                 requestMovieInfo(data, res)
                 .then(ret => {
-                    console.log(JSON.stringify(ret));
-                    res.write(JSON.stringify(ret));
+                    if(ret === 'undefined')
+                        res.write('undefined');
+                    else
+                        res.write(JSON.stringify(ret));
                     res.end();
                     console.log("Sent data");
                 })

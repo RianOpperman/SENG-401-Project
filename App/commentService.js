@@ -47,7 +47,7 @@ async function dbQuery(json){
             // str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID='${json['user-id']}'`;
             str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID=$id`;
             vars = {
-                id: json['user-id'].split(':')[1]
+                id: json['user-id']
             };
         }
         // console.log(str);

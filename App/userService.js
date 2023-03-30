@@ -105,7 +105,8 @@ async function getUser(json){
         };
 
         // console.log(str);
-
+        console.log(str);
+        console.log(vars);
         let res = await db.query(str, vars);
 
         return res[0].result;
