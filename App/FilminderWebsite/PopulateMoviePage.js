@@ -121,23 +121,20 @@ var htmlString = `<style>
         let ReviewForm = document.getElementsByClassName("ReviewForm")[0];
         ReviewForm.innerHTML =
         `<form id="addComment" action="/comment-add">
-        <label for="rating">Rating:</label>
-        <select name="rating" id="rating">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-        </select>
-        <label for="comment">Comment:</label>
-        <input type="text" id="comment" name="comment"><br>
-        <button type="submit">Submit Info</button>
-        </form>`;
+        <div class="u-form-group u-form-number u-form-number-layout-range-number u-form-group-1">
+              <label for="range-46b6" class="u-custom-font u-font-oswald u-label">Rating</label>
+              <div class="u-input-row" data-value="0">
+                <input type="number" placeholder="" id="rating" name="rating" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" min="0" max="10" step="1" value="0">
+              </div>
+            </div>
+            <div class="u-form-group u-form-message">
+              <label for="comment" class="u-custom-font u-font-oswald u-label">Message</label>
+              <textarea placeholder="Enter your message" rows="4" cols="50" id="comment" name="comment" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white"></textarea>
+            </div>
+            <button type="submit">Submit Info</button>
+        </form>
+        
+        `;
 
 
         const form = document.getElementById('addComment');
@@ -199,8 +196,23 @@ var htmlString = `<style>
     .then(text => {
         let json = JSON.parse(text);
         for(let comment of json){
-            htmlString += `<div class = "review" onclick="redirect('${comment.userID}');"> <h3>${comment.username}: ${comment.rating}/10</h3>`;
-            htmlString += `<p>${comment.comment}</p></div>`;
+            htmlString += `
+          
+          <section class="u-align-center u-clearfix u-grey-10 u-section-2" id="sec-b51e">
+          <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+          <div class="u-list u-list-1">
+            <div class="u-repeater u-repeater-1">
+              <div class="u-align-left u-container-style u-list-item u-repeater-item u-white u-list-item-1">
+                <div class="u-container-layout u-similar-container u-container-layout-1">
+                  <h4 onclick="redirect('${comment.userID}');" class="u-text u-text-default u-text-1">${comment.username}: ${comment.rating}/10</h4>
+                  <p class="u-text u-text-default u-text-2">${comment.comment}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>`;
+
         }
         Reviews.innerHTML = htmlString;
     })
