@@ -53,13 +53,19 @@ async function dbQuery(json){
         // console.log(json);
 
         let str = '';
+        let vars = {};
         if(json['movie-id'] !== '' && typeof json['movie-id'] !== 'undefined'){
+            // str = `SELECT * FROM movie:${json['movie-id']}`;
             str = `SELECT * FROM movie:${json['movie-id']}`;
+            let ret = await db.query(str);
+            return ret[0].result[0];
         }
         else{
-            str = `SELECT * FROM movie WHERE title CONTAINS '${json['movie-name']}'`;
+            // str = `SELECT * FROM movie WHERE title CONTAINS '${json['movie-name']}'`;
+            str = 'SELECT * FROM movie WHERE title CONTAINS $title;';
+            vars = {title: json['movie-name']};
         }
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);

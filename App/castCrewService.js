@@ -63,7 +63,9 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`SELECT * FROM castCrew WHERE Name CONTAINS '${json['crew-name']}'`);
+        let res = await db.query(`SELECT * FROM castCrew WHERE Name CONTAINS $name;`, {
+            name: json['crew-name']
+        });
 
         //console.log(res[0].result[0]);
         return res[0].result[0];
