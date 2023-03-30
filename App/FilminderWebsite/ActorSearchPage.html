@@ -65,12 +65,48 @@
 
         <h1>Cast/Crew Search</h1>
         <!-- FORM FOR MOVIE INPUT -->
-        <form id="cast-search" action="/actor-search">
-            <label for="crew-name">Cast/Crew Name:</label>
-            <input type="text" id="crew-name" name="crew-name"><br>
-            <div id = "noCastFound"> </div>
-            <button type="submit">Submit Info</button>
-        </form>
+        <link rel="stylesheet" href="nicepage.css" media="screen">
+        <link rel="stylesheet" href="Page-2.css" media="screen">
+        <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+        <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+        <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+        <meta name="referrer" content="origin">
+        <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+        <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+        
+        <!-- FORM FOR MOVIE INPUT -->
+        <section class="u-clearfix u-container-align-center u-video u-section-1" id="carousel_aad0">
+            <div class="u-background-video u-expanded" style="">
+              <div class="embed-responsive embed-responsive-1">
+                <iframe style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;" class="embed-responsive-item" src="https://www.youtube.com/embed/ELeMaP8EPAA?playlist=ELeMaP8EPAA&amp;loop=1&amp;mute=1&amp;showinfo=0&amp;controls=0&amp;start=0&amp;autoplay=1" data-autoplay="1" frameborder="0" allowfullscreen=""></iframe>
+              </div>
+            </div>
+            <div class="u-clearfix u-sheet u-sheet-1">
+              <div class="u-clearfix u-layout-wrap u-layout-wrap-1">
+                <div class="u-layout">
+                  <div class="u-layout-row">
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
+                      <div class="u-container-layout u-container-layout-1"></div>
+                    </div>
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-2">
+                      <div class="u-container-layout u-valign-middle u-container-layout-2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="u-align-center u-form u-radius-25 u-white u-form-1">
+                  <form id="cast-search" action="/actor-search" style="padding: 10px;">
+                    <div class="u-form-group u-form-name u-label-top">
+                      <label for="movie-name" class="u-label">Cast Name</label>
+                      <input type="text" placeholder="Enter the Name" id="crew-name" name="crew-name" class="u-border-none u-custom-font u-font-oswald u-input u-input-rectangle" required="">
+                    </div>
+                    <div id = "noMovieFound"> </div>
+                    <div class="u-align-left u-form-group u-form-submit u-label-top">
+                        <button type="submit">Submit Info</button>
+                    </div>
+                  </form>
+                </div>
+              </section>
         
         
 
@@ -95,19 +131,23 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(actorInfo)
                 })
-                .then(response => response.text(), setTimeout(function(){ document.getElementById('noCastFound').innerHTML ="<h2>No Cast or Crew found matching this criteria</h2>" }, 400))
+                .then(response => response.text())
                 //.then(text => console.log(JSON.parse(text)))
                 .then(text => {
                     console.log("returned from search");
-                    
-                    let jsonData = JSON.parse(text);
-                    console.log(jsonData);
-                    
-                    console.log("Searched");
-                    sessionStorage.setItem("actor", JSON.stringify(jsonData));
-                    //console.log(sessionStorage.getItem("actor"));
-                    document.location.href = "ActorPage.html";
-                    
+                    if(text !== 'undefined'){
+                        let jsonData = JSON.parse(text);
+                        console.log(jsonData);
+                        
+                        console.log("Searched");
+                        sessionStorage.setItem("actor", JSON.stringify(jsonData));
+                        //console.log(sessionStorage.getItem("actor"));
+                        document.location.href = "ActorPage.html";
+                    }
+                    else{
+                        let str = "<h2>No Cast or Crew found matching this criteria</h2>";
+                        document.getElementById('noCastFound').innerHTML = str;
+                    }
                 })
                 .catch(error => console.log(error));
             });

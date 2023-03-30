@@ -139,16 +139,6 @@ td {
   cursor: pointer;
 }
 
-.moviePageGridContainer {
-  display: grid;
-  grid-template-columns: auto auto auto auto auto;
-  grid-template-rows: auto auto auto auto auto auto;
-  -moz-column-gap: 10px;
-       column-gap: 10px;
-  row-gap: 10px;
-  padding-left: 10px;
-  background-color: #efeaea;
-}
 
 .moviePageGridContainer .Title {
   grid-column-start: 1;
@@ -184,11 +174,19 @@ td {
   vertical-align: top;
 }
 
+.moviePageGridContainer .ReviewForm {
+  border: 5px solid;
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
 .moviePageGridContainer .Reviews {
-  grid-column-start: 2;
-  grid-column-end: 5;
-  grid-row-start: 5;
-  grid-row-end: 6;
+  border: 5px solid;
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  
 }
 
 .actorPageGridContainer {
@@ -247,4 +245,5 @@ td {
   background-color: #fc6666;
   border-radius: 10px;
   padding-left: 10px;
+  cursor: pointer;
 }/*# sourceMappingURL=style.css.map */

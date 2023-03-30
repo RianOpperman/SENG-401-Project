@@ -20,10 +20,15 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
         
-        let str = `SELECT * FROM user WHERE email='${json['email']}' AND password='${json['password']}'`;
+        // let str = `SELECT * FROM user WHERE email='${json['email']}' AND password='${json['password']}'`;
+        let str = `SELECT * FROM user WHERE email=$email AND password=$password`;
+        let vars = {
+            email: json.email,
+            password: json.password
+        }
         // console.log(str);
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
@@ -44,27 +49,14 @@ async function dbAdd(json){
 
         await db.use('test', 'test');
 
-        let emailStr = `SELECT * FROM user WHERE email='${json['email']}'`;
-        let usersEmailReturned = await db.query(emailStr);
-        
-        let usernameStr = `SELECT * FROM user WHERE username='${json['username']}'`;
-        let usersUsernameReturned = await db.query(usernameStr);
-
-        if((usersEmailReturned[0].result.length == 0) && (usersUsernameReturned[0].result.length == 0)){
-            // if there are no users with this this username or email then we can create a new account with these credentials
-            console.log("new account");
-
-            let res = await db.create(`user`, {
-                email: json['email'],
-                password: json.password,
-                username: json['username'],
-            });
+        let res = await db.create(`user`, {
+            email: json['email'],
+            password: json.password,
+            username: json['username'],
+        });
             
-
-            return res;
-        }
-        console.log("already in use");
-        return undefined;
+        console.log(res);
+        return res;
     }
     catch(e){
         console.error('ERROR', e);
@@ -81,6 +73,9 @@ async function getUserInfo(json){
         await db.use('test', 'test');
 
         let str = `SELECT username, id FROM user:${json.id}`;
+        // let vars = {
+        //     id: json.id
+        // };
 
         // console.log(str);
 
@@ -103,11 +98,15 @@ async function getUser(json){
 
         await db.use('test', 'test');
 
-        let str = `SELECT username, id FROM user WHERE username='${json.username}'`;
+        // let str = `SELECT username, id FROM user WHERE username='${json.username}'`;
+        let str = `SELECT username, id FROM user WHERE username=$username`;
+        let vars = {
+            username: json.username
+        };
 
         // console.log(str);
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result;
 
@@ -126,14 +125,16 @@ async function deleteUser(json){
 
         await db.use('test', 'test');
 
-        let substr = `username='${json.username}'`;
+        let substr = `username=$username`;
+        let vars = {username: json.username};
         if(json.username === ''){
-            substr = `email='${json.email}'`;
+            substr = `email=$email`;
+            vars = {email: json.email};
         }
 
         let str = `DELETE FROM user WHERE ${substr}`;
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result;
 
@@ -152,15 +153,19 @@ async function updateUserPassword(json){
 
         await db.use('test', 'test');
 
-        let substr = `username='${json.username}'`;
+        let substr = `username=$username`;
+        let vars = {usernme: json.username};
         if(json.username === ''){
             substr = `email='${json.email}'`;
+            vars = {email: json.email};
         }
 
-        let str = `UPDATE user SET password='${json.password}' WHERE ${substr}`;
+        let str = `UPDATE user SET password=$password WHERE ${substr}`;
+        vars.password = json.password;
+
         console.log(str);
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result[0];
 
@@ -202,14 +207,16 @@ async function deleteAdmin(json){
 
         await db.use('test', 'test');
 
-        let substr = `username='${json.username}'`;
+        let substr = `username=$username`;
+        let vars = {username: json.username};
         if(json.username === ''){
-            substr = `email='${json.email}'`;
+            substr = `email=$email`;
+            vars = {email: json.email};
         }
 
         let str = `DELETE FROM admin WHERE ${substr}`;
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result;
 
@@ -228,15 +235,17 @@ async function updateAdminPassword(json){
 
         await db.use('test', 'test');
 
-        let substr = `username='${json.username}'`;
+        let substr = `username=$username`;
+        let vars = {username: json.username};
         if(json.username === ''){
-            substr = `email='${json.email}'`;
+            substr = `email=$email`;
+            vars = {email: json.email};
         }
 
-        let str = `UPDATE admin SET password='${json.password}' WHERE ${substr}`;
-        console.log(str);
+        let str = `UPDATE admin SET password=$password WHERE ${substr}`;
+        vars.password = json.password;
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result[0];
 
@@ -255,10 +264,13 @@ async function getAdmin(json){
 
         await db.use('test', 'test');
 
-        let str = `SELECT * FROM admin WHERE username='${json.username}' AND password='${json.password}'`;
-        console.log(str);
+        let str = `SELECT * FROM admin WHERE username=$username AND password=$password`;
+        let vars = {
+            username: json.username,
+            password: json.password
+        }
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result[0];
 
@@ -299,7 +311,10 @@ async function followCheck(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`SELECT * FROM follow WHERE reviewer='${json.reviewer}' AND follower='${json.follower}'`);
+        let res = await db.query(`SELECT * FROM follow WHERE reviewer=$reviewer AND follower=$follower`, {
+            reviewer: json.reviewer,
+            follower: json.follower
+        });
 
         return res[0].result[0];
 
@@ -318,7 +333,10 @@ async function unfollow(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`DELETE FROM follow WHERE follower='${json.follower}' AND reviewer='${json.reviewer}'`);
+        let res = await db.query(`DELETE FROM follow WHERE follower=$follower AND reviewer=$reviewer`, {
+            reviewer: json.reviewer,
+            follower: json.follower
+        });
 
         return res;
 
@@ -337,9 +355,12 @@ async function notify(json){
 
         await db.use('test', 'test');
 
-        let str = `SELECT email FROM (SELECT *, (SELECT * FROM follow) as follower FROM user SPLIT follower) WHERE username = follower.follower AND follower.reviewer='${json.username}'`;
+        let str = `SELECT email FROM (SELECT *, (SELECT * FROM follow) as follower FROM user SPLIT follower) WHERE username = follower.follower AND follower.reviewer=$username`;
+        let vars = {username: json.username};
+        console.log(str);
+        console.log(vars);
 
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
 
         return res[0].result;
     }
@@ -375,7 +396,7 @@ const server = http.createServer(options, (req, res) => {
                     res.write(JSON.stringify(ret));
                 }
                 else {
-                    res.write(JSON.stringify({status: 'rejected'}));
+                    res.write('undefined');
                 }
                 res.end();
             });

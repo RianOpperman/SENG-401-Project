@@ -45,7 +45,9 @@ async function dbQuery(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`SELECT * FROM series WHERE title CONTAINS '${json['series-name']}'`);
+        let res = await db.query(`SELECT * FROM series WHERE title CONTAINS $series`, {
+            series: json['series-name']
+        });
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
@@ -166,7 +168,7 @@ const server = http.createServer(options, (req, res) => {
             })
             .then(async (text) => {
                 if(flag ===  1){
-                    return json;
+                    return text;
                 }
                 else{
                     let data = JSON.parse(text);

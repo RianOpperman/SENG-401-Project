@@ -28,17 +28,32 @@ async function dbQuery(json){
         await db.use('test', 'test');
 
         let str = '';
+        let vars = {};
         if(json['movie-id'] !== '' && typeof json['movie-id'] !== 'undefined'){
-            str = `SELECT * FROM ${Table.movie} WHERE ${Table.movieField}='${json['movie-id']}'`;
+            // str = `SELECT * FROM ${Table.movie} WHERE ${Table.movieField}='${json['movie-id']}'`;
+            str = `SELECT * FROM ${Table.movie} WHERE ${Table.movieField}=$id`;
+            vars = {
+                id: json['movie-id']
+            };
         }
         else if(json['series-id'] !== '' && typeof json['series-id'] !== 'undefined'){
-            str = `SELECT * FROM ${Table.series} WHERE ${Table.seriesField}='${json['series-id']}'`;
+            // str = `SELECT * FROM ${Table.series} WHERE ${Table.seriesField}='${json['series-id']}'`;
+            str = `SELECT * FROM ${Table.series} WHERE ${Table.seriesField}=$id`;
+            vars = {
+                id: json['series-id']
+            };
         }
         else{
-            str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID='${json['user-id']}'`;
+            // str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID='${json['user-id']}'`;
+            str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE userID=$id`;
+            vars = {
+                id: json['user-id'].split(':')[1]
+            };
         }
+        // console.log(str);
         console.log(str);
-        let res = await db.query(str);
+        console.log(vars);
+        let res = await db.query(str, vars);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
@@ -74,7 +89,7 @@ async function dbAdd(json){
             res = await db.create(`${Table.series}`, {
                 comment: json.comment,
                 image: json.image,
-                movieID: json['series-id'],
+                seriesID: json['series-id'],
                 name: json.name,
                 rating: json.rating,
                 userID: json['user-id'],
@@ -98,11 +113,19 @@ async function viewUserComments(json){
 
         await db.use('test', 'test');
 
-        let str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE username='${json.username}'`;
+        // let str = `SELECT * FROM ${Table.movie}, ${Table.series} WHERE username='${json.username}'`;
+        let str = `SELECT * FROM $movie, $series WHERE username=$username`;
+        let vars = {
+            movie: Table.movie,
+            series: Table.series,
+            username: json.username,
+        };
         if(json.media !== ''){
-            str +=  ` AND name='${json.media}'`;
+            // str +=  ` AND name='${json.media}'`;
+            str +=  ` AND name=$media`;
+            vars.media = json.media;
         }
-        let res = await db.query(str);
+        let res = await db.query(str, vars);
         // let res = await db.query(`SELECT * FROM movie`);
 
         // console.log(res[0].result[0]);
@@ -122,7 +145,10 @@ async function deleteComment(json){
 
         await db.use('test', 'test');
 
-        let res = await db.query(`DELETE FROM '${json.id}'`);
+        // let res = await db.query(`DELETE FROM '${json.id}'`);
+        let res = await db.query(`DELETE FROM $id`, {
+            id: json.id
+        });
 
         // console.log(res[0].result[0]);
         return res[0].result;
