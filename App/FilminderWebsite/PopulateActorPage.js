@@ -118,7 +118,7 @@ function populateActorPage(){
     let movieTable = document.getElementById("movieTable");
     let moviePageHTML = "MoviePage.html";
     let movieKey = "movie";
-    var rowString = `<h2>Popular Movies: </h2>`;
+    var rowString = `<h2>Popular Movies Featured In: </h2>`;
     var counter = 0;
     var goodgod = 1;
     for(let movie of movieList){
@@ -140,7 +140,7 @@ function populateActorPage(){
         rowString += `<div class="u-clearfix u-group-elements u-group-elements-${goodgod+2}}">
         
         <img onclick = "redirect('${moviePageHTML}', '${movieKey}', '${movie.title}')" class="u-expanded u-image u-image-default u-image-${goodgod}" src="${movie.image}" alt="" data-image-width="950" data-image-height="633">
-        <h3 onclick = "redirect('${moviePageHTML}', '${movieKey}', '${movie.title}')" class="u-custom-font u-font-oswald  u-text-body-alt-color u-text-${goodgod+1}">${movie.title}</h3>
+        <h3 onclick = "redirect('${moviePageHTML}', '${movieKey}', '${movie.title}')" class="u-custom-font u-font-oswald  u-text-body-alt-color u-text-${goodgod+1}" style="cursor: pointer">${movie.title}</h3>
       </div>`
         //rowString += `<a href = "javascript:redirect('${moviePageHTML}', '${movieKey}', '${movie.title}')"> <img src =  ${movie.image} > </a>`;
         //rowString += `<div><a href = "javascript:redirect('${moviePageHTML}', '${movieKey}', '${movie.title}')">  ${movie.title}  </a></div>`;
@@ -190,7 +190,7 @@ function populateActorPage(){
         seriesRowString += `<div class="u-clearfix u-group-elements u-group-elements-${goodgod+2}}">
         
         <img onclick = "redirect('${seriesPageHTML}', '${seriesKey}', '${series.title}')" class="u-expanded u-image u-image-default u-image-${goodgod}" src="${series.image}" alt="" data-image-width="950" data-image-height="633">
-        <h3 onclick = "redirect('${seriesPageHTML}', '${seriesKey}', '${series.title}')" class="u-custom-font u-font-oswald  u-text-body-alt-color u-text-${goodgod+1}">${series.title}</h3>
+        <h3 onclick = "redirect('${seriesPageHTML}', '${seriesKey}', '${series.title}')" class="u-custom-font u-font-oswald  u-text-body-alt-color u-text-${goodgod+1}" style="cursor: pointer;">${series.title}</h3>
       </div>`
         //seriesRowString += `<a href = "javascript:redirect('${seriesPageHTML}', '${seriesKey}', '${series.title}')"> <img src =  ${series.image} > </a>`;
         //seriesRowString += `<div><a href = "javascript:redirect('${seriesPageHTML}', '${seriesKey}', '${series.title}')">  ${series.title}  </a></div>`;

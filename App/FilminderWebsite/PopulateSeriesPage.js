@@ -81,7 +81,8 @@ function populateSeriesPage(){
                 <p class="u-text u-text-default u-text-2">Series Runtime: ${series.runtime}</p>
                 <p class="u-text u-text-default u-text-2">Series Language: ${series.language}</p>
                 <p class="u-text u-text-default u-text-2">Seasons: ${series.season}</p>
-                <p class="u-text u-text-default u-text-2">Runtime: ${series.runtime}</p>
+                <p class="u-text u-text-default u-text-2">Episode Runtime: ${series.runtime}</p>
+                
               </div>
             </div>
             <div class="u-container-style u-tab-pane u-white u-tab-pane-2" id="tab-0da5" role="tabpanel" aria-labelledby="link-tab-0da5">
@@ -222,7 +223,7 @@ function populateSeriesPage(){
               <div class="u-repeater u-repeater-1">
                 <div class="u-align-left u-container-style u-list-item u-repeater-item u-white u-list-item-1">
                   <div class="u-container-layout u-similar-container u-container-layout-1">
-                    <h4 onclick="redirect('${comment.userID}');" class="u-text u-text-default u-text-1">${comment.username}: ${comment.rating}/10</h4>
+                    <h4 onclick="redirect('${comment.userID}');" class="u-text u-text-default u-text-1" style="cursor: pointer;">${comment.username}: ${comment.rating}/10</h4>
                     <p class="u-text u-text-default u-text-2">${comment.comment}</p>
                   </div>
                 </div>
