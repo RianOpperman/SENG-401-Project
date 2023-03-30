@@ -744,335 +744,570 @@ async function notify(json){
     });
 }
 
-const server = https.createServer(SSLOptions, (req, res) => {
-    if(req.method === 'POST' && req.url === "/movie-search"){
-        console.log('Requesting movie info');
-        let data = '';
 
-        // Must wait for all info to reach before we can begin using it
-        // This is due to asynchronous nature of JS
-        req.on('data', chunk => {
-            data += chunk.toString();
-        });
-
-        // once we have all data, create the JSON and query for info
-        req.on('end', () => {
-            requestMovieInfo(data, res)
-            .then(ret => {
-                console.log(JSON.stringify(ret));
-                res.write(JSON.stringify(ret));
-                res.end();
-                console.log("Sent data");
-            })
-            .catch(e => console.error(e));
+function handleRequests(fn, data, res) {
+    fn(data)
+        .then((ret) => {
+            res.write(ret);
+            res.end();
         })
-    }
-    else if(req.method === 'POST' && req.url === '/movie-popular'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            getPopularMovies(data)
-            .then(result => {
-                res.write(JSON.stringify(result));
-                res.end();
-            })
-        });
-    }
-    else if(req.method === 'POST' && req.url === "/login"){
-        // Call login service
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            console.log(`LOGIN DETAILS: ${data}`);
-            loginCheck(data)
-            .then(result => {
-                res.write(result.toString());
-                res.end();
-            })
-            // .then(ret => console.log(ret))
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && (req.url === "/signup" || req.url === '/admin-add-user')){
-        // Call login service
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            signupUser(data)
-            .then(result => {
-                res.write(result.toString());
-                res.end();
-            })
-            // .then(ret => console.log(ret))
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/userPage'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            retrieveUserInfo(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/user-search'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            getUser(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-        });
-    }
-    else if(req.method === 'POST' && req.url === "/series-search"){
-        // Call series service
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
+        .catch(e => console.error(e));
+}
 
-        req.on('end', () => {
-            getSeries(data, res)
-            .then(ret => {
-                console.log(ret);
-                if(ret === 'undefined'){
-                    res.write('undefined');
+
+
+
+// const server = https.createServer(SSLOptions, (req, res) => {
+//     if(req.method === 'POST' && req.url === "/movie-search"){
+//         console.log('Requesting movie info');
+//         let data = '';
+
+//         // Must wait for all info to reach before we can begin using it
+//         // This is due to asynchronous nature of JS
+//         req.on('data', chunk => {
+//             data += chunk.toString();
+//         });
+
+//         // once we have all data, create the JSON and query for info
+//         req.on('end', () => {
+//             requestMovieInfo(data, res)
+//             .then(ret => {
+//                 console.log(JSON.stringify(ret));
+//                 res.write(JSON.stringify(ret));
+//                 res.end();
+//                 console.log("Sent data");
+//             })
+//             .catch(e => console.error(e));
+//         })
+//     }
+//     else if(req.method === 'POST' && req.url === '/movie-popular'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             getPopularMovies(data)
+//             .then(result => {
+//                 res.write(JSON.stringify(result));
+//                 res.end();
+//             })
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === "/login"){
+//         // Call login service
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             console.log(`LOGIN DETAILS: ${data}`);
+//             loginCheck(data)
+//             .then(result => {
+//                 res.write(result.toString());
+//                 res.end();
+//             })
+//             // .then(ret => console.log(ret))
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && (req.url === "/signup" || req.url === '/admin-add-user')){
+//         // Call login service
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             signupUser(data)
+//             .then(result => {
+//                 res.write(result.toString());
+//                 res.end();
+//             })
+//             // .then(ret => console.log(ret))
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/userPage'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             retrieveUserInfo(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/user-search'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             getUser(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === "/series-search"){
+//         // Call series service
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+
+//         req.on('end', () => {
+//             getSeries(data, res)
+//             .then(ret => {
+//                 console.log(ret);
+//                 if(ret === 'undefined'){
+//                     res.write('undefined');
+//                 }
+//                 else{
+//                     res.write(JSON.stringify(ret));
+//                 }
+//                 res.end();
+//                 console.log("Sent data");
+//             })
+//             .catch(e => console.error(e));
+//         });
+
+
+//     }
+//     else if(req.method === 'POST' && req.url === '/series-popular'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             getPopularSeries(data)
+//             .then(result => {
+//                 res.write(JSON.stringify(result));
+//                 res.end();
+//             })
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === "/actor-search"){
+//         // call actor service
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+
+//         req.on('end', () => {
+//             requestActorInfo(data, res)
+//             .then(ret => {
+//                 console.log(JSON.stringify(ret));
+//                 if(ret !== 'undefined')
+//                     res.write(JSON.stringify(ret));
+//                 else
+//                     res.write(ret);
+//                 res.end();
+//                 console.log("Sent data");
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/comment-query'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             getComments(data)
+//             .then(result => {
+//                 res.write(JSON.stringify(result));
+//                 res.end();
+//             })
+//             // .then(ret => console.log(ret))
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/comment-add'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             addComment(data)
+//             .then(() => {
+//                 res.write('Added comment');
+//                 res.end();
+//             })
+//             // .then(ret => console.log(ret))
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-delete-user'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             deleteUser(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-update-password'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             updateUserPassword(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-add-admin'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             addAdmin(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-remove-admin'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             deleteAdmin(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-update-admin-password'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             updateAdminPassword(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-view-comments'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             viewUserComments(data)
+//             .then(ret => {
+//                 res.write(JSON.stringify(ret));
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-delete-comment'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             deleteComment(data)
+//             .then(ret => {
+//                 res.write(JSON.stringify(ret));
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/admin-login'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             adminLogin(data)
+//             .then(ret => {
+//                 res.write(ret);
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/follow'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             follow(data)
+//             .then(ret => {
+//                 res.write(JSON.stringify(ret));
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/follow-check'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             followCheck(data)
+//             .then(ret => {
+//                 res.write(JSON.stringify(ret));
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/unfollow'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             unfollow(data)
+//             .then(ret => {
+//                 res.write(JSON.stringify(ret));
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else if(req.method === 'POST' && req.url === '/notify'){
+//         let data = '';
+//         req.on('data', chunk => data += chunk.toString());
+//         req.on('end', () => {
+//             notify(data)
+//             .then(ret => {
+//                 if(typeof ret !== 'undefined')
+//                     res.write('accepted');
+//                 else res.write('rejected');
+//                 res.end();
+//             })
+//             .catch(e => console.error(e));
+//         });
+//     }
+//     else{
+//         console.log(`Request for ${req.url} received.`);
+
+//         // Serve index.html for root URL
+//         if (req.url === '/') {
+//             let indexPath = path.join(__dirname + "/FilminderWebsite/", 'Website.html');
+//             send(indexPath, res);
+//         }
+//         else if(req.url.startsWith('/admin')){
+//             let indexPath = path.join(__dirname + "/FilminderWebsite/AdminLogin.html");
+//             send(indexPath, res);
+//         }
+//         else{
+//             let Path = path.join(__dirname + "/FilminderWebsite/", req.url);
+//             send(Path, res);
+//         }
+//     }
+// });
+
+const server = https.createServer(SSLOptions, (req, res) => {
+    if (req.method !== "POST") {}
+
+    let data = '';
+    req.on('data', chunk => data += chunk.toString());
+    req.on('end', ()=>{
+        switch(req.url) {
+            case '/movie-search':
+                console.log('Requesting movie info');
+                requestMovieInfo(data, res)
+                .then(ret => {
+                    console.log(JSON.stringify(ret));
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                    console.log("Sent data");
+                })
+                .catch(e => console.error(e));
+                break;
+                
+            case '/movie-popular':
+                getPopularMovies(data)
+                .then(result => {
+                    res.write(JSON.stringify(result));
+                    res.end();
+                })
+                break;
+
+            case '/login':
+                console.log(`LOGIN DETAILS: ${data}`);
+                loginCheck(data)
+                .then(result => {
+                    res.write(result.toString());
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/signup':
+            case '/admin-add-user':
+                signupUser(data)
+                .then(result => {
+                    res.write(result.toString());
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/userPage':
+                retrieveUserInfo(data)
+                .then(ret => {
+                    res.write(ret);
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/user-search':
+                getUser(data)
+                .then(ret => {
+                    res.write(ret);
+                    res.end();
+                })
+                break;
+
+            case '/series-search':
+                getSeries(data, res)
+                .then(ret => {
+                    if(ret === 'undefined') res.write('undefined');
+                    else {
+                        res.write(JSON.stringify(ret));
+                    }
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+
+            case '/series-popular':
+                getPopularSeries(data)
+                .then(result => {
+                    res.write(JSON.stringify(result));
+                    res.end();
+                })
+                break;
+            
+            case '/actor-search':
+                requestActorInfo(data, res)
+                .then(ret => {
+                    console.log(JSON.stringify(ret));
+                    if (ret !== 'undefined') res.write(JSON.stringify(ret));
+                    else {res.write(ret);}
+                    res.end();
+                    console.log("Sent data");
+                })
+                .catch(e => console.error(e));
+                break;
+
+            case '/comment-query':
+                getComments(data)
+                .then(result => {
+                    res.write(JSON.stringify(result));
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/comment-add':
+                addComment(data)
+                .then(() => {
+                    res.write('Added comment');
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/admin-delete-user':
+                handleRequests(deleteUser, data, res);
+                break;
+
+            case '/admin-update-password':
+                handleRequests(updateUserPassword, data, res);
+                break;
+            
+            case '/admin-add-admin':
+                handleRequests(addAdmin, data, res);
+                break;
+
+            case '/admin-remove-admin':
+                handleRequests(deleteAdmin, data, res);
+                break;
+
+            case '/admin-update-admin-password':
+                handleRequests(updateAdminPassword, data, res);
+                break;
+            
+            case '/admin-view-comments':
+                viewUserComments(data)
+                .then(ret => {
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+
+            case '/admin-delete-comment':
+                deleteComment(data)
+                .then(ret => {
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/admin-login':
+                handleRequests(adminLogin, data, res);
+                break;
+            
+            case '/follow':
+                follow(data)
+                .then(ret => {
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/follow-check':
+                followCheck(data)
+                .then(ret => {
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/unfollow':
+                unfollow(data)
+                .then(ret => {
+                    res.write(JSON.stringify(ret));
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            case '/notify':
+                notify(data)
+                .then(ret => {
+                    if(typeof ret !== 'undefined')
+                        res.write('accepted');
+                    else res.write('rejected');
+                    res.end();
+                })
+                .catch(e => console.error(e));
+                break;
+            
+            default:
+                console.log(`Request for ${req.url} received.`);
+
+                // Serve index.html for root URL
+                if (req.url === '/') {
+                    let indexPath = path.join(__dirname + "/FilminderWebsite/", 'Website.html');
+                    send(indexPath, res);
+                }
+                else if(req.url.startsWith('/admin')){
+                    let indexPath = path.join(__dirname + "/FilminderWebsite/AdminLogin.html");
+                    send(indexPath, res);
                 }
                 else{
-                    res.write(JSON.stringify(ret));
+                    let Path = path.join(__dirname + "/FilminderWebsite/", req.url);
+                    send(Path, res);
                 }
-                res.end();
-                console.log("Sent data");
-            })
-            .catch(e => console.error(e));
-        });
-
-
-    }
-    else if(req.method === 'POST' && req.url === '/series-popular'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            getPopularSeries(data)
-            .then(result => {
-                res.write(JSON.stringify(result));
-                res.end();
-            })
-        });
-    }
-    else if(req.method === 'POST' && req.url === "/actor-search"){
-        // call actor service
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-
-        req.on('end', () => {
-            requestActorInfo(data, res)
-            .then(ret => {
-                console.log(JSON.stringify(ret));
-                if(ret !== 'undefined')
-                    res.write(JSON.stringify(ret));
-                else
-                    res.write(ret);
-                res.end();
-                console.log("Sent data");
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/comment-query'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            getComments(data)
-            .then(result => {
-                res.write(JSON.stringify(result));
-                res.end();
-            })
-            // .then(ret => console.log(ret))
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/comment-add'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            addComment(data)
-            .then(() => {
-                res.write('Added comment');
-                res.end();
-            })
-            // .then(ret => console.log(ret))
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-delete-user'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            deleteUser(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-update-password'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            updateUserPassword(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-add-admin'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            addAdmin(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-remove-admin'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            deleteAdmin(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-update-admin-password'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            updateAdminPassword(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-view-comments'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            viewUserComments(data)
-            .then(ret => {
-                res.write(JSON.stringify(ret));
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-delete-comment'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            deleteComment(data)
-            .then(ret => {
-                res.write(JSON.stringify(ret));
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/admin-login'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            adminLogin(data)
-            .then(ret => {
-                res.write(ret);
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/follow'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            follow(data)
-            .then(ret => {
-                res.write(JSON.stringify(ret));
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/follow-check'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            followCheck(data)
-            .then(ret => {
-                res.write(JSON.stringify(ret));
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/unfollow'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            unfollow(data)
-            .then(ret => {
-                res.write(JSON.stringify(ret));
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else if(req.method === 'POST' && req.url === '/notify'){
-        let data = '';
-        req.on('data', chunk => data += chunk.toString());
-        req.on('end', () => {
-            notify(data)
-            .then(ret => {
-                if(typeof ret !== 'undefined')
-                    res.write('accepted');
-                else res.write('rejected');
-                res.end();
-            })
-            .catch(e => console.error(e));
-        });
-    }
-    else{
-        console.log(`Request for ${req.url} received.`);
-
-        // Serve index.html for root URL
-        if (req.url === '/') {
-            let indexPath = path.join(__dirname + "/FilminderWebsite/", 'Website.html');
-            send(indexPath, res);
         }
-        else if(req.url.startsWith('/admin')){
-            let indexPath = path.join(__dirname + "/FilminderWebsite/AdminLogin.html");
-            send(indexPath, res);
-        }
-        else{
-            let Path = path.join(__dirname + "/FilminderWebsite/", req.url);
-            send(Path, res);
-        }
-    }
+
+
+
+    });
+
+
+    
+
 });
+
 
 server.listen(port, hostname, () => {
     console.log(`Server running at https://${hostname}:${port}/`);
