@@ -81,7 +81,6 @@ function populateSeriesPage(){
                 <p class="u-text u-text-default u-text-2">Series Runtime: ${series.runtime}</p>
                 <p class="u-text u-text-default u-text-2">Series Language: ${series.language}</p>
                 <p class="u-text u-text-default u-text-2">Seasons: ${series.season}</p>
-                <p class="u-text u-text-default u-text-2">Runtime: ${series.runtime}</p>
               </div>
             </div>
             <div class="u-container-style u-tab-pane u-white u-tab-pane-2" id="tab-0da5" role="tabpanel" aria-labelledby="link-tab-0da5">
