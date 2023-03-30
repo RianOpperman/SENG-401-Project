@@ -78,7 +78,6 @@ function populateSeriesPage(){
                 <p class="u-text u-text-default u-text-2">Average Rating: ${series.rating}/10</p>
                 <p class="u-text u-text-default u-text-2">Genre: ${series.genre}</p>
                 <p class="u-text u-text-default u-text-2">Release Date: ${series.releaseDate}</p>
-                <p class="u-text u-text-default u-text-2">Series Runtime: ${series.runtime}</p>
                 <p class="u-text u-text-default u-text-2">Series Language: ${series.language}</p>
                 <p class="u-text u-text-default u-text-2">Seasons: ${series.season}</p>
               </div>
