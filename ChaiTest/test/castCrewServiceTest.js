@@ -13,12 +13,6 @@ const castService = require('../../App/castCrewService.js');
 let db = new Surreal.default('http://localhost:8001/rpc');
 
 
-afterEach(function() {
-  if (this.currentTest.state !== 'failed') return;
-  console.log( fs.readFileSync('/your/logfile').toString() );
-});
-
-
 
 
 
@@ -114,11 +108,30 @@ describe('getMovieTitles', () => {
       expect(result[0]).to.have.property('image', 'https://image.tmdb.org/t/p/original//placeholder.jpg');
       expect(result[0]).to.have.property('character', 'Neo');
   })
+
+  it('C7: getMovieTitlesInvalid', async () => {
+    let input = {
+        "movie_credits": {
+            "cast": [
+                {
+                  "title": "ndalsgk241",
+                  "original_title": "sadg314",
+                  "popularity": 9999,
+                  "poster_path": "/placeholder.jpg",
+                  "character": "Neo"
+                },
+            ]
+        }
+    }
+    
+    let result = await castService.getMovieTitles(input);
+    //expect(result).to.be.undefined;
+})
 })
 
 
 describe('getSeriesTitles', () => {
-  it('C7: getSeriesTitlesReturn', async () => {
+  it('C8: getSeriesTitlesReturn', async () => {
       let input = {
           "tv_credits": {
               "cast": [
@@ -137,7 +150,7 @@ describe('getSeriesTitles', () => {
       expect(result).to.be.an('array');
   })
 
-  it('C8: getSeriesTitlesValid', async() => {
+  it('C9: getSeriesTitlesValid', async() => {
     let data = {
         "tv_credits": {
             "cast": [
@@ -154,7 +167,7 @@ describe('getSeriesTitles', () => {
     assert.deepEqual(await castService.getSeriesTitles(data), expected);
 });
 
-  it('C9: getSeriesTitlesInvalid', async() => {
+  it('C10: getSeriesTitlesInvalid', async() => {
     let data = {
         "tv_credits": {
             "cast": [
@@ -183,7 +196,7 @@ describe('getSeriesTitles', () => {
 
 
 describe('Cast: dbAdd', () => {
-    it('C5: dbAddValid', async() => {
+    it('C11: dbAddValid', async() => {
       let json = {
         "name": "Test Person",
         "birthday": "01/01/2000",
@@ -200,7 +213,7 @@ describe('Cast: dbAdd', () => {
         //expect(result).to.equal(expected);
     });
 
-    it('C6: dbaddInvalid', async() => {
+    it('C12: dbaddInvalid', async() => {
         const json = {name: '', birthday: '', movie_credits: '', id: '', tv_credits: ''};
         expect(await castService.dbAdd(json)).to.undefined;
     });
@@ -208,7 +221,7 @@ describe('Cast: dbAdd', () => {
 
 
 describe('Cast: dbQuery', () => {
-    it('C11: dbQueryValid', async() => {
+    it('C13: dbQueryValid', async() => {
         const input = {'crew-name': 'Keanu'};
         const expected = {
             Name: 'Emma Watson',
@@ -223,150 +236,12 @@ describe('Cast: dbQuery', () => {
         console.log(result);
         //expect(result).to.equal(expected);
     });
-    it('C12: dbQueryInvalid', async() => {
+    it('C14: dbQueryInvalid', async() => {
         const input = {'crew-name': 'InvalidName52645'};
 
         let result = await castService.dbQuery(input);
         expect(result).to.be.undefined;
     });
 });
-
-
-
-
-
-
-// describe('dbAddTest', () => {
-
-//     it('should return a valid response given valid input parameters', () => {
-//         const json = {name: 'Emma Watson', birthday: '1990-04-15', movie_credits: '', id: '188927', tv_credits: ''};
-//         const expected = 'Successfully created';
-//         expect(dbAdd(json)).to.equal(expected);
-//     });
-//     it('should return an empty string given an invalid input parameter', () => {
-//         const json = {name: '', birthday: '', movie_credits: '', id: '', tv_credits: ''};
-//         expect(dbAdd(json)).to.equal('');
-//     });
-
-// });
-
-
-// describe('Cast: dbQueryTest', () => {
-
-// 	it('dbQueryReturnValid', async () => {
-// 		let input = {
-// 			'crew-name': 'Daniel Kwan'
-// 		};
-// 		castService.dbQuery(input).then((result) => {
-// 			expect(result).to.be.an('object');
-// 		});
-// 	});
-
-//     it('dbQueryValid', async() => {
-//         const json = {'crew-name': 'Daniel Kwan'};
-//         const expected = {
-//             Name: 'Emma Watson',
-//             DOB: '1990-04-15',
-//             Age: 30,
-//             Movies: '',
-//             id: '188927',
-//             Series: '',
-//         };
-//         let result = await castService.dbQuery(json)
-//         console.log(result);
-//         //expect(result).to.equal(expected);
-//     });
-
-//     // it('dbQueryInvalid', async() => {
-//     //     const json = {'crew-name': 'InvalidName'};
-//     //     expect(castService.dbQuery(json)).to.deep.equal({});
-//     // });
-
-// });
-
-
-
-
-
-
-
-// describe('Movie: getImageTest', () => {
-
-// 	it('getImageWithValidMoiveId', async () => {
-// 		const expected = 'https://image.tmdb.org/t/p/original//pEoqbqtLc4CcwDUDqxmEDSWpWTZ.jpg';
-// 		let result = await castService.getImage("tt0133093")
-// 		//let result = await castService.getImage("Invalid")
-// 		//console.log(result);
-//         expect(result).to.equal(expected);
-// 	});
-
-// 	it('getImageWithInvalidMoiveId', async () => {
-// 		let result = undefined;
-// 		result = await castService.getImage("Invalid")
-		
-// 		//This test passes as it should be but it print TypeError of can not read undefined in the console
-// 		//expect(await castService.getImage("Invalid")).to.be.undefined;
-
-// 		expect(result).to.be.undefined;
-// 	});
-
-// 	it('getImageValidReturn', async () => {
-// 		const name = 'tt0133093';
-// 		expect(await castService.getImage(name)).to.be.a('string');
-// 	})
-
-// });
-
-
-
-// describe('Movie: dbAddTest', () => {
-
-// 	let str = '';
-// 	str = "DELETE * FROM movie WHERE title CONTAINS 'Jaws'}"
-// 	db.query(str)
-
-// 	it('DatabaseAddData', () => {
-// 		let json = {
-// 			'imdbID': 'tt0073195',
-// 			'Actors': 'Roy Scheider, Robert Shaw, Richard Dreyfuss, Lorraine Gary',
-// 			'Plot': 'When a gigantic great white shark begins to menace the small island community of Amity, a police chief, a marine scientist and grizzled fisherman set out to stop it.',
-// 			'Director': 'Steven Spielberg',
-// 			'Genre': 'Adventure, Horror, Thriller',
-// 			'Language': 'English',
-// 			'imdbRating': '8.1',
-// 			'Released': '20 Jun 1975',
-// 			'Runtime': '124 min',
-// 			'Title': 'Jaws',
-// 			'Writer': 'Peter Benchley (screenplay by), Carl Gottlieb (screenplay by), Peter Benchley (based on the novel by)',
-// 			'image': 'https://image.tmdb.org/t/p/original//l1yltvzILaZcx2jYvc5sEMkM7Eh.jpg'
-// 		};
-// 		castService.dbAdd(json).then(result => {
-// 			expect(result).to.be.an('array');
-// 		});
-// 	});
-
-// 	db.query(str)
-
-// 	it('DatabaseAddDataIdMatch', () => {
-//         let json = {
-//             'imdbID': 'tt0073195',
-//             'Actors': 'Roy Scheider, Robert Shaw, Richard Dreyfuss, Lorraine Gary',
-//             'Plot': 'When a gigantic great white shark begins to menace the small island community of Amity, a police chief, a marine scientist and grizzled fisherman set out to stop it.',
-//             'Director': 'Steven Spielberg',
-//             'Genre': 'Adventure, Horror, Thriller',
-//             'Language': 'English',
-//             'imdbRating': '8.1',
-//             'Released': '20 Jun 1975',
-//             'Runtime': '124 min',
-//             'Title': 'Jaws',
-//             'Writer': 'Peter Benchley (screenplay by), Carl Gottlieb (screenplay by), Peter Benchley (based on the novel by)',
-//             'image': 'https://image.tmdb.org/t/p/original//l1yltvzILaZcx2jYvc5sEMkM7Eh.jpg'
-//         };
-//         castService.dbAdd(json).then(result => {
-//             expect(result[0].id).to.equal('movie:tt0073195');
-//         });
-//     });
-// });
-
 
 
