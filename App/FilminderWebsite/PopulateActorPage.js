@@ -118,7 +118,7 @@ function populateActorPage(){
     let movieTable = document.getElementById("movieTable");
     let moviePageHTML = "MoviePage.html";
     let movieKey = "movie";
-    var rowString = `<h2>Popular Movies: </h2>`;
+    var rowString = `<h2>Popular Movies Featured In: </h2>`;
     var counter = 0;
     var goodgod = 1;
     for(let movie of movieList){
