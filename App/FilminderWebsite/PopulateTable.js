@@ -14,11 +14,15 @@ function redirect(nextPageHTML, key, title){
         .then(response => response.text(), setTimeout(function(){ window.alert("Sorry IMDb does not have this title")}, 1000))
         
         .then(text => {
-            
+            if(text !== 'undefined'){
             let jsonData = JSON.parse(text);
             sessionStorage.setItem(key, JSON.stringify(jsonData));
             
             document.location.href = nextPageHTML;
+            }
+            else{
+                window.alert("Sorry IMDb does not have this title");
+            }
         })
         .catch(error => console.log(error));
     
@@ -36,15 +40,20 @@ function redirect(nextPageHTML, key, title){
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(seriesInfo)
         })
-        .then(response => response.text(), setTimeout(function(){ window.alert("Sorry IMDb does not have this title")}, 1000))
+        .then(response => response.text())
         
         .then(text => {
+            if(text !== 'undefined'){
             console.log("returned from search");
             
             let jsonData = JSON.parse(text);
             sessionStorage.setItem(key, JSON.stringify(jsonData));
             
             document.location.href = nextPageHTML;
+            }
+            else{
+                window.alert("Sorry IMDb does not have this title");
+            }
             
         })
         .catch(error => console.log(error))
