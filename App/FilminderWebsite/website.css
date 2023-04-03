@@ -1,0 +1,235 @@
+.u-section-1 .u-sheet-1 {
+    min-height: 710px;
+  }
+  
+  .u-section-1 .u-layout-wrap-1 {
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+  
+  .u-section-1 .u-image-1 {
+    min-height: 522px;
+    background-image: url("images/1.png");
+    background-position: 50% 50%;
+  }
+  
+  .u-section-1 .u-container-layout-1 {
+    padding: 30px 60px;
+  }
+  
+  .u-section-1 .u-layout-cell-2 {
+    min-height: 522px;
+  }
+  
+  .u-section-1 .u-container-layout-2 {
+    padding: 30px 60px;
+  }
+  
+  .u-section-1 .u-text-1 {
+    margin: 129px auto 0 0;
+  }
+  
+  .u-section-1 .u-text-2 {
+    margin: 32px 0 0;
+  }
+  
+  .u-section-1 .embed-responsive-1 {
+    position: absolute;
+    width: 178%;
+    left: -39%;
+    height: 178%;
+    top: -39%;
+  }
+  
+  @media (max-width: 1199px) {
+    .u-section-1 .u-sheet-1 {
+      min-height: 481px;
+    }
+  
+    .u-section-1 .u-image-1 {
+      min-height: 430px;
+    }
+  
+    .u-section-1 .u-layout-cell-2 {
+      min-height: 430px;
+    }
+  }
+  
+  @media (max-width: 991px) {
+    .u-section-1 .u-sheet-1 {
+      min-height: 367px;
+    }
+  
+    .u-section-1 .u-image-1 {
+      min-height: 329px;
+    }
+  
+    .u-section-1 .u-container-layout-1 {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  
+    .u-section-1 .u-layout-cell-2 {
+      min-height: 100px;
+    }
+  
+    .u-section-1 .u-container-layout-2 {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .u-section-1 .u-sheet-1 {
+      min-height: 653px;
+    }
+  
+    .u-section-1 .u-image-1 {
+      min-height: 494px;
+    }
+  
+    .u-section-1 .u-container-layout-1 {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    .u-section-1 .u-container-layout-2 {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    .u-section-1 .embed-responsive-1 {
+      width: 256%;
+      left: -78%;
+      height: 100%;
+      top: 0%;
+    }
+  }
+  
+  @media (max-width: 575px) {
+    .u-section-1 .u-sheet-1 {
+      min-height: 446px;
+    }
+  
+    .u-section-1 .u-image-1 {
+      min-height: 311px;
+    }
+  
+    .u-section-1 .embed-responsive-1 {
+      width: 299%;
+      left: -99%;
+    }
+  } .u-section-2 {
+    min-height: 66px;
+  }
+  
+  .u-section-2 .u-sheet-1 {
+    min-height: 655px;
+  }
+  
+  .u-section-2 .u-layout-wrap-1 {
+    margin: 0 auto 0 0;
+  }
+  
+  .u-section-2 .u-image-1 {
+    min-height: 655px;
+    background-image: url("images/1543610932034.jpeg");
+    background-position: 50% 50%;
+  }
+  
+  .u-section-2 .u-container-layout-1 {
+    padding: 30px 60px;
+  }
+  
+  .u-section-2 .u-layout-cell-2 {
+    min-height: 655px;
+  }
+  
+  .u-section-2 .u-container-layout-2 {
+    padding: 30px 60px;
+  }
+  
+  .u-section-2 .u-icon-1 {
+    height: 48px;
+    width: 48px;
+    background-image: none;
+    margin: 170px auto 0;
+    padding: 10px;
+  }
+  
+  .u-section-2 .u-text-1 {
+    margin: 31px auto 0;
+  }
+  
+  .u-section-2 .u-text-2 {
+    margin: 19px 0 0;
+  }
+  
+  @media (max-width: 1199px) {
+     .u-section-2 {
+      min-height: 318px;
+    }
+  
+    .u-section-2 .u-sheet-1 {
+      min-height: 89px;
+    }
+  
+    .u-section-2 .u-layout-wrap-1 {
+      margin-right: initial;
+      margin-left: initial;
+    }
+  
+    .u-section-2 .u-image-1 {
+      min-height: 540px;
+    }
+  
+    .u-section-2 .u-layout-cell-2 {
+      min-height: 540px;
+    }
+  }
+  
+  @media (max-width: 991px) {
+     .u-section-2 {
+      min-height: 66px;
+    }
+  
+    .u-section-2 .u-image-1 {
+      min-height: 414px;
+    }
+  
+    .u-section-2 .u-container-layout-1 {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  
+    .u-section-2 .u-layout-cell-2 {
+      min-height: 100px;
+    }
+  
+    .u-section-2 .u-container-layout-2 {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .u-section-2 .u-image-1 {
+      min-height: 621px;
+    }
+  
+    .u-section-2 .u-container-layout-1 {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    .u-section-2 .u-container-layout-2 {
+      padding-left: 50px;
+      padding-right: 50px;
+    }
+  }
+  
+  @media (max-width: 575px) {
+    .u-section-2 .u-image-1 {
+      min-height: 391px;
+    }
+  }

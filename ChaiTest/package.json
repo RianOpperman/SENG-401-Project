@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "request": "^2.88.2"
+  },
+  "name": "chaitest",
+  "version": "1.0.0",
+  "main": "Test1.js",
+  "scripts": {
+    "test": "mocha --exit"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "mocha-suppress-logs": "^0.3.1"
+  }
+}

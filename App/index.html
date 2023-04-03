@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Movie Search</h1>
+        <!-- FORM FOR MOVIE INPUT -->
+        <form id="movie-search" action="/movie-search">
+            <label for="movie-id">ID:</label>
+            <input type="text" id="movie-id" name="movie-id"><br>
+            <label for="movie-name">Movie Name:</label>
+            <input type="text" id="movie-name" name="movie-name"><br>
+            <label for="movie-year">Year:</label>
+            <input type="text" id="movie-year" name="movie-year"><br>
+            <button type="submit">Submit Info</button>
+        </form>
+        
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const movieForm = document.getElementById('movie-search');
+
+            movieForm.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(movieForm);
+                let movieInfo = {};
+                data.forEach((value, key) => {movieInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/movie-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(movieInfo)
+                })
+                .then(response => response.text())
+                .then(text => console.log(JSON.parse(text)))
+                // .then(text => {
+                //     let jsonData = JSON.parse(text);
+
+                // })
+                .catch(error => console.log(error));
+            });
+        </script>
+
+        <h1>Actor Search</h1>
+        <h1>User Login</h1>
+        <!-- FORM FOR MOVIE INPUT -->
+        <form id="login" action="/login">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email"><br>
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password"><br>
+            <button type="submit">Submit Info</button>
+        </form>
+        
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const loginForm = document.getElementById('login');
+
+            loginForm.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(loginForm);
+                let userInfo = {};
+                data.forEach((value, key) => {userInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(userInfo)
+                })
+                .then(response => response.text())
+                .then(text => console.log(JSON.parse(text)))
+                // .then(text => {
+                //     let jsonData = JSON.parse(text);
+
+                // })
+                .catch(error => console.log(error));
+            });
+        </script>
+        <h1>User Register</h1>
+        <!-- FORM FOR MOVIE INPUT -->
+        <form id="signup" action="/signup">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email"><br>
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password"><br>
+            <button type="submit">Submit Info</button>
+        </form>
+        
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const signupForm = document.getElementById('signup');
+
+            signupForm.addEventListener('submit', (event) => {
+                // Prevents issues, can't remember what issues though
+                event.preventDefault();
+
+                let data = new FormData(signupForm);
+                let userInfo = {};
+                data.forEach((value, key) => {userInfo[key] = value});
+
+                // Fetches movie info from main server
+                // Need to revamp for dynamic web pages
+                fetch('/signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(userInfo)
+                })
+                .then(response => response.text())
+                .then(text => console.log(JSON.parse(text)))
+                // .then(text => {
+                //     let jsonData = JSON.parse(text);
+
+                // })
+                .catch(error => console.log(error));
+            });
+        </script>
+    </body>
+</html>
