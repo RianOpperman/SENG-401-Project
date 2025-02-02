@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<html>	
+
+
+
+
+<head>
+
+    <title>FILMINDER</title>
+    <meta charset = "UTF-8">
+    <meta name = "FILMINDER" content = "User Search Page for FILMINDER">
+    <link rel="stylesheet" href="./style/style.css"/>
+    
+    
+            
+</head>
+
+<html>
+    <body>
+
+        <section class = "TopBar">
+        
+            <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
+    
+            <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
+            <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
+            <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+            <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
+            
+    
+            <div class = "pushRight">
+                <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+                <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
+                <script>
+                    
+                    var currentUser = sessionStorage.getItem("user");
+                    console.log(currentUser);
+    
+                    function signout(){
+                        sessionStorage.removeItem("user");
+                        sessionStorage.removeItem("userID");
+                        location.reload();
+                    }
+                    
+                    if(currentUser == null){
+                        
+                        
+                        document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                        document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                        
+                        
+                    }
+                    else{
+                        document.write(`<button OnClick = "signout()"> Signout</button>`);
+                        document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                    }
+                    
+                </script>
+                
+            </div>
+    
+        </section>
+
+        <h1>User Search</h1>
+        <!-- FORM FOR USER INPUT -->
+
+        <link rel="stylesheet" href="nicepage.css" media="screen">
+        <link rel="stylesheet" href="Page-2.css" media="screen">
+        <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+        <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+        <meta name="generator" content="Nicepage 5.5.0, nicepage.com">
+        <meta name="referrer" content="origin">
+        <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+        <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+        
+        <!-- FORM FOR MOVIE INPUT -->
+        <section class="u-clearfix u-container-align-center u-video u-section-1" id="carousel_aad0">
+            <div class="u-clearfix u-sheet u-sheet-1">
+              <div class="u-clearfix u-layout-wrap u-layout-wrap-1">
+                <div class="u-layout">
+                  <div class="u-layout-row">
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-1">
+                      <div class="u-container-layout u-container-layout-1"></div>
+                    </div>
+                    <div class="u-container-style u-layout-cell u-size-30 u-layout-cell-2">
+                      <div class="u-container-layout u-valign-middle u-container-layout-2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="u-align-center u-form u-radius-25 u-white u-form-1">
+                  <form id="user-search" action="/actor-search" style="padding: 10px;">
+                    <div class="u-form-group u-form-name u-label-top">
+                      <label for="username" class="u-label">Userame</label>
+                      <input type="text" placeholder="Enter the Userame" id="username" name="username" class="u-border-none u-custom-font u-font-oswald u-input u-input-rectangle" required="">
+                    </div>
+                    <div id = "noUserFound"> </div>
+                    <div class="u-align-left u-form-group u-form-submit u-label-top">
+                        <button type="submit">Submit Info</button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+        
+        
+
+        <!-- SENDING INFO FROM FORM AS JSON TO SERVER -->
+        <script>
+            const form = document.getElementById('user-search');
+
+            form.addEventListener('submit', (event) => {
+                console.log("Pressed");
+                // Prevents issues
+                event.preventDefault();
+
+                let data = new FormData(form);
+                console.log(data);
+                let userInfo = {};
+                data.forEach((value, key) => {userInfo[key] = value});
+                console.log(userInfo);
+                // Fetches series info from main server
+                
+                fetch('/user-search', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(userInfo)
+                })
+                .then(response => response.text())
+                //.then(text => console.log(JSON.parse(text)))
+                .then(text => {
+                    console.log("returned from search");
+                    
+                    let jsonData = JSON.parse(text);
+                    console.log(jsonData);
+                    if(jsonData.length != 0){
+                        console.log("Searched");
+                        let user = jsonData[0];
+                        sessionStorage.setItem('profileUser', user.username);
+                        sessionStorage.setItem('profileUserID', (user.id.split('user:')[1]));
+                        document.location.href = 'ProfilePage.html';
+                    }
+                    else{
+                        document.getElementById('noUserFound').innerHTML ="<h2>No User found matching that username</h2>";
+                    }
+                })
+                .catch(error => console.log(error));
+            });
+        </script>
+
+        
+        
+    </body>
+</html>

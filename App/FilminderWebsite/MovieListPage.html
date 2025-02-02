@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<html>	
+
+
+
+
+<head>
+
+    <title>FILMINDER</title>
+    <meta charset = "UTF-8">
+    <meta name = "FILMINDER" content = "This is the page showing a movie list for FILMINDER">
+    <link rel="stylesheet" href="./style/style.css"/>
+    <script type="text/javascript" src = "PopulateTable.js"></script>
+    <script>
+        var pageNumber = 1;
+    </script>
+</head>
+
+
+<body>
+    
+    <section class = "TopBar">
+        
+        <button OnClick = "location.href = 'Website.html'">FILMINDER</button> 
+
+        <button OnClick = "location.href = 'MovieSearchPage.html'"> Movie Search</button> 
+        <button OnClick = "location.href = 'SeriesSearchPage.html'"> Series Search</button> 
+        <button OnClick = "location.href = 'ActorSearchPage.html'"> Actors Search</button>
+        <button OnClick = "location.href = 'UserSearchPage.html'"> User Search</button>
+        
+
+        <div class = "pushRight">
+            <button OnClick = "location.href = 'MovieListPage.html'"> Movies</button>
+            <button OnClick = "location.href = 'SeriesListPage.html'"> Series</button>
+            <script>
+                
+                var currentUser = sessionStorage.getItem("user");
+                console.log(currentUser);
+
+                function signout(){
+                    sessionStorage.removeItem("user");
+                    sessionStorage.removeItem("userID");
+                    location.reload();
+                }
+                
+                if(currentUser == null){
+                    
+                    
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Login/Signup</button>`);
+                    document.write(`<button OnClick = "location.href = 'LoginPage.html'"> Guest </button>`);
+                    
+                    
+                }
+                else{
+                    document.write(`<button OnClick = "signout()"> Signout</button>`);
+                    document.write(`<button OnClick = "location.href = 'ProfilePage.html'"> ${currentUser}</button>`);
+                }
+                
+            </script>
+            
+        </div>
+
+    </section>
+    
+
+
+    <h1>
+        
+        
+        <div>
+            <img id = "filminderLogo" src = "FilminderLogoTransparent.png" alt = "This is our logo" height = "250" width = "250">
+            
+        </div>
+
+    </h1>
+
+    <div id = "MOVIES">
+        
+
+        <div class = "tableHeader">
+
+            <strong class = "subheader">Movies</strong>
+             
+        </div>
+        
+        
+
+        <table id = "MovieTable">
+            <script> populateTable("MovieTable", "MoviePage.html", "movie", pageNumber);</script>
+        </table>
+
+        <button onclick = "nextPage();">Next</button>
+        <script>
+            function nextPage(){
+                pageNumber += 1;
+                populateTable("MovieTable", "MoviePage.html", "movie", pageNumber);
+            }
+        </script>
+
+        <button onclick = "previousPage();">Previous</button>
+
+        <script>
+            function previousPage(){
+                if(pageNumber > 1){
+                    pageNumber -= 1;
+                    populateTable("MovieTable", "MoviePage.html", "movie", pageNumber);
+                }
+            }
+        </script>
+        
+
+    </div>
+    
+
+    <link rel="stylesheet" href="./style/style.css"/>
+    
+    
+</body>
+
+
+
+</html>
+
+
+
+
+
